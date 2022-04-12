@@ -1,7 +1,11 @@
 const express = require('express')
+const colors = require('colors')
 const dotenv = require('dotenv').config()
 const {errorHandler} = require('./middleware/errorMiddleware')
+const connectDB = require('./config/db')
 const port = process.env.PORT || 3000
+
+connectDB();
 
 const app = express();
 
@@ -13,5 +17,3 @@ app.use('/api/leagues', require('./routes/leagueRoutes'))
 app.use(errorHandler)
 
 app.listen(port, () => console.log(`Server started on port ${port}`))
-
-// const CONNECTION_URL = 'mongodb+srv://powerpicksadmin:suPrsi2C5E3R6FX@cluster0.zigoy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
