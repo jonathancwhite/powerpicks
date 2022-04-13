@@ -1,20 +1,24 @@
 import React from 'react';
-// import Navbar from './components/Navbar/Navbar';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
-import Home from './components/pages/Home';
-import Leagues from './components/pages/Leagues';
+import Header from './components/Header';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 import './assets/scss/main.scss';
 
 const App = () => {
   return (
     <BrowserRouter>
-      <Switch>
-        <Route path="/" exact component={Home} />
-        {/* <Route path="/forgot-password" exact element={<ForgotPass />} /> */}
-        <Route path="/leagues" exact component={Leagues} />
-      </Switch>
+      <Header />
+      <div className="container">
+        <Switch>
+          <Route path="/" exact component={Dashboard} />
+          <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
+        </Switch>
+      </div>
     </BrowserRouter>    
   )
 }

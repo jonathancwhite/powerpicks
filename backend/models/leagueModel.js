@@ -3,19 +3,20 @@ const mongoose = require('mongoose')
 const leagueSchema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
+        required: true,
         ref: 'User'
     },
     leagueName: {
         type: String,
-        
+        required: true,
     },
     leagueSport: {
         type: String,
-
+        required: true,
     },
     leagueLevel: {
         type: String,
-
+        required: true,
     },
     maxPlayers: {
         type: Number
@@ -27,11 +28,8 @@ const leagueSchema = mongoose.Schema({
         type: String,
     },
     currentParticipants: {
-        type: String
-    },
-    text: {
-        type: String
-    },
+        type: [String]
+    }
 }, 
 {
     timestamps: true

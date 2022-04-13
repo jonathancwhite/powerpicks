@@ -1,13 +1,20 @@
 const asyncHandler = require('express-async-handler')
+const { rest } = require('lodash')
 const League = require('../models/leagueModel')
+const User = require('../models/userModel')
 
 // @desc    Get Leagues
 // @route   GET /api/leagues
 // @access  Private
 const getLeagues = asyncHandler(async (req, res) => {
-  const leagues = await League.find()
-
-  res.status(200).json(leagues)
+  if (req.user.id) {
+    const leagues = await League.find()
+    res.status(200).json(leagues)
+  }else {
+    res.status(404)
+    throw new Error('Unauthorized')
+  }
+  
 })
 
 // @desc    Set League
@@ -20,11 +27,14 @@ const setLeague = asyncHandler(async (req, res) => {
   }
 
   const league = await League.create({
+    user: req.user.id,
     leagueName: req.body.leagueName,
     leagueSport: req.body.leagueSport,
     leagueLevel: req.body.leagueLevel,
     maxPlayers: req.body.maxPlayers,
-    leagueDescription: req.body.leagueDescription
+    leagueDescription: req.body.leagueDescription,
+    selectedFile: req.body.selectedFile,
+    currentParticipants: req.body.currentParticipants
   })
 
   res.status(200).json(league)
@@ -42,6 +52,20 @@ const updateLeague = asyncHandler(async (req, res) => {
     throw new Error('League not found')
   }
 
+  const user = await User.findById(req.user.id)
+
+  // check for user
+  if (!user) {
+    res.status(401)
+    throw new Erorr('User not found')
+  }
+
+  // Making sure the logged in user matches the league owner
+  if(league.user.toString() != user.id) {
+    res.status(401)
+    throw new Error('User not authorized')
+  }
+
   const updatedLeague = await League.findByIdAndUpdate(req.params.id, req.body, {new: true})
 
   res.status(200).json(updatedLeague)
@@ -56,6 +80,20 @@ const deleteLeague = asyncHandler(async (req, res) => {
   if (!league) {
     res.status(400)
     throw new Error('League not found')
+  }
+
+  const user = await User.findById(req.user.id)
+
+  // check for user
+  if (!user) {
+    res.status(401)
+    throw new Erorr('User not found')
+  }
+
+  // Making sure the logged in user matches the league owner
+  if(league.user.toString() != user.id) {
+    res.status(401)
+    throw new Error('User not authorized')
   }
 
   await league.remove()

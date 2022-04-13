@@ -2,12 +2,4 @@
 @import './utilities/reset';
 @import './utilities/designTokens';
 
-// Pages
-@import './components/Pages/homes';
-
-
-// Components
-@import './components/Navbar/navbar';
-@import './components/Form/form';
-@import './components/Leagues/leagues';
-
+@import './components/custom';
