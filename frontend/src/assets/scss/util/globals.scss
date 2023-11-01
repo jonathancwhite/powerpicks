@@ -1,0 +1,32 @@
+body {
+	background: $background-dark;
+	color: #fff;
+	font-family: "Poppins";
+	font-size: $font-size;
+}
+
+.btn {
+	padding: 0.75em 1.5em;
+	background: transparent;
+	border: 2px solid $accent-green;
+	color: #fff;
+	vertical-align: middle;
+	border-radius: 8px;
+	font-size: $font-size;
+	text-transform: uppercase;
+	font-weight: 600;
+	cursor: pointer;
+	&:hover {
+		background: $accent-green;
+		color: $background-dark;
+	}
+
+	&--cta {
+		background: $accent-green;
+		color: $background-dark;
+		&:hover {
+			background: transparent;
+			color: #fff;
+		}
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"name": "powerpicks",
+	"version": "1.0.0",
+	"description": "",
+	"scripts": {
+		"start": "concurrently \"pnpm run server\" \"pnpm run client\"",
+		"server": "cd backend && pnpm start",
+		"client": "cd frontend && pnpm start",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"concurrently": "^8.2.2"
+	}
+}

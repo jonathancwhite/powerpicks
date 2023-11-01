@@ -1,0 +1,60 @@
+.footer {
+	width: 80%;
+	margin: auto;
+	min-height: 100px;
+	display: flex;
+	justify-content: space-between;
+	padding: 4em 0;
+
+	.branding {
+		width: 25%;
+		.brand {
+			img {
+				width: 100%;
+			}
+		}
+	}
+
+	.footerNavigation {
+		width: 75%;
+		display: flex;
+		flex-wrap: nowrap;
+		justify-content: flex-end;
+
+		&__navs {
+			width: 70%;
+			display: flex;
+			flex-wrap: nowrap;
+			justify-content: space-between;
+		}
+	}
+
+	.productNav,
+	.resourcesNav,
+	.supportNav {
+		&__list {
+			display: flex;
+			flex-direction: column;
+			gap: 0.75em;
+		}
+
+		&__item {
+			text-transform: uppercase;
+			font-weight: 500;
+			color: $accent-blue;
+			cursor: pointer;
+			&:hover {
+				text-decoration: underline;
+			}
+
+			&:first-child {
+				cursor: unset;
+				&:hover {
+					text-decoration: none;
+				}
+				color: #fff;
+				margin-bottom: 0.5em;
+			}
+		}
+	}
+}
