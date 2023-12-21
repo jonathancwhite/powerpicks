@@ -20,8 +20,17 @@ const Header = () => {
 					<LinkContainer to={"/support"}>
 						<li className='siteNavigation__item'>Support</li>
 					</LinkContainer>
-					<button className='btn btn--cta'>Register</button>
-					<button className='btn btn--secondary'>Log In</button>
+
+					<div className='siteNavigation__list--actions'>
+						<LinkContainer to={"/sign-up"}>
+							<button className='btn btn--cta'>Sign Up</button>
+						</LinkContainer>
+						<LinkContainer to={"/login"}>
+							<button className='btn btn--secondary'>
+								Log In
+							</button>
+						</LinkContainer>
+					</div>
 				</ul>
 			</div>
 		</div>

@@ -1,25 +1,28 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import HomePage from "./components/HomePage";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 import DefaultLayout from "./components/layouts/DefaultLayout";
+import HomePage from "./components/HomePage";
 
 function App() {
 	return (
-		<Router>
-			<DefaultLayout>
-				<Routes>
-					<Route path='/' exact element={HomePage} />
-					{/* <Route path='/leagues' element={LeaguesPage} />
-				<Route path='/account' element={AccountPage} />
-
-				<Route
-					path={["/sign-up", "/log-in"]}
-					element={SignUpLoginPage}
-				/>
-
-				<Route element={NotFoundPage} /> */}
-				</Routes>
-			</DefaultLayout>
-		</Router>
+		<Routes>
+			<Route
+				path='/'
+				element={
+					<DefaultLayout>
+						<HomePage />
+					</DefaultLayout>
+				}
+			/>
+			{/* <Route
+				path='/leagues'
+				element={
+					<DefaultLayout>
+						<LeaguePage />
+					</DefaultLayout>
+				}
+			/> */}
+		</Routes>
 	);
 }
 

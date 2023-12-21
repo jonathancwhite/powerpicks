@@ -6,27 +6,29 @@ body {
 }
 
 .btn {
-	padding: 0.75em 1.5em;
-	background: transparent;
-	border: 2px solid $accent-green;
+	padding: 1rem 1.5rem;
+	background: $bg-light-120;
+	border: none;
 	color: #fff;
 	vertical-align: middle;
 	border-radius: 8px;
 	font-size: $font-size;
-	text-transform: uppercase;
-	font-weight: 600;
+	// text-transform: uppercase;
+	font-weight: 400;
+	line-height: 1;
 	cursor: pointer;
 	&:hover {
-		background: $accent-green;
-		color: $background-dark;
+		background: $bg-light-130;
+		// color: $background-dark;
 	}
 
 	&--cta {
 		background: $accent-green;
 		color: $background-dark;
+		border: none;
 		&:hover {
-			background: transparent;
-			color: #fff;
+			background: $accent-green-highlight;
+			// color: $background-dark;
 		}
 	}
 }

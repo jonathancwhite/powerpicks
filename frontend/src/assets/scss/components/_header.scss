@@ -4,7 +4,7 @@
 	min-height: 75px;
 	display: flex;
 	justify-content: space-between;
-	padding: 1em 2em;
+	padding: 2rem 2rem;
 
 	.brand {
 		width: 25%;
@@ -25,11 +25,18 @@
 			justify-content: space-between;
 			flex-wrap: nowrap;
 			align-items: center;
+			&--actions {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+			}
 		}
 
 		&__item {
 			cursor: pointer;
+			color: $font-light;
 			&:hover {
+				color: #fff;
 				border-bottom: 1px solid #fff;
 			}
 		}
