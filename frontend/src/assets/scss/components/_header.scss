@@ -1,13 +1,14 @@
 .header {
-	width: 90%;
+	width: 80%;
 	margin: auto;
 	min-height: 75px;
 	display: flex;
 	justify-content: space-between;
-	padding: 2rem 2rem;
+	padding: 2rem 0;
 
 	.brand {
 		width: 25%;
+		cursor: pointer;
 		img {
 			max-width: 70%;
 		}
@@ -39,6 +40,19 @@
 				color: #fff;
 				border-bottom: 1px solid #fff;
 			}
+		}
+	}
+}
+
+.header {
+	.siteNavigation {
+		width: 80%;
+	}
+	.siteNavigation.compressed {
+		justify-content: flex-start;
+		.siteNavigation__item {
+			color: #00bfff;
+			font-size: 12px;
 		}
 	}
 }

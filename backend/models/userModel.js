@@ -3,9 +3,13 @@ import bcrypt from "bcryptjs";
 
 const userSchema = mongoose.Schema(
 	{
-		name: {
+		firstName: {
 			type: String,
-			required: [true, "Please add a name"],
+			required: [true, "Please add a first name"],
+		},
+		lastName: {
+			type: String,
+			required: [true, "Please add a last name"],
 		},
 		email: {
 			type: String,
@@ -16,18 +20,25 @@ const userSchema = mongoose.Schema(
 			type: String,
 			required: [true, "Please add a password"],
 		},
+		dateOfBirth: {
+			type: Date,
+			required: [true, "Please add your date of birth"],
+		},
+		address: {
+			type: String,
+			required: [true, "Please add an address"],
+		},
+		// You can add more fields if necessary
 	},
 	{
 		timestamps: true,
 	},
 );
 
-// Match user entered password to hashed password in database
 userSchema.methods.matchPassword = async function (enteredPassword) {
 	return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Encrypt password using bcrypt
 userSchema.pre("save", async function (next) {
 	if (!this.isModified("password")) {
 		next();

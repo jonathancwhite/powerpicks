@@ -1,5 +1,5 @@
 body {
-	background: $background-dark;
+	background: $bg-dark-130;
 	color: #fff;
 	font-family: "Poppins";
 	font-size: $font-size;
@@ -19,16 +19,21 @@ body {
 	cursor: pointer;
 	&:hover {
 		background: $bg-light-130;
-		// color: $background-dark;
+		// color: $bg-dark-130;
 	}
 
 	&--cta {
 		background: $accent-green;
-		color: $background-dark;
+		color: $bg-dark-130;
 		border: none;
 		&:hover {
 			background: $accent-green-highlight;
-			// color: $background-dark;
+			// color: $bg-dark-130;
 		}
 	}
+}
+
+.container {
+	max-width: 80%;
+	margin: auto;
 }

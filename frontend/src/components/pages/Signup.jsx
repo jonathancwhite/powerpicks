@@ -1,10 +1,11 @@
-import React from "react";
-import HeaderCompressed from "../HeaderCompressed";
+import SignUpForm from "../SignUpForm";
 
 const Signup = () => {
 	return (
 		<>
-			<div className='signupForm'>Form</div>
+			<div className='container'>
+				<SignUpForm />
+			</div>
 		</>
 	);
 };
