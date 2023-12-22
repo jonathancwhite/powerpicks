@@ -1,7 +1,9 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import DefaultLayout from "./components/layouts/DefaultLayout";
-import HomePage from "./components/HomePage";
+import Home from "./components/pages/Home";
+import Signup from "./components/pages/Signup";
+import CompressedLayout from "./components/layouts/CompressedLayout";
 
 function App() {
 	return (
@@ -10,18 +12,18 @@ function App() {
 				path='/'
 				element={
 					<DefaultLayout>
-						<HomePage />
+						<Home />
 					</DefaultLayout>
 				}
 			/>
-			{/* <Route
-				path='/leagues'
+			<Route
+				path='/sign-up'
 				element={
-					<DefaultLayout>
-						<LeaguePage />
-					</DefaultLayout>
+					<CompressedLayout>
+						<Signup />
+					</CompressedLayout>
 				}
-			/> */}
+			/>
 		</Routes>
 	);
 }

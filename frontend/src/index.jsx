@@ -7,7 +7,7 @@ import App from "./App";
 const router = createBrowserRouter([
 	// Define your route objects here
 	// For example:
-	{ path: "/", element: <App /> },
+	{ path: "*", element: <App /> },
 ]);
 
 ReactDOM.render(
