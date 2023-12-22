@@ -1,15 +1,8 @@
 import { LinkContainer } from "react-router-bootstrap";
-import brandLogo from "../assets/images/powerpicks_logo.svg";
 
 const Footer = () => {
 	return (
 		<div className='footer'>
-			<div className='branding'>
-				<div className='brand'>
-					<img src={brandLogo} alt='Powerpicks Logo' />
-				</div>
-				<div className='socials'></div>
-			</div>
 			<div className='footerNavigation'>
 				<div className='footerNavigation__navs'>
 					<div className='productNav'>
@@ -74,6 +67,25 @@ const Footer = () => {
 							<LinkContainer to={"/sitemap"}>
 								<li className='supportNav__item'>Sitemap</li>
 							</LinkContainer>
+						</ul>
+					</div>
+					<div className='socialNav'>
+						<ul className='socialNav__list'>
+							<li className='socialNav__item'>
+								<h3>SOCIALS</h3>
+							</li>
+							<li className='socialNav__item'>
+								<a href='https://twitter.com/'>Twitter</a>
+							</li>
+							<li className='socialNav__item'>
+								<a href='https://facebook.com'>Facebook</a>
+							</li>
+							<li className='socialNav__item'>
+								<a href='https://instagram.com/'>Instagram</a>
+							</li>
+							<li className='socialNav__item'>
+								<a href='https://discord.com'>Discord</a>
+							</li>
 						</ul>
 					</div>
 				</div>

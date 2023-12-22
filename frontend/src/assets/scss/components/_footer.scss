@@ -6,23 +6,13 @@
 	justify-content: space-between;
 	padding: 4em 0;
 
-	.branding {
-		width: 25%;
-		.brand {
-			img {
-				width: 100%;
-			}
-		}
-	}
-
 	.footerNavigation {
-		width: 75%;
+		width: 100%;
 		display: flex;
 		flex-wrap: nowrap;
-		justify-content: flex-end;
 
 		&__navs {
-			width: 70%;
+			width: 100%;
 			display: flex;
 			flex-wrap: nowrap;
 			justify-content: space-between;
@@ -31,7 +21,8 @@
 
 	.productNav,
 	.resourcesNav,
-	.supportNav {
+	.supportNav,
+	.socialNav {
 		&__list {
 			display: flex;
 			flex-direction: column;
@@ -54,6 +45,20 @@
 				}
 				color: #fff;
 				margin-bottom: 0.5em;
+			}
+
+			a {
+				text-transform: uppercase;
+				font-weight: 500;
+				color: $accent-blue;
+				cursor: pointer;
+				text-decoration: none;
+				&:visited {
+					color: $accent-blue;
+				}
+				&:hover {
+					text-decoration: underline;
+				}
 			}
 		}
 	}

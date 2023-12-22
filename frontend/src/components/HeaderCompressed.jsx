@@ -2,7 +2,7 @@ import React from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import brandLogo from "../assets/images/powerpicks_logo.svg";
 
-const HeaderCompressed = () => {
+const HeaderCompressed = ({ newAccount = false }) => {
 	return (
 		<div className='header'>
 			<div className='brand'>
@@ -10,7 +10,10 @@ const HeaderCompressed = () => {
 					<img src={brandLogo} alt='PowerPicks logo' />
 				</LinkContainer>
 			</div>
-			<div className='siteNavigation compressed'>
+			<div
+				className={`${
+					newAccount ? "siteNavigation compressed" : "vHidden"
+				}`}>
 				<ul className='siteNavigation__list'>
 					<LinkContainer to={"/login"}>
 						<li className='siteNavigation__item'>

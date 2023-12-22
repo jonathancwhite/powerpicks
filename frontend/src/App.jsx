@@ -4,6 +4,7 @@ import DefaultLayout from "./components/layouts/DefaultLayout";
 import Home from "./components/pages/Home";
 import Signup from "./components/pages/Signup";
 import CompressedLayout from "./components/layouts/CompressedLayout";
+import Login from "./components/pages/Login";
 
 function App() {
 	return (
@@ -19,8 +20,16 @@ function App() {
 			<Route
 				path='/sign-up'
 				element={
-					<CompressedLayout>
+					<CompressedLayout newAccount={true}>
 						<Signup />
+					</CompressedLayout>
+				}
+			/>
+			<Route
+				path='/login'
+				element={
+					<CompressedLayout>
+						<Login />
 					</CompressedLayout>
 				}
 			/>
