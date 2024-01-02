@@ -11,7 +11,15 @@ import axios from "axios";
  * @access Public
  */
 const registerUser = asyncHandler(async (req, res) => {
-	const { name, email, password } = req.body;
+	const {
+		firstName,
+		lastName,
+		email,
+		password,
+		address,
+		dateOfBirth,
+		referral,
+	} = req.body;
 
 	const userExists = await User.findOne({ email });
 
@@ -21,10 +29,17 @@ const registerUser = asyncHandler(async (req, res) => {
 	}
 
 	const user = await User.create({
-		name,
+		firstName,
+		lastName,
 		email,
 		password,
+		address,
+		dateOfBirth,
 	});
+
+	if (referral) {
+		// create new referral document
+	}
 
 	if (user) {
 		generateToken(res, user._id);

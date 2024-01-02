@@ -1,5 +1,5 @@
 .header {
-	width: 80%;
+	width: 75%;
 	margin: auto;
 	min-height: 75px;
 	display: flex;
@@ -10,7 +10,7 @@
 		width: 25%;
 		cursor: pointer;
 		img {
-			max-width: 70%;
+			max-width: 75%;
 		}
 	}
 
@@ -21,7 +21,7 @@
 		width: 65%;
 
 		&__list {
-			width: 70%;
+			width: 75%;
 			display: flex;
 			justify-content: space-between;
 			flex-wrap: nowrap;
@@ -46,7 +46,7 @@
 
 .header {
 	.siteNavigation {
-		width: 80%;
+		width: 75%;
 	}
 	.siteNavigation.compressed {
 		justify-content: flex-start;

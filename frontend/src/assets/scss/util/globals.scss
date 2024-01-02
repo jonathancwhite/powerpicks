@@ -34,10 +34,19 @@ body {
 }
 
 .container {
-	max-width: 80%;
+	max-width: 75%;
 	margin: auto;
 }
 
 .vHidden {
 	display: none;
+}
+
+.page {
+	&--signup {
+		display: flex;
+		justify-content: space-between;
+		// gap: 2rem;
+		align-items: center;
+	}
 }
