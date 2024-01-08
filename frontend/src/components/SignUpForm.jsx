@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../slices/userSlice";
+import { toast } from "react-toastify";
 
 const SignUpForm = () => {
-	const [currentStep, setCurrentStep] = useState(1);
-	const [formData, setFormData] = useState({
+	const initialFormData = {
 		email: "",
 		referral: "",
 		firstName: "",
@@ -11,7 +13,13 @@ const SignUpForm = () => {
 		address: "",
 		password: "",
 		agreeToTerms: false,
-	});
+	};
+
+	const [currentStep, setCurrentStep] = useState(1);
+	const [formData, setFormData] = useState(initialFormData);
+
+	// const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	const stepHeaders = [
 		"Enter Your Email",
@@ -41,7 +49,24 @@ const SignUpForm = () => {
 		if (currentStep < 5) {
 			setCurrentStep(currentStep + 1);
 		} else {
-			// Submit the form
+			if (formData.agreeToTerms) {
+				try {
+					dispatch(
+						registerUser({
+							firstName: formData.firstName,
+							lastName: formData.lastName,
+							email: formData.email,
+							password: formData.password,
+							dateOfBirth: formData.dateOfBirth,
+							address: formData.address,
+						}),
+					);
+					clearForm();
+				} catch (err) {
+					console.log(err);
+					toast.error(err?.data?.message || err.error);
+				}
+			}
 		}
 	};
 
@@ -155,6 +180,10 @@ const SignUpForm = () => {
 			default:
 				return null;
 		}
+	};
+
+	const clearForm = () => {
+		setFormData(initialFormData);
 	};
 
 	return (
