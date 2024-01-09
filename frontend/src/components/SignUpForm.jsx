@@ -16,6 +16,7 @@ const SignUpForm = () => {
 
 	const [currentStep, setCurrentStep] = useState(1);
 	const [formData, setFormData] = useState(initialFormData);
+	const [formErrors, setFormErrors] = useState({});
 
 	// const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -24,7 +25,6 @@ const SignUpForm = () => {
 		"Enter Your Email",
 		"What's Your Name?",
 		"When Were You Born?",
-		"Where Do You Live?",
 		"Set Your Password",
 	];
 
@@ -35,8 +35,45 @@ const SignUpForm = () => {
 		"Secure your account with a password.",
 	];
 
+	const isValidEmail = (email) => {
+		const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+		return { isValid, message: isValid ? "" : "Invalid email address" };
+	};
+
+	const isValidName = (name) => {
+		const isValid = name.trim() !== "" && name.length > 1;
+		return {
+			isValid,
+			message: isValid ? "" : "Please correct your name",
+		};
+	};
+
+	const isOlderThan18 = (dateOfBirth) => {
+		const dob = new Date(dateOfBirth);
+		const ageDiffMs = Date.now() - dob.getTime();
+		const ageDate = new Date(ageDiffMs);
+		const isValid = ageDate.getUTCFullYear() - 1970 >= 18;
+
+		return {
+			isValid,
+			message: isValid ? "" : "User must be over the age of 18",
+		};
+	};
+	const isValidPassword = (password) => {
+		const isValid =
+			/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{12,})/.test(password);
+		return {
+			isValid,
+			message: isValid
+				? ""
+				: "Not a valid password. Passwords must be more than 12 characters and contain at least 1 uppercase letter and 1 lowercase letter as well as 1 special character (ex: !@#).",
+		};
+	};
+
 	const handleInputChange = (e) => {
+		console.log(e.target.value);
 		setFormData({ ...formData, [e.target.name]: e.target.value });
+		setFormErrors({ ...formErrors, [e.target.name]: "" });
 	};
 
 	const handleCheckboxChange = (e) => {
@@ -45,10 +82,66 @@ const SignUpForm = () => {
 	};
 
 	const handleContinue = () => {
-		if (currentStep < 4) {
-			setCurrentStep(currentStep + 1);
-		} else {
-			if (formData.agreeToTerms && currentStep === 4) {
+		// Validation based on current step
+		let isValid = true;
+		let errors = {};
+
+		switch (currentStep) {
+			case 1: {
+				const emailValidation = isValidEmail(formData.email);
+				if (!emailValidation.isValid) {
+					errors.email = emailValidation.message;
+					isValid = false;
+					toast.error(errors.email);
+				}
+				break;
+			}
+			case 2: {
+				const firstNameValidation = isValidName(formData.firstName);
+				const lastNameValidation = isValidName(formData.lastName);
+
+				if (!firstNameValidation.isValid) {
+					errors.firstName = firstNameValidation.message;
+					isValid = false;
+					toast.error("Please provide a valid first name.");
+				}
+
+				if (!lastNameValidation.isValid) {
+					errors.lastName = lastNameValidation.message;
+					isValid = false;
+					toast.error("Please provide a valid last name.");
+				}
+				break;
+			}
+			case 3:
+				{
+					const ageValidation = isOlderThan18(formData.dateOfBirth);
+					if (!ageValidation.isValid) {
+						errors.dateOfBirth = ageValidation.message;
+						isValid = false;
+						toast.error(errors.dateOfBirth);
+					}
+				}
+				break;
+			case 4: {
+				const passwordValidation = isValidPassword(formData.password);
+				if (!passwordValidation.isValid) {
+					errors.password = passwordValidation.message;
+					isValid = false;
+					toast.error(errors.password);
+				}
+				break;
+			}
+			default:
+				break;
+		}
+
+		setFormErrors(errors);
+
+		if (isValid) {
+			if (currentStep < 4) {
+				setCurrentStep(currentStep + 1);
+			} else if (formData.agreeToTerms) {
 				try {
 					dispatch(
 						registerUser({
@@ -83,6 +176,7 @@ const SignUpForm = () => {
 					<>
 						<label htmlFor='email'>Email</label>
 						<input
+							className={formErrors.email ? "error" : ""}
 							type='email'
 							name='email'
 							id='email'
@@ -109,21 +203,25 @@ const SignUpForm = () => {
 					<>
 						<label htmlFor='firstName'>First Name</label>
 						<input
+							className={formErrors.firstName ? "error" : ""}
 							type='text'
 							name='firstName'
 							id='firstName'
 							value={formData.firstName}
 							onChange={handleInputChange}
 							placeholder='Type here...'
+							autoComplete='off'
 						/>
 						<label htmlFor='lastName'>Last Name</label>
 						<input
+							className={formErrors.lastName ? "error" : ""}
 							type='text'
 							name='lastName'
 							id='lastName'
 							value={formData.lastName}
 							onChange={handleInputChange}
 							placeholder='Type here...'
+							autoComplete='off'
 						/>
 					</>
 				);
@@ -132,11 +230,13 @@ const SignUpForm = () => {
 					<>
 						<label htmlFor='dateOfBirth'>Date of Birth</label>
 						<input
+							className={formErrors.dateOfBirth ? "error" : ""}
 							type='date'
 							name='dateOfBirth'
 							id='dateOfBirth'
 							value={formData.dateOfBirth}
 							onChange={handleInputChange}
+							autoComplete='off'
 						/>
 					</>
 				);
@@ -145,12 +245,14 @@ const SignUpForm = () => {
 					<>
 						<label htmlFor='password'>Password</label>
 						<input
+							className={formErrors.password ? "error" : ""}
 							type='password'
 							name='password'
 							id='password'
 							value={formData.password}
 							onChange={handleInputChange}
 							placeholder='Type here...'
+							autoComplete='new-password'
 						/>
 						<div className='terms'>
 							<input
