@@ -3,20 +3,23 @@ import dotenv from "dotenv";
 dotenv.config();
 import path from "path";
 import colors from "colors";
+import userRoutes from "./routes/userRoutes";
+import connectDB from "./config/db.js";
 
 const port = process.env.PORT || 5000;
+
+connectDB();
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// TODO: Connect to the MongoDB database using mongoose
-
-// TODO: Set up routes
+app.use("/api/users", userRoutes);
 
 const __dirname = path.resolve();
 
+// serve frontend
 if (process.env.NODE_ENV === "production") {
 	app.use(express.static(path.join(__dirname, "/frontend/dist")));
 
