@@ -24,10 +24,6 @@ const userSchema = mongoose.Schema(
 			type: Date,
 			required: [true, "Please add your date of birth"],
 		},
-		address: {
-			type: String,
-			required: [true, "Please add an address"],
-		},
 		// You can add more fields if necessary
 	},
 	{

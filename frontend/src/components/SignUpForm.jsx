@@ -10,7 +10,6 @@ const SignUpForm = () => {
 		firstName: "",
 		lastName: "",
 		dateOfBirth: "",
-		address: "",
 		password: "",
 		agreeToTerms: false,
 	};
@@ -33,7 +32,6 @@ const SignUpForm = () => {
 		"You'll use this to log into your account.",
 		"Tell us a little about yourself.",
 		"We need this for age verification.",
-		"Your address is required.",
 		"Secure your account with a password.",
 	];
 
@@ -42,14 +40,15 @@ const SignUpForm = () => {
 	};
 
 	const handleCheckboxChange = (e) => {
+		console.log("Checkbox changed:", e.target.checked);
 		setFormData({ ...formData, [e.target.name]: e.target.checked });
 	};
 
 	const handleContinue = () => {
-		if (currentStep < 5) {
+		if (currentStep < 4) {
 			setCurrentStep(currentStep + 1);
 		} else {
-			if (formData.agreeToTerms) {
+			if (formData.agreeToTerms && currentStep === 4) {
 				try {
 					dispatch(
 						registerUser({
@@ -58,14 +57,15 @@ const SignUpForm = () => {
 							email: formData.email,
 							password: formData.password,
 							dateOfBirth: formData.dateOfBirth,
-							address: formData.address,
 						}),
 					);
-					clearForm();
+					// clearForm();
 				} catch (err) {
 					console.log(err);
 					toast.error(err?.data?.message || err.error);
 				}
+			} else {
+				toast.error("Please agree to our terms");
 			}
 		}
 	};
@@ -143,20 +143,6 @@ const SignUpForm = () => {
 			case 4:
 				return (
 					<>
-						<label htmlFor='address'>Address</label>
-						<input
-							type='text'
-							name='address'
-							id='address'
-							value={formData.address}
-							onChange={handleInputChange}
-							placeholder='Type here...'
-						/>
-					</>
-				);
-			case 5:
-				return (
-					<>
 						<label htmlFor='password'>Password</label>
 						<input
 							type='password'
@@ -166,15 +152,18 @@ const SignUpForm = () => {
 							onChange={handleInputChange}
 							placeholder='Type here...'
 						/>
-						<label>
+						<div className='terms'>
 							<input
 								type='checkbox'
 								name='agreeToTerms'
 								checked={formData.agreeToTerms}
 								onChange={handleCheckboxChange}
+								key={formData.agreeToTerms}
 							/>
-							I agree to the terms of service
-						</label>
+							<label htmlFor='agreeToTerms'>
+								I agree to the terms of service
+							</label>
+						</div>
 					</>
 				);
 			default:
@@ -189,7 +178,7 @@ const SignUpForm = () => {
 	return (
 		<div className='signup'>
 			<div className='progress'>
-				<span>Step {currentStep} of 5</span>
+				<span>Step {currentStep} of 4</span>
 				<div className='progress__bar'>
 					<div className={`progress__bar--${currentStep}`}></div>
 				</div>
@@ -212,7 +201,7 @@ const SignUpForm = () => {
 						<button
 							className='btn btn--cta'
 							onClick={handleContinue}>
-							{currentStep < 5 ? "Continue" : "Submit"}
+							{currentStep < 4 ? "Continue" : "Submit"}
 						</button>
 					</div>
 				</form>

@@ -11,15 +11,8 @@ import axios from "axios";
  * @access Public
  */
 const registerUser = asyncHandler(async (req, res) => {
-	const {
-		firstName,
-		lastName,
-		email,
-		password,
-		address,
-		dateOfBirth,
-		referral,
-	} = req.body;
+	const { firstName, lastName, email, password, dateOfBirth, referral } =
+		req.body;
 
 	const userExists = await User.findOne({ email });
 
@@ -33,7 +26,6 @@ const registerUser = asyncHandler(async (req, res) => {
 		lastName,
 		email,
 		password,
-		address,
 		dateOfBirth,
 	});
 
