@@ -5,6 +5,6 @@ import userReducer from "./slices/userSlice.js";
 export const store = configureStore({
 	reducer: {
 		[apiSlice.reducerPath]: apiSlice.reducer,
-		users: userReducer,
+		user: userReducer,
 	},
 });

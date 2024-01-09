@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../slices/userSlice";
+import { registerUser, reset } from "../slices/userSlice";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const SignUpForm = () => {
-	const initialFormData = {
+	const inDevelopment = true;
+
+	//swap to const when inDevelopment is false
+	let initialFormData = {
 		email: "",
 		referral: "",
 		firstName: "",
@@ -14,12 +18,29 @@ const SignUpForm = () => {
 		agreeToTerms: false,
 	};
 
+	if (inDevelopment) {
+		initialFormData = {
+			email: "testemail@email.com",
+			referral: "",
+			firstName: "Jon",
+			lastName: "Test",
+			dateOfBirth: "02-18-1997",
+			password: "iRZygRV*BsAy",
+			agreeToTerms: true,
+		};
+	}
+
 	const [currentStep, setCurrentStep] = useState(1);
 	const [formData, setFormData] = useState(initialFormData);
 	const [formErrors, setFormErrors] = useState({});
 
+	const { isLoading, isSuccess, isError, message } = useSelector(
+		(state) => state.user,
+	);
+
 	// const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const stepHeaders = [
 		"Enter Your Email",
@@ -152,7 +173,7 @@ const SignUpForm = () => {
 							dateOfBirth: formData.dateOfBirth,
 						}),
 					);
-					// clearForm();
+					clearForm();
 				} catch (err) {
 					console.log(err);
 					toast.error(err?.data?.message || err.error);
@@ -276,6 +297,22 @@ const SignUpForm = () => {
 	const clearForm = () => {
 		setFormData(initialFormData);
 	};
+
+	useEffect(() => {
+		if (isError) {
+			toast.error(message);
+		}
+
+		if (isSuccess) {
+			toast.success("Registered successfully!");
+			navigate("/");
+		}
+
+		// Reset the user state on component unmount
+		return () => {
+			dispatch(reset());
+		};
+	}, [isError, isSuccess, message, dispatch]);
 
 	return (
 		<div className='signup'>
