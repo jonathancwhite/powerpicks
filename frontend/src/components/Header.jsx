@@ -20,8 +20,7 @@ const Header = () => {
 					<LinkContainer to={"/support"}>
 						<li className='siteNavigation__item'>Support</li>
 					</LinkContainer>
-
-					<div className='siteNavigation__list--actions'>
+					<li className='siteNavigation__list--actions'>
 						<LinkContainer to={"/sign-up"}>
 							<button className='btn btn--cta'>Sign Up</button>
 						</LinkContainer>
@@ -30,7 +29,7 @@ const Header = () => {
 								Log In
 							</button>
 						</LinkContainer>
-					</div>
+					</li>
 				</ul>
 			</div>
 		</div>

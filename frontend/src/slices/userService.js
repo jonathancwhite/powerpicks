@@ -9,7 +9,6 @@ export const registerUser = async (userData) => {
 
 export const authUser = async (loginData) => {
 	const response = await axios.post(`${USERS_URL}/auth`, loginData);
-	console.log(response.data);
 	return response.data;
 };
 

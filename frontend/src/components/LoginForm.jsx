@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { authUser, reset } from "../slices/userSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useLoginMutation } from "../slices/userApiSlice.js";
+import { setCredentials } from "../slices/authSlice.js";
 
 const LoginForm = () => {
 	const inDevelopment = true;
@@ -19,12 +20,11 @@ const LoginForm = () => {
 		};
 	}
 
-	const { isLoading, isSuccess, isError, message } = useSelector(
-		(state) => state.user,
-	);
+	const { userInfo } = useSelector((state) => state.auth);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const [login, { isLoading }] = useLoginMutation();
 
 	const [formData, setFormData] = useState(initialFormData);
 
@@ -32,14 +32,11 @@ const LoginForm = () => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
-	const handleFormSubmit = () => {
+	const handleFormSubmit = async () => {
 		try {
-			dispatch(
-				authUser({
-					email: formData.email,
-					password: formData.password,
-				}),
-			);
+			const res = await login(formData).unwrap();
+			dispatch(setCredentials({ ...res }));
+			navigate("/");
 		} catch (err) {
 			console.log(err);
 			toast.error(err?.data?.message || err.error);
@@ -47,19 +44,11 @@ const LoginForm = () => {
 	};
 
 	useEffect(() => {
-		if (isError) {
-			toast.error(message);
-		}
-
-		if (isSuccess) {
-			toast.success("Logged In successfully!");
+		if (userInfo) {
+			toast.success("User logged in successfully");
 			navigate("/");
 		}
-
-		return () => {
-			dispatch(reset());
-		};
-	}, [isError, isSuccess, message, dispatch]);
+	}, [navigate, userInfo]);
 
 	return (
 		<div className='login'>
