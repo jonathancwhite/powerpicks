@@ -1,55 +1,31 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import userService from "./userService";
+import { apiSlice } from "./apiSlice.js";
 
-const initialState = {
-	isError: false,
-	isSuccess: false,
-	isLoading: false,
-	message: "",
-	user: null,
-};
+const USERS_URL = "/api/users";
 
-export const registerUser = createAsyncThunk(
-	"users/register",
-	async (userData, thunkAPI) => {
-		try {
-			const result = await userService.registerUser(userData);
-			return result;
-		} catch (error) {
-			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
-				error.message ||
-				error.toString();
-			return thunkAPI.rejectWithValue(message);
-		}
-	},
-);
-
-export const userSlice = createSlice({
-	name: "user",
-	initialState: initialState,
-	reducers: {
-		reset: (state) => initialState,
-	},
-	extraReducers: (builder) => {
-		builder
-			.addCase(registerUser.pending, (state) => {
-				state.isLoading = true;
-			})
-			.addCase(registerUser.fulfilled, (state, action) => {
-				state.isLoading = false;
-				state.isSuccess = true;
-				state.user = action.payload;
-			})
-			.addCase(registerUser.rejected, (state, action) => {
-				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
-			});
-	},
+export const userSlice = apiSlice.injectEndpoints({
+	endpoints: (builder) => ({
+		register: builder.mutation({
+			query: (data) => ({
+				url: `${USERS_URL}/`,
+				method: "POST",
+				body: data,
+			}),
+		}),
+		login: builder.mutation({
+			query: (data) => ({
+				url: `${USERS_URL}/auth`,
+				method: "POST",
+				body: data,
+			}),
+		}),
+		logout: builder.mutation({
+			query: () => ({
+				url: `${USERS_URL}/logout`,
+				method: "POST",
+			}),
+		}),
+	}),
 });
 
-export const { reset } = userSlice.actions;
-export default userSlice.reducer;
+export const { useRegisterMutation, useLoginMutation, useLogoutMutation } =
+	userSlice;

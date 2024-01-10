@@ -1,5 +1,5 @@
-import SignUpForm from "../SignUpForm";
-import mobileMockup from "../../assets/images/iphone-blank.png";
+import SignUpForm from "../features/marketingSite/SignUpForm";
+import mobileMockup from "../assets/images/iphone-blank.png";
 
 const Signup = () => {
 	return (

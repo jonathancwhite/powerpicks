@@ -1,7 +1,33 @@
 import { LinkContainer } from "react-router-bootstrap";
-import brandLogo from "../assets/images/powerpicks_logo.svg";
+import brandLogo from "../../assets/images/powerpicks_logo.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { useLogoutMutation } from "../../slices/userSlice";
+import { logout } from "../../slices/authSlice";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Header = () => {
+	const userInfo = useSelector((state) => state.auth);
+
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
+	const [logoutApiCall] = useLogoutMutation();
+
+	const handleLogout = async () => {
+		try {
+			await logoutApiCall().unwrap();
+			dispatch(logout());
+			toast.success("User logged out successfully");
+			navigate("/login");
+		} catch (error) {
+			console.log(error);
+			toast.error(
+				"User could not be logged out at this time, please refresh the page and try again.",
+			);
+		}
+	};
+
 	return (
 		<div className='header'>
 			<div className='brand'>
@@ -20,16 +46,37 @@ const Header = () => {
 					<LinkContainer to={"/support"}>
 						<li className='siteNavigation__item'>Support</li>
 					</LinkContainer>
-					<li className='siteNavigation__list--actions'>
-						<LinkContainer to={"/sign-up"}>
-							<button className='btn btn--cta'>Sign Up</button>
-						</LinkContainer>
-						<LinkContainer to={"/login"}>
-							<button className='btn btn--secondary'>
-								Log In
-							</button>
-						</LinkContainer>
-					</li>
+					{userInfo ? (
+						<>
+							<li className='siteNavigation__list--actions'>
+								<LinkContainer to={""}>
+									<button className='btn btn--cta'>
+										Dashboard
+									</button>
+								</LinkContainer>
+								<LinkContainer to={""}>
+									<button
+										className='btn btn--secondary'
+										onClick={handleLogout}>
+										Log Out
+									</button>
+								</LinkContainer>
+							</li>
+						</>
+					) : (
+						<li className='siteNavigation__list--actions'>
+							<LinkContainer to={"/sign-up"}>
+								<button className='btn btn--cta'>
+									Sign Up
+								</button>
+							</LinkContainer>
+							<LinkContainer to={"/login"}>
+								<button className='btn btn--secondary'>
+									Log In
+								</button>
+							</LinkContainer>
+						</li>
+					)}
 				</ul>
 			</div>
 		</div>

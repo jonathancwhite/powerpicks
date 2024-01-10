@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useLoginMutation } from "../../slices/userApiSlice.js";
+import { useLoginMutation } from "../../slices/userSlice.js";
 import { setCredentials } from "../../slices/authSlice.js";
 
 const LoginForm = () => {
@@ -34,11 +34,10 @@ const LoginForm = () => {
 
 	const handleFormSubmit = async () => {
 		try {
-			const res = await login(formData).unwrap();
-			dispatch(setCredentials({ ...res }));
+			const user = await login(formData).unwrap();
+			dispatch(setCredentials(user));
 			navigate("/");
 		} catch (err) {
-			console.log(err);
 			toast.error(err?.data?.message || err.error);
 		}
 	};

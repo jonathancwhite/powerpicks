@@ -1,5 +1,4 @@
-import React from "react";
-import HeaderCompressed from "../HeaderCompressed";
+import HeaderCompressed from "../components/navigation/HeaderCompressed";
 
 const CompressedLayout = ({ children, newAccount }) => {
 	return (

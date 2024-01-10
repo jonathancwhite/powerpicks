@@ -1,10 +1,9 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
-import DefaultLayout from "./components/layouts/DefaultLayout";
-import Home from "./components/pages/Home";
-import Signup from "./components/pages/Signup";
-import CompressedLayout from "./components/layouts/CompressedLayout";
-import Login from "./components/pages/Login";
+import DefaultLayout from "./layouts/DefaultLayout";
+import Home from "./pages/Home";
+import Signup from "./pages/Signup";
+import CompressedLayout from "./layouts/CompressedLayout";
+import Login from "./pages/Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

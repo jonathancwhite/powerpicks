@@ -1,4 +1,4 @@
-import Hero from "../Hero";
+import Hero from "../features/marketingSite/Hero";
 
 const Home = () => {
 	return (
