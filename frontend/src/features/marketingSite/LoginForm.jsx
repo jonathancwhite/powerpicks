@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useLoginMutation } from "../slices/userApiSlice.js";
-import { setCredentials } from "../slices/authSlice.js";
+import { useLoginMutation } from "../../slices/userApiSlice.js";
+import { setCredentials } from "../../slices/authSlice.js";
 
 const LoginForm = () => {
 	const inDevelopment = true;

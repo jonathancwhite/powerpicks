@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser, reset } from "../slices/userSlice";
+import { registerUser, reset } from "../../slices/userSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
