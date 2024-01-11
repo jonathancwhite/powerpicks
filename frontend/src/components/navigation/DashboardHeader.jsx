@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { GoChevronDown } from "react-icons/go";
+import { toast } from "react-toastify";
 
 const DashboardHeader = () => {
 	const auth = useSelector((state) => state.auth);
@@ -23,7 +24,8 @@ const DashboardHeader = () => {
 
 	useEffect(() => {
 		if (!auth.userInfo) {
-			navigate("/login");
+			// navigate("/login");
+			toast.error("User info not found");
 		}
 
 		// Event listener to close dropdown when clicked outside
