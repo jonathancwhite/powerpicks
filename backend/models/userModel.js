@@ -3,6 +3,11 @@ import bcrypt from "bcryptjs";
 
 const userSchema = mongoose.Schema(
 	{
+		username: {
+			type: String,
+			unique: true,
+			required: [true, "Please add an username"],
+		},
 		firstName: {
 			type: String,
 			required: [true, "Please add a first name"],
@@ -24,7 +29,6 @@ const userSchema = mongoose.Schema(
 			type: Date,
 			required: [true, "Please add your date of birth"],
 		},
-		// You can add more fields if necessary
 	},
 	{
 		timestamps: true,

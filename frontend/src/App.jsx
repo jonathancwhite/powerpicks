@@ -10,13 +10,23 @@ import "react-toastify/dist/ReactToastify.css";
 import { ProtectedRoute } from "./components/navigation/ProtectedRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
 import useAuth from "./hooks/useAuth";
-import CreateLeague from "./features/pickems/pages/CreateLeague";
 import ActiveLeagues from "./features/pickems/pages/ActiveLeagues";
+import LoadingSpinner from "./components/common/LoadingSpinner";
 
 function App() {
-	useAuth();
+	const isLoading = useAuth();
 	const hostname = window.location.hostname;
 	const isSubdomain = hostname.startsWith("app.");
+
+	if (isLoading) {
+		return (
+			<DefaultLayout>
+				<div className='container'>
+					<LoadingSpinner />
+				</div>
+			</DefaultLayout>
+		);
+	}
 
 	return (
 		<>
@@ -30,16 +40,6 @@ function App() {
 								<ProtectedRoute>
 									<DashboardLayout>
 										<Dashboard />
-									</DashboardLayout>
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path='/create-a-league'
-							element={
-								<ProtectedRoute>
-									<DashboardLayout>
-										<CreateLeague />
 									</DashboardLayout>
 								</ProtectedRoute>
 							}
