@@ -55,15 +55,15 @@ const DashboardHeader = () => {
 			<div className='siteNavigation siteNavigation--app'>
 				<ul className='siteNavigation__list'>
 					<LinkContainer to={"/leagues"}>
-						<li className='siteNavigation__item'>My Leagues</li>
-					</LinkContainer>
-					<LinkContainer to={"/leagues"}>
 						<li className='siteNavigation__item'>Find Leagues</li>
 					</LinkContainer>
 					<LinkContainer to={"/create-a-league"}>
 						<li className='siteNavigation__item'>
 							Create A League
 						</li>
+					</LinkContainer>
+					<LinkContainer to={"/invite"}>
+						<li className='siteNavigation__item'>Invite Friends</li>
 					</LinkContainer>
 				</ul>
 			</div>

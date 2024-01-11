@@ -4,13 +4,14 @@ import Home from "./pages/Home";
 import Signup from "./pages/Signup";
 import CompressedLayout from "./layouts/CompressedLayout";
 import Login from "./pages/Login";
-import PickemsDashboard from "./pages/Pickems";
+import Dashboard from "./features/pickems/pages/Dashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ProtectedRoute } from "./components/navigation/ProtectedRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
 import useAuth from "./hooks/useAuth";
-import CreateLeague from "./features/pickems/components/CreateLeague";
+import CreateLeague from "./features/pickems/pages/CreateLeague";
+import ActiveLeagues from "./features/pickems/pages/ActiveLeagues";
 
 function App() {
 	useAuth();
@@ -28,7 +29,7 @@ function App() {
 							element={
 								<ProtectedRoute>
 									<DashboardLayout>
-										<PickemsDashboard />
+										<Dashboard />
 									</DashboardLayout>
 								</ProtectedRoute>
 							}
@@ -39,6 +40,16 @@ function App() {
 								<ProtectedRoute>
 									<DashboardLayout>
 										<CreateLeague />
+									</DashboardLayout>
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path='/leagues'
+							element={
+								<ProtectedRoute>
+									<DashboardLayout>
+										<ActiveLeagues />
 									</DashboardLayout>
 								</ProtectedRoute>
 							}

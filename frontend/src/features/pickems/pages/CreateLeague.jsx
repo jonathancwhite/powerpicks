@@ -1,5 +1,5 @@
-import FeaturedLeagueSlider from "./FeaturedLeagueSlider";
-import Hero from "./Hero";
+import FeaturedLeagueSlider from "../components/FeaturedLeagueSlider";
+import Hero from "../components/Hero";
 
 const CreateLeague = () => {
 	return (

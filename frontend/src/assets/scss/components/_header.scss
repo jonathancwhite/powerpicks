@@ -36,14 +36,14 @@
 			}
 			&__dropdown {
 				position: absolute;
-				top: 115%; // Positioned right below the userNavigation
+				top: 115%;
 				left: -70%;
-				width: max-content; // Full width of the userNavigation
-				background-color: $bg-dark-120; // Light grey background
-				color: $font-light; // Black text
-				border-radius: 4px; // Optional: rounded corners
-				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); // Optional: slight shadow for depth
-				z-index: 10; // Ensure it's above other content
+				width: max-content;
+				background-color: $modal-bg-dark-120;
+				color: $font-light;
+				border-radius: 4px;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+				z-index: 10;
 				padding: 1em;
 
 				ul {
@@ -54,6 +54,9 @@
 						margin-bottom: 1em;
 						cursor: pointer;
 						color: #fff;
+						&:last-child {
+							margin-bottom: 0;
+						}
 					}
 				}
 			}

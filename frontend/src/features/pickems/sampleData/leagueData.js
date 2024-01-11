@@ -5,6 +5,8 @@ const LeagueData = [
 		sport: "NBA",
 		id: 1290,
 		visibility: "public",
+		active: true,
+		totalMembersAllowed: 32,
 		members: [
 			{
 				username: "@sample1",
@@ -24,6 +26,27 @@ const LeagueData = [
 			{
 				username: "@sample6",
 			},
+			{
+				username: "@sample7",
+			},
+			{
+				username: "@sample8",
+			},
+			{
+				username: "@sample9",
+			},
+			{
+				username: "@sample10",
+			},
+			{
+				username: "@sample11",
+			},
+			{
+				username: "@sample12",
+			},
+			{
+				username: "@sample13",
+			},
 		],
 	},
 	{
@@ -32,6 +55,8 @@ const LeagueData = [
 		sport: "NCAAF",
 		id: 1291,
 		visibility: "public",
+		active: true,
+		totalMembersAllowed: 32,
 		members: [
 			{
 				username: "@sample1",
@@ -59,6 +84,8 @@ const LeagueData = [
 		sport: "MLB",
 		id: 1292,
 		visibility: "public",
+		active: true,
+		totalMembersAllowed: 16,
 		members: [
 			{
 				username: "@sample1",
@@ -86,6 +113,8 @@ const LeagueData = [
 		sport: "NCAAF",
 		id: 1293,
 		visibility: "public",
+		active: true,
+		totalMembersAllowed: 16,
 		members: [
 			{
 				username: "@sample1",
@@ -110,9 +139,11 @@ const LeagueData = [
 	{
 		name: "RIP XFL Pick Ems",
 		owner: "@tylerballard",
-		sport: "NCAAF",
+		sport: "NFL",
 		id: 1294,
 		visibility: "public",
+		active: true,
+		totalMembersAllowed: 32,
 		members: [
 			{
 				username: "@sample1",
@@ -140,6 +171,8 @@ const LeagueData = [
 		sport: "NCAAF",
 		id: 1295,
 		visibility: "public",
+		active: true,
+		totalMembersAllowed: 32,
 		members: [
 			{
 				username: "@sample1",

@@ -2,7 +2,7 @@ const Pickems = () => {
 	return (
 		<>
 			<div className='container'>
-				<h3>Pickems Dashboard</h3>
+				<h2>Dashboard View</h2>
 			</div>
 		</>
 	);

@@ -1,4 +1,6 @@
-@import "../components/pickems/featuredLeagues.scss";
+@import "./components/featuredLeagues";
+@import "./components/leagueFilter";
+@import "./components/leagueDisplay";
 
 .pickemsApp {
 	.body {
@@ -29,6 +31,32 @@
 				text-transform: uppercase;
 				text-shadow: 1px 1px 2px #0000009a;
 			}
+		}
+
+		.activeLeagues {
+			max-width: 80%;
+			margin: auto;
+		}
+	}
+}
+
+.colorTest {
+	display: flex;
+	justify-content: space-between;
+	&__item {
+		background-color: $modal-bg-dark-120;
+		height: 100px;
+		aspect-ratio: 1;
+		border-radius: 8px;
+		margin-right: 1rem;
+		&:nth-child(2) {
+			background-color: $bg-dark-120;
+		}
+		&:nth-child(3) {
+			background-color: $bg-dark-130;
+		}
+		&:nth-child(4) {
+			background-color: $bg-dark-140;
 		}
 	}
 }
