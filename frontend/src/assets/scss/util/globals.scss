@@ -1,8 +1,18 @@
 body {
-	background: $bg-dark-130;
+	// background: $bg-dark-130;
 	color: #fff;
 	font-family: "Poppins";
 	font-size: $font-size;
+}
+
+.pickemsApp {
+	background-color: $bg-dark-140;
+	min-height: 100vh;
+}
+
+.app {
+	background-color: $bg-dark-130;
+	min-height: 100vh;
 }
 
 .btn {

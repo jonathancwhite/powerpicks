@@ -7,12 +7,17 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Header = () => {
-	const userInfo = useSelector((state) => state.auth);
-
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
+	const currentHost = window.location.host;
+
+	// Redirect to the login page on the main domain
+	const protocol = window.location.protocol;
+	const dashboardUrl = `${protocol}//app.${currentHost}/`;
+
 	const [logoutApiCall] = useLogoutMutation();
+	const auth = useSelector((state) => state.auth);
 
 	const handleLogout = async () => {
 		try {
@@ -21,7 +26,6 @@ const Header = () => {
 			toast.success("User logged out successfully");
 			navigate("/login");
 		} catch (error) {
-			console.log(error);
 			toast.error(
 				"User could not be logged out at this time, please refresh the page and try again.",
 			);
@@ -46,14 +50,14 @@ const Header = () => {
 					<LinkContainer to={"/support"}>
 						<li className='siteNavigation__item'>Support</li>
 					</LinkContainer>
-					{userInfo ? (
+					{auth.userInfo ? (
 						<>
 							<li className='siteNavigation__list--actions'>
-								<LinkContainer to={""}>
+								<a href={dashboardUrl}>
 									<button className='btn btn--cta'>
 										Dashboard
 									</button>
-								</LinkContainer>
+								</a>
 								<LinkContainer to={""}>
 									<button
 										className='btn btn--secondary'

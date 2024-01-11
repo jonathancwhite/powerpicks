@@ -1,4 +1,3 @@
-import React from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import brandLogo from "../../assets/images/powerpicks_logo.svg";
 

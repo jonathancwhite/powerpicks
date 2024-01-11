@@ -51,7 +51,6 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users/auth
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
-	// console.log(req.body);
 	const { email, password } = req.body;
 
 	const user = await User.findOne({ email });
@@ -99,4 +98,40 @@ const logoutUser = (req, res) => {
 	res.status(200).json({ message: "Logged out successfully" });
 };
 
-export { registerUser, authUser, getUserProfile, logoutUser };
+// @desc    Validate the users JWT and log them in
+// @route   POST /api/users/auth/validateUser
+// @access  Public
+const validateUser = async (req, res) => {
+	try {
+		const token = req.cookies.jwt;
+
+		if (!token) {
+			return res.status(401).json({
+				message: "No token provided",
+				requestHeaders: req.headers,
+			});
+		}
+
+		const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+		const user = await User.findById(decoded.userId).select("-password"); // Exclude password from the result
+
+		if (!user) {
+			return res.status(404).json({ message: "User not found" });
+		}
+
+		res.json({
+			_id: user._id,
+			name: user.firstName + " " + user.lastName,
+			email: user.email,
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			message: "Failed to authenticate token",
+			errorMessage: error,
+		});
+	}
+};
+
+export { registerUser, authUser, getUserProfile, logoutUser, validateUser };

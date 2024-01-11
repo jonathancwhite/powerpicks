@@ -1,0 +1,135 @@
+.featuredLeagues {
+	h2 {
+		font-size: 18px;
+	}
+	&__list {
+		margin-top: 2rem;
+		margin-bottom: 2rem;
+		display: flex;
+		align-items: center;
+		width: 100%;
+		overflow-x: auto;
+		white-space: nowrap;
+	}
+
+	&__add {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		font-size: 30px;
+		cursor: pointer;
+	}
+
+	&__item {
+		min-height: 120px;
+		min-width: 270px;
+		border-radius: 16px;
+		background-image: linear-gradient(
+			90deg,
+			hsl(0deg 0% 5%) 0%,
+			hsl(190deg 12% 10%) 8%,
+			hsl(184deg 23% 15%) 17%,
+			hsl(182deg 33% 20%) 26%,
+			hsl(182deg 44% 25%) 36%,
+			hsl(183deg 55% 30%) 46%,
+			hsl(183deg 66% 35%) 57%,
+			hsl(183deg 77% 40%) 70%,
+			hsl(183deg 89% 45%) 84%,
+			hsl(183deg 100% 50%) 100%
+		);
+		display: flex;
+		padding: 1em;
+		align-items: center;
+		position: relative;
+		margin-right: 3em;
+		// justify-content: center;
+
+		&Details {
+			font-size: 12px;
+			h3 {
+				font-size: 16px;
+				font-weight: 600;
+			}
+		}
+
+		&:nth-child(2) {
+			background-image: linear-gradient(
+				90deg,
+				hsl(0deg 0% 5%) 0%,
+				hsl(140deg 12% 10%) 8%,
+				hsl(145deg 23% 15%) 17%,
+				hsl(145deg 33% 20%) 26%,
+				hsl(146deg 44% 25%) 36%,
+				hsl(145deg 55% 30%) 46%,
+				hsl(145deg 66% 35%) 57%,
+				hsl(145deg 77% 40%) 70%,
+				hsl(145deg 89% 45%) 84%,
+				hsl(145deg 100% 50%) 100%
+			);
+		}
+
+		&:nth-child(3) {
+			background-image: linear-gradient(
+				90deg,
+				hsl(0deg 0% 5%) 0%,
+				hsl(30deg 12% 10%) 8%,
+				hsl(35deg 23% 15%) 17%,
+				hsl(35deg 33% 20%) 26%,
+				hsl(35deg 44% 25%) 36%,
+				hsl(35deg 55% 30%) 46%,
+				hsl(35deg 66% 35%) 57%,
+				hsl(35deg 77% 40%) 70%,
+				hsl(35deg 89% 45%) 84%,
+				hsl(35deg 100% 50%) 100%
+			);
+		}
+
+		&:nth-child(4) {
+			background-image: linear-gradient(
+				90deg,
+				hsl(0deg 0% 5%) 0%,
+				hsl(270deg 12% 10%) 8%,
+				hsl(268deg 23% 15%) 17%,
+				hsl(269deg 33% 20%) 26%,
+				hsl(269deg 44% 25%) 36%,
+				hsl(269deg 55% 30%) 46%,
+				hsl(269deg 66% 35%) 57%,
+				hsl(269deg 77% 40%) 70%,
+				hsl(269deg 89% 45%) 84%,
+				hsl(269deg 100% 50%) 100%
+			);
+		}
+
+		&:nth-child(5) {
+			background-image: linear-gradient(
+				90deg,
+				hsl(0deg 0% 5%) 0%,
+				hsl(290deg 12% 10%) 8%,
+				hsl(296deg 23% 15%) 17%,
+				hsl(296deg 33% 20%) 26%,
+				hsl(296deg 44% 25%) 36%,
+				hsl(296deg 55% 30%) 46%,
+				hsl(295deg 66% 35%) 57%,
+				hsl(295deg 77% 40%) 70%,
+				hsl(295deg 89% 45%) 84%,
+				hsl(295deg 100% 50%) 100%
+			);
+		}
+
+		&:nth-child(6) {
+			background-image: linear-gradient(
+				90deg,
+				hsl(0deg 0% 5%) 0%,
+				hsl(0deg 12% 10%) 8%,
+				hsl(0deg 23% 15%) 17%,
+				hsl(0deg 33% 20%) 26%,
+				hsl(0deg 44% 25%) 36%,
+				hsl(0deg 55% 30%) 46%,
+				hsl(0deg 66% 35%) 57%,
+				hsl(0deg 77% 40%) 70%,
+				hsl(0deg 89% 45%) 84%,
+				hsl(0deg 100% 50%) 100%
+			);
+		}
+	}
+}

@@ -6,9 +6,65 @@
 	justify-content: space-between;
 	padding: 2rem 0;
 
+	&--app {
+		width: 90%;
+		.userNavigation {
+			width: max-content;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			position: relative;
+			cursor: pointer;
+			&__identifier {
+				height: 30px;
+				aspect-ratio: 1;
+				border: 1px solid $accent-blue;
+				border-radius: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-size: 18px;
+				margin-right: 0.25em;
+				color: $accent-blue;
+			}
+			&__dropdownIcon {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-size: 24px;
+				color: $accent-blue;
+			}
+			&__dropdown {
+				position: absolute;
+				top: 115%; // Positioned right below the userNavigation
+				left: -70%;
+				width: max-content; // Full width of the userNavigation
+				background-color: $bg-dark-120; // Light grey background
+				color: $font-light; // Black text
+				border-radius: 4px; // Optional: rounded corners
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); // Optional: slight shadow for depth
+				z-index: 10; // Ensure it's above other content
+				padding: 1em;
+
+				ul {
+					display: block;
+					text-decoration: none;
+
+					li {
+						margin-bottom: 1em;
+						cursor: pointer;
+						color: #fff;
+					}
+				}
+			}
+		}
+	}
+
 	.brand {
 		width: 25%;
 		cursor: pointer;
+		display: flex;
+		align-items: center;
 		img {
 			max-width: 75%;
 		}
@@ -19,6 +75,20 @@
 		align-items: center;
 		justify-content: flex-end;
 		width: 65%;
+
+		&--app {
+			justify-content: flex-start;
+			align-items: center;
+			width: 45%;
+
+			.siteNavigation__list {
+				justify-content: flex-start;
+			}
+
+			.siteNavigation__item {
+				margin-right: 2em;
+			}
+		}
 
 		&__list {
 			width: 75%;

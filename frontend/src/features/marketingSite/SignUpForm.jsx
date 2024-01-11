@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { registerUser, reset } from "../../slices/userSlice";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useRegisterMutation } from "../../slices/userSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { setCredentials } from "../../slices/authSlice";
 
 const SignUpForm = () => {
 	const inDevelopment = true;
@@ -34,9 +35,7 @@ const SignUpForm = () => {
 	const [formData, setFormData] = useState(initialFormData);
 	const [formErrors, setFormErrors] = useState({});
 
-	const { isLoading, isSuccess, isError, message } = useSelector(
-		(state) => state.user,
-	);
+	const [register] = useRegisterMutation();
 
 	// const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -92,17 +91,15 @@ const SignUpForm = () => {
 	};
 
 	const handleInputChange = (e) => {
-		console.log(e.target.value);
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 		setFormErrors({ ...formErrors, [e.target.name]: "" });
 	};
 
 	const handleCheckboxChange = (e) => {
-		console.log("Checkbox changed:", e.target.checked);
 		setFormData({ ...formData, [e.target.name]: e.target.checked });
 	};
 
-	const handleContinue = () => {
+	const handleContinue = async () => {
 		// Validation based on current step
 		let isValid = true;
 		let errors = {};
@@ -164,18 +161,11 @@ const SignUpForm = () => {
 				setCurrentStep(currentStep + 1);
 			} else if (formData.agreeToTerms) {
 				try {
-					dispatch(
-						registerUser({
-							firstName: formData.firstName,
-							lastName: formData.lastName,
-							email: formData.email,
-							password: formData.password,
-							dateOfBirth: formData.dateOfBirth,
-						}),
-					);
+					const user = await register(formData).unwrap();
+					dispatch(setCredentials(user));
 					clearForm();
+					navigate("/");
 				} catch (err) {
-					console.log(err);
 					toast.error(err?.data?.message || err.error);
 				}
 			} else {
@@ -297,22 +287,6 @@ const SignUpForm = () => {
 	const clearForm = () => {
 		setFormData(initialFormData);
 	};
-
-	useEffect(() => {
-		if (isError) {
-			toast.error(message);
-		}
-
-		if (isSuccess) {
-			toast.success("Registered successfully!");
-			navigate("/");
-		}
-
-		// Reset the user state on component unmount
-		return () => {
-			dispatch(reset());
-		};
-	}, [isError, isSuccess, message, dispatch]);
 
 	return (
 		<div className='signup'>
