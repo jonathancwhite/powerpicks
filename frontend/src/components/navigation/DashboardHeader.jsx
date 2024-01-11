@@ -1,13 +1,16 @@
 import { LinkContainer } from "react-router-bootstrap";
 import brandLogo from "../../assets/images/powerpicks_logo.svg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { GoChevronDown } from "react-icons/go";
 import { toast } from "react-toastify";
+import { useLogoutMutation } from "../../slices/userSlice";
+import { logout } from "../../slices/authSlice";
 
 const DashboardHeader = () => {
 	const auth = useSelector((state) => state.auth);
+	const [logoutApiCall] = useLogoutMutation();
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const dropdownRef = useRef(null);
 
@@ -20,6 +23,7 @@ const DashboardHeader = () => {
 
 	const profileIdentifier = getInitials(auth.userInfo.name);
 
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -45,6 +49,25 @@ const DashboardHeader = () => {
 
 	const handleUserDropdown = () => {
 		setDropdownOpen(!dropdownOpen);
+	};
+
+	const handleLogout = async () => {
+		try {
+			await logoutApiCall().unwrap();
+
+			dispatch(logout());
+
+			setTimeout(() => {
+				const currentHost = window.location.host;
+				const mainDomainHost = currentHost.replace(/^app\./, "");
+				const protocol = window.location.protocol;
+				navigate(`${protocol}//${mainDomainHost}/`);
+			}, 0);
+		} catch (error) {
+			toast.error(
+				"User could not be logged out at this time, please refresh the page and try again.",
+			);
+		}
 	};
 
 	return (
@@ -88,9 +111,7 @@ const DashboardHeader = () => {
 							<LinkContainer to='/settings'>
 								<li>Settings</li>
 							</LinkContainer>
-							<LinkContainer to='/logout'>
-								<li>Log Out</li>
-							</LinkContainer>
+							<li onClick={handleLogout}>Log Out</li>
 						</ul>
 					</div>
 				)}
