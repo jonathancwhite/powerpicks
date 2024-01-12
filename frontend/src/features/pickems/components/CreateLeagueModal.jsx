@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import SportSelector from "./SportSelector";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useCreateMutation } from "../../../slices/leagueSlice";
+import { createLeague } from "../slices/leagueSlice";
 
 const CreateLeagueModal = ({ closeModal }) => {
 	let initialFormData = {
@@ -18,8 +18,6 @@ const CreateLeagueModal = ({ closeModal }) => {
 	const [currentStep, setCurrentStep] = useState(1);
 	const [formData, setFormData] = useState(initialFormData);
 	const [formErrors, setFormErrors] = useState({});
-
-	const [create] = useCreateMutation();
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -150,9 +148,8 @@ const CreateLeagueModal = ({ closeModal }) => {
 				};
 
 				try {
-					console.log(leagueData);
-					// const league = await create(leagueData).unwrap();
-					// dispatch league to state -- we need to push to leagues array that would be fetched for the user
+					await dispatch(createLeague(leagueData).unwrap());
+					clearForm();
 					setCurrentStep(4);
 				} catch (err) {
 					toast.error(err?.data?.message || err.error);

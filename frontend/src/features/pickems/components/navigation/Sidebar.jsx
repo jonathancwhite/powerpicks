@@ -2,14 +2,21 @@ import { LinkContainer } from "react-router-bootstrap";
 import brandLogo from "../../../../assets/images/powerpicks_logo.svg";
 import { IoIosTrophy, IoIosAddCircleOutline } from "react-icons/io";
 import { MdHome } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { IoCogSharp } from "react-icons/io5";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CreateLeagueModal from "../CreateLeagueModal";
+import { getUserLeagues } from "../../slices/leagueSlice";
 
 const Sidebar = () => {
 	const auth = useSelector((state) => state.auth);
+	const { leagues, isLoading, isError, message } = useSelector(
+		(state) => state.league,
+	);
+
+	const dispatch = useDispatch();
+
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const toggleModal = () => {
@@ -24,6 +31,15 @@ const Sidebar = () => {
 	};
 
 	const profileIdentifier = getInitials(auth.userInfo.name);
+
+	useEffect(() => {
+		if (isError) {
+			console.log("error");
+			console.log(isError);
+		}
+
+		dispatch(getUserLeagues());
+	}, [isError, message, dispatch]);
 
 	return (
 		<div className='sideBar'>
@@ -68,30 +84,33 @@ const Sidebar = () => {
 							</div>
 						</div>
 					</div>
+					{leagues.map((league) => (
+						<LinkContainer
+							to={`/leagues/${league._id}`}
+							key={league._id}>
+							<div className='sideBar__navLeagueItem'>
+								<div className='topic-indicator'>
+									<div className='indicator'></div>
+								</div>
+								<div className='selected-indicator-wrapper'>
+									<div className='selected-indicator'></div>
+								</div>
 
-					{/* START MAP OVER LEAGUE DATA FROM HERE */}
-					<LinkContainer to={`/leagues/1`}>
-						<div className='sideBar__navLeagueItem'>
-							<div className='topic-indicator'>
-								<div className='indicator'></div>
-							</div>
-							<div className='selected-indicator-wrapper'>
-								<div className='selected-indicator'></div>
-							</div>
-
-							<div className='nav-league-item'>
-								<div className='nav-info-container'>
-									<div className='league-name'>
-										Global NBA League
-									</div>
-									<div className='format-container'>
-										<div className='sport'>NBA</div>
+								<div className='nav-league-item'>
+									<div className='nav-info-container'>
+										<div className='league-name'>
+											{league.name}
+										</div>
+										<div className='format-container'>
+											<div className='sport'>
+												{league.sport}
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					</LinkContainer>
-					{/* END MAP DATA HERE */}
+						</LinkContainer>
+					))}
 				</div>
 				<div className='sideBar__footer'>
 					<div className='sideBar__profile'>
@@ -102,7 +121,7 @@ const Sidebar = () => {
 								</span>
 							</div>
 							<div className='profile__item--name'>
-								{auth.userInfo.name}
+								@{auth.userInfo.username}
 							</div>
 							<LinkContainer to={"/settings/account"}>
 								<div className='profile__item--settings'>

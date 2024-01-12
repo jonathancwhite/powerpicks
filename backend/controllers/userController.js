@@ -9,8 +9,15 @@ import generateToken from "../utils/generateToken.js";
  * @access Public
  */
 const registerUser = asyncHandler(async (req, res) => {
-	const { firstName, lastName, email, password, dateOfBirth, referral } =
-		req.body;
+	const {
+		username,
+		firstName,
+		lastName,
+		email,
+		password,
+		dateOfBirth,
+		referral,
+	} = req.body;
 
 	const userExists = await User.findOne({ email });
 
@@ -20,6 +27,7 @@ const registerUser = asyncHandler(async (req, res) => {
 	}
 
 	const user = await User.create({
+		username,
 		firstName,
 		lastName,
 		email,
@@ -58,6 +66,7 @@ const authUser = asyncHandler(async (req, res) => {
 
 		res.json({
 			_id: user._id,
+			username: user.username,
 			name: user.firstName + " " + user.lastName,
 			email: user.email,
 		});
@@ -76,6 +85,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 	if (user) {
 		res.json({
 			_id: user._id,
+			username: user.username,
 			name: user.name,
 			email: user.email,
 		});
@@ -120,6 +130,7 @@ const validateUser = async (req, res) => {
 
 		res.json({
 			_id: user._id,
+			username: user.username,
 			name: user.firstName + " " + user.lastName,
 			email: user.email,
 		});

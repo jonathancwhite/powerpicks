@@ -10,6 +10,7 @@ const SignUpForm = () => {
 
 	//swap to const when inDevelopment is false
 	let initialFormData = {
+		username: "",
 		email: "",
 		referral: "",
 		firstName: "",
@@ -21,6 +22,7 @@ const SignUpForm = () => {
 
 	if (inDevelopment) {
 		initialFormData = {
+			username: "testjon",
 			email: "testemail@email.com",
 			referral: "",
 			firstName: "Jon",
@@ -43,7 +45,7 @@ const SignUpForm = () => {
 
 	const stepHeaders = [
 		"Enter Your Email",
-		"What's Your Name?",
+		"What Should We Call You?",
 		"When Were You Born?",
 		"Set Your Password",
 	];
@@ -67,6 +69,19 @@ const SignUpForm = () => {
 			message: isValid
 				? ""
 				: "Please correct your name. Name must be longer than 3 characters.",
+		};
+	};
+
+	const isValidUsername = (username) => {
+		const isValid =
+			username.trim() !== "" &&
+			username.length > 4 &&
+			username.length < 24;
+		return {
+			isValid,
+			message: isValid
+				? ""
+				: "Please correct your username. User name should be between 4 and 24 characters",
 		};
 	};
 
@@ -119,6 +134,7 @@ const SignUpForm = () => {
 			case 2: {
 				const firstNameValidation = isValidName(formData.firstName);
 				const lastNameValidation = isValidName(formData.lastName);
+				const usernameValidation = isValidUsername(formData.username);
 
 				if (!firstNameValidation.isValid) {
 					errors.firstName = firstNameValidation.message;
@@ -131,6 +147,13 @@ const SignUpForm = () => {
 					isValid = false;
 					toast.error("Please provide a valid last name.");
 				}
+
+				if (!usernameValidation.isValid) {
+					errors.username = usernameValidation.message;
+					isValid = false;
+					toast.error("Please enter a username.");
+				}
+
 				break;
 			}
 			case 3:
@@ -232,6 +255,17 @@ const SignUpForm = () => {
 							name='lastName'
 							id='lastName'
 							value={formData.lastName}
+							onChange={handleInputChange}
+							placeholder='Type here...'
+							autoComplete='off'
+						/>
+						<label htmlFor='username'>Username</label>
+						<input
+							className={formErrors.username ? "error" : ""}
+							type='text'
+							name='username'
+							id='username'
+							value={formData.username}
 							onChange={handleInputChange}
 							placeholder='Type here...'
 							autoComplete='off'
