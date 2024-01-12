@@ -1,9 +1,7 @@
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
-import axios from "axios";
 
 /**
  * @desc   Register new user
