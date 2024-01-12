@@ -2,12 +2,19 @@ import { LinkContainer } from "react-router-bootstrap";
 import brandLogo from "../../../../assets/images/powerpicks_logo.svg";
 import { IoIosTrophy, IoIosAddCircleOutline } from "react-icons/io";
 import { MdHome } from "react-icons/md";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { IoCogSharp } from "react-icons/io5";
+import { useState } from "react";
+import CreateLeagueModal from "../CreateLeagueModal";
 
 const Sidebar = () => {
 	const auth = useSelector((state) => state.auth);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const toggleModal = () => {
+		setIsModalOpen(!isModalOpen);
+	};
 
 	const getInitials = (name) => {
 		return name
@@ -54,7 +61,9 @@ const Sidebar = () => {
 							<div className='sideBar__sectionHeader--title'>
 								Your Leagues
 							</div>
-							<div className='sideBar__sectionHeader--icon'>
+							<div
+								className='sideBar__sectionHeader--icon'
+								onClick={toggleModal}>
 								<IoIosAddCircleOutline />
 							</div>
 						</div>
@@ -104,6 +113,7 @@ const Sidebar = () => {
 					</div>
 				</div>
 			</div>
+			{isModalOpen && <CreateLeagueModal closeModal={toggleModal} />}
 		</div>
 	);
 };

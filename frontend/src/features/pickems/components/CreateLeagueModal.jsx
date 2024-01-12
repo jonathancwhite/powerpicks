@@ -1,19 +1,331 @@
-/**
- *
- * League Creation Steps:
- * What sport is this league for?
- * League name?
- * Max number of players?
- * Should this league be publicly available?
- * If not, provide password (invite code will bypass password)
- * Tier of league (how do we handle the information regarding tiers)?
- *
- */
+import { useState } from "react";
+import { IoMdClose, IoMdArrowBack } from "react-icons/io";
+import { toast } from "react-toastify";
+import SportSelector from "./SportSelector";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useCreateMutation } from "../../../slices/leagueSlice";
 
-const CreateLeagueModal = () => {
+const CreateLeagueModal = ({ closeModal }) => {
+	let initialFormData = {
+		sport: "",
+		name: "",
+		maxPlayers: "8",
+		isPublic: "true",
+		password: "",
+	};
+
+	const [currentStep, setCurrentStep] = useState(1);
+	const [formData, setFormData] = useState(initialFormData);
+	const [formErrors, setFormErrors] = useState({});
+
+	const [create] = useCreateMutation();
+
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
+	const stepHeaders = [
+		"Choose Your Sport",
+		"Make It Yours",
+		"Who has Access?",
+		"Invite Your Friends",
+	];
+
+	const stepDescriptions = [
+		"",
+		"Don't worry, you can edit this all later if needed.",
+		"If you don't want everyone to be able to join off of the leagues page, select no and add a password. Don't worry, you can always send your friends and invite link to join.",
+		"Send out a custom invite link to your friends",
+	];
+
+	const isValidName = (name) => {
+		const isValid = name.trim() !== "" && name.length > 3;
+		return {
+			isValid,
+			message: isValid
+				? ""
+				: "Please correct league name. League names must be longer than 3 characters.",
+		};
+	};
+
+	const isValidPlayerCount = (playerCount) => {
+		const playerCountInt = parseInt(playerCount, 10); // Convert to integer
+
+		const isValid =
+			playerCountInt > 7 &&
+			playerCountInt < 33 &&
+			playerCountInt % 2 === 0;
+
+		return {
+			isValid,
+			message: isValid
+				? ""
+				: "Please select a valid option for Max Players.",
+		};
+	};
+
+	const isValidPassword = (password) => {
+		const isValid = password.length > 5;
+		return {
+			isValid,
+			message: isValid
+				? ""
+				: "Not a valid password. Passwords must be more than 5 characters.",
+		};
+	};
+
+	const handleInputChange = (e) => {
+		setFormData({ ...formData, [e.target.name]: e.target.value });
+		setFormErrors({ ...formErrors, [e.target.name]: "" });
+	};
+
+	const handleModalContentClick = (e) => {
+		e.stopPropagation();
+	};
+
+	const handleContinue = async () => {
+		let isValid = true;
+		let errors = {};
+
+		switch (currentStep) {
+			case 1:
+				break;
+			case 2: {
+				const nameValidation = isValidName(formData.name);
+
+				if (!nameValidation.isValid) {
+					errors.name = nameValidation.message;
+					isValid = false;
+					toast.error("Please provide a valid league name.");
+				}
+
+				const maxPlayersValidation = isValidPlayerCount(
+					formData.maxPlayers,
+				);
+
+				if (!maxPlayersValidation.isValid) {
+					isValid = false;
+					toast.error(
+						"Please provide a valid number of max players.",
+					);
+				}
+
+				break;
+			}
+			case 3: {
+				if (formData.isPublic === "false") {
+					const passwordValidation = isValidPassword(
+						formData.password,
+					);
+
+					if (!passwordValidation.isValid) {
+						errors.password = passwordValidation.message;
+						isValid = false;
+						toast.error(
+							"Passwords should be more than 5 characters.",
+						);
+					}
+				} else if (formData.isPublic === "true") {
+					setFormData({
+						...formData,
+						password: null,
+					});
+				}
+
+				break;
+			}
+			case 4: {
+				console.log("4");
+			}
+		}
+
+		setFormErrors(errors);
+
+		if (isValid) {
+			if (currentStep === 3) {
+				const maxPlayersInt = parseInt(formData.maxPlayers, 10);
+				const leagueData = {
+					...formData,
+					maxPlayers: maxPlayersInt,
+				};
+
+				try {
+					console.log(leagueData);
+					// const league = await create(leagueData).unwrap();
+					// dispatch league to state -- we need to push to leagues array that would be fetched for the user
+					setCurrentStep(4);
+				} catch (err) {
+					toast.error(err?.data?.message || err.error);
+				}
+			} else {
+				setCurrentStep(currentStep + 1);
+			}
+		}
+	};
+
+	const handleShare = async () => {
+		toast.info("SHARE CODE NOT SETUP YET");
+	};
+
+	const handleBack = () => {
+		if (currentStep > 1) {
+			setCurrentStep(currentStep - 1);
+		}
+	};
+
+	const handleSportSelection = (e) => {
+		const sportName = e.target.getAttribute("data-sport-name");
+		setFormData({ ...formData, sport: sportName });
+		setCurrentStep(currentStep + 1);
+	};
+
+	const clearForm = () => {
+		setFormData(initialFormData);
+	};
+
+	const renderFormFields = () => {
+		switch (currentStep) {
+			case 1:
+				return (
+					<>
+						<SportSelector handler={handleSportSelection} />
+					</>
+				);
+			case 2:
+				return (
+					<>
+						<label htmlFor='name'>League Name</label>
+						<input
+							className={formErrors.name ? "error" : ""}
+							type='text'
+							name='name'
+							id='name'
+							value={formData.name}
+							onChange={handleInputChange}
+							placeholder='Enter the name of your league...'
+						/>
+						<label htmlFor='maxPlayers'>Max Players</label>
+						<select
+							className={formErrors.maxPlayers ? "error" : ""}
+							name='maxPlayers'
+							id='maxPlayers'
+							value={formData.maxPlayers}
+							onChange={handleInputChange}>
+							<option value='8'>8</option>
+							<option value='10'>10</option>
+							<option value='12'>12</option>
+							<option value='14'>14</option>
+							<option value='16'>16</option>
+							<option value='18'>18</option>
+							<option value='20'>20</option>
+							<option value='22'>22</option>
+							<option value='24'>24</option>
+							<option value='26'>26</option>
+							<option value='28'>28</option>
+							<option value='30'>30</option>
+							<option value='32'>32</option>
+						</select>
+					</>
+				);
+			case 3:
+				return (
+					<>
+						<label htmlFor='isPublic'>
+							Should everyone be able to join your league?
+						</label>
+						<select
+							className={formErrors.isPublic ? "error" : ""}
+							name='isPublic'
+							id='isPublic'
+							onChange={handleInputChange}
+							value={formData.isPublic}>
+							<option value='true'>Yes</option>
+							<option value='false'>No</option>
+						</select>
+						{formData.isPublic === "false" && (
+							<>
+								<label htmlFor='password'>Password</label>
+								<input
+									className={
+										formErrors.password ? "error" : ""
+									}
+									type='password'
+									name='password'
+									id='password'
+									onChange={handleInputChange}
+									value={formData.password}
+								/>
+							</>
+						)}
+					</>
+				);
+			default:
+				return null;
+		}
+	};
+
 	return (
-		<div className='createLeague modal'>
-			<div className='createLeague__content'></div>
+		<div className='modal'>
+			<div className='modal-backdrop' onClick={closeModal}>
+				<div className='modal-item' onClick={handleModalContentClick}>
+					<div className='createLeague create-league-modal'>
+						<div className='modal-header'>
+							<div className='back'>
+								{currentStep > 1 && (
+									<button
+										className='btn btn--back'
+										onClick={handleBack}>
+										<IoMdArrowBack />
+									</button>
+								)}
+							</div>
+							<div className='progress'>
+								<span>Step {currentStep} of 4</span>
+								<div className='progress__bar'>
+									<div
+										className={`progress__bar--${currentStep}`}></div>
+								</div>
+							</div>
+							<div className='close'>
+								<button
+									className='btn btn--close'
+									onClick={closeModal}>
+									<IoMdClose />
+								</button>
+							</div>
+						</div>
+						<div className='modal-content'>
+							<div className='leagueForm'>
+								<div className='stepHeader'>
+									<h2>{stepHeaders[currentStep - 1]}</h2>
+									<p>{stepDescriptions[currentStep - 1]}</p>
+								</div>
+
+								<form onSubmit={(e) => e.preventDefault()}>
+									{renderFormFields()}
+									<div className='leagueForm__actions'>
+										{currentStep > 1 && (
+											<button
+												className='btn btn--cta'
+												onClick={
+													currentStep === 4
+														? handleShare
+														: handleContinue
+												}>
+												{currentStep === 2
+													? "Continue"
+													: currentStep === 3
+													? "Create League"
+													: "Copy Invite Code"}
+											</button>
+										)}
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	);
 };

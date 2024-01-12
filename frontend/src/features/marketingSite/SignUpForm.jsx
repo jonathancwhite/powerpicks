@@ -61,10 +61,12 @@ const SignUpForm = () => {
 	};
 
 	const isValidName = (name) => {
-		const isValid = name.trim() !== "" && name.length > 1;
+		const isValid = name.trim() !== "" && name.length > 3;
 		return {
 			isValid,
-			message: isValid ? "" : "Please correct your name",
+			message: isValid
+				? ""
+				: "Please correct your name. Name must be longer than 3 characters.",
 		};
 	};
 
