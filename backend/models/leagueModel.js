@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 const leagueSchema = mongoose.Schema(
 	{
 		name: { type: String, required: true },

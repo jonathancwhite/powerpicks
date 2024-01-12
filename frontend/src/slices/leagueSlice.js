@@ -10,8 +10,28 @@ export const leagueSlice = apiSlice.injectEndpoints({
 				method: "POST",
 				body: data,
 			}),
+			async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+				try {
+					const createLeagueResponse = await queryFulfilled;
+					dispatch(apiSlice.util.invalidateTags(["Leagues"]));
+				} catch (err) {
+					// Handle error
+				}
+			},
+		}),
+		getAllJoinableLeagues: builder.query({
+			query: () => `${LEAGUES_URL}/`,
+			providesTags: ["Leagues"],
+		}),
+		getUserLeagues: builder.query({
+			query: (userId) => `${LEAGUES_URL}/user/${userId}`,
+			providesTags: ["Leagues"],
 		}),
 	}),
 });
 
-export const { useCreateMutation } = leagueSlice;
+export const {
+	useCreateMutation,
+	useGetAllJoinableLeaguesQuery,
+	useGetUserLeaguesQuery,
+} = leagueSlice;

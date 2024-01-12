@@ -6,6 +6,7 @@ import path from "path";
 dotenv.config();
 import colors from "colors";
 import userRoutes from "./routes/userRoutes.js";
+import leagueRoutes from "./routes/leagueRoutes.js";
 import connectDB from "./config/db.js";
 
 const port = process.env.PORT || 5000;
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/users", userRoutes);
+app.use("/api/leagues", leagueRoutes);
 
 const __dirname = path.resolve();
 const frontendPath = path.join(__dirname, "/frontend/dist");

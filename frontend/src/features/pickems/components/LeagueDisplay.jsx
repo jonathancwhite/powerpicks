@@ -1,15 +1,34 @@
-import LeagueData from "../sampleData/leagueData";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { getAllJoinableLeagues } from "../slices/leagueSlice";
+import LoadingSpinner from "../../../components/common/LoadingSpinner";
+import LeagueDisplayItem from "./LeagueDisplayItem";
 
 const LeagueDisplay = () => {
 	const filterSport = useSelector((state) => state.league.filter);
+	const { leagues, isLoading, isError, message } = useSelector(
+		(state) => state.league,
+	);
 
-	const filteredLeagues = LeagueData.filter(
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if (isError) {
+			console.log("error");
+			console.log(isError);
+		}
+
+		dispatch(getAllJoinableLeagues());
+	}, [isError, message, dispatch, navigate]);
+
+	const filteredLeagues = leagues.filter(
 		(league) =>
 			filterSport === "ALL" ||
 			(league.active &&
-				league.visibility === "public" &&
-				league.members.length < league.totalMembersAllowed &&
+				league.isPublic &&
+				league.members.length < league.maxPlayers &&
 				league.sport === filterSport),
 	);
 
@@ -19,26 +38,14 @@ const LeagueDisplay = () => {
 
 	return (
 		<div className='leagues'>
-			{filteredLeagues.map((league, index) => (
-				<div
-					className={`leagues__item leagues__item--${index}`}
-					key={league.id}>
-					<div className='league'>
-						<div className='league__info'>
-							<h6>{league.sport}</h6>
-							<h5>{league.name}</h5>
-							<p>{league.owner}</p>
-						</div>
-						<div className='league__actions'>
-							<button
-								className='btn btn--tertiary'
-								onClick={() => handleJoinLeague(league.id)}>
-								Play
-							</button>
-						</div>
-					</div>
-				</div>
-			))}
+			{isLoading ? (
+				<LoadingSpinner />
+			) : (
+				<LeagueDisplayItem
+					leagues={filteredLeagues}
+					handler={handleJoinLeague}
+				/>
+			)}
 		</div>
 	);
 };
