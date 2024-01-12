@@ -1,11 +1,30 @@
+@import "./components/sidebar";
 @import "./components/featuredLeagues";
 @import "./components/leagueFilter";
 @import "./components/leagueDisplay";
+@import "./components/settings";
 
 .pickemsApp {
+	height: 100vh;
+	width: 100vw;
+	background: #181c28;
+	overflow: hidden;
+	display: flex;
+	-ms-overflow-style: none;
+
+	.sideBar {
+		width: 25%;
+	}
 	.body {
-		max-width: 90%;
-		margin: auto;
+		position: relative;
+		height: 100vh;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+		overflow: scroll;
+		box-sizing: border-box;
+		padding: 1em 2em;
 		.hero {
 			max-width: 100%;
 			margin: auto;
@@ -34,8 +53,19 @@
 		}
 
 		.activeLeagues {
-			max-width: 80%;
-			margin: auto;
+			&__header {
+				color: #fff;
+				padding: 2em;
+				display: flex;
+				align-items: center;
+				height: 88px;
+				box-sizing: border-box;
+				h2 {
+					font-size: 24px;
+					font-weight: 800;
+					line-height: 32px;
+				}
+			}
 		}
 	}
 }

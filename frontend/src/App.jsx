@@ -13,6 +13,9 @@ import useAuth from "./hooks/useAuth";
 import ActiveLeagues from "./features/pickems/pages/ActiveLeagues";
 import LoadingSpinner from "./components/common/LoadingSpinner";
 import Logout from "./pages/Logout";
+import AccountSettings from "./features/pickems/pages/settings/accountSettings";
+import Settings from "./features/pickems/pages/settings/Settings";
+import ProfileSettings from "./features/pickems/pages/settings/ProfileSettings";
 
 function App() {
 	const isLoading = useAuth();
@@ -51,6 +54,30 @@ function App() {
 								<ProtectedRoute>
 									<DashboardLayout>
 										<ActiveLeagues />
+									</DashboardLayout>
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path='/settings/account'
+							element={
+								<ProtectedRoute>
+									<DashboardLayout>
+										<Settings>
+											<AccountSettings />
+										</Settings>
+									</DashboardLayout>
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path='/settings/profile'
+							element={
+								<ProtectedRoute>
+									<DashboardLayout>
+										<Settings>
+											<ProfileSettings />
+										</Settings>
 									</DashboardLayout>
 								</ProtectedRoute>
 							}

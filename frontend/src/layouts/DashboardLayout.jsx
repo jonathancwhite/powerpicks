@@ -1,9 +1,9 @@
-import DashboardHeader from "../components/navigation/DashboardHeader";
+import Sidebar from "../features/pickems/components/navigation/Sidebar";
 
 const DashboardLayout = ({ children }) => {
 	return (
 		<div className='pickemsApp'>
-			<DashboardHeader />
+			<Sidebar />
 			<main className='body'>{children}</main>
 		</div>
 	);

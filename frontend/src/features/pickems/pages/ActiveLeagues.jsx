@@ -8,6 +8,9 @@ const ActiveLeagues = () => {
 
 	return (
 		<div className='activeLeagues'>
+			<div className='activeLeagues__header'>
+				<h2>Active Leagues</h2>
+			</div>
 			<LeagueFilter />
 			<LeagueDisplay filterSport={filter} />
 		</div>
