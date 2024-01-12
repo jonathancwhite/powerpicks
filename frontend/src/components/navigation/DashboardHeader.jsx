@@ -1,7 +1,7 @@
 import { LinkContainer } from "react-router-bootstrap";
 import brandLogo from "../../assets/images/powerpicks_logo.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { redirect } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { GoChevronDown } from "react-icons/go";
 import { toast } from "react-toastify";
@@ -24,12 +24,11 @@ const DashboardHeader = () => {
 	const profileIdentifier = getInitials(auth.userInfo.name);
 
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (!auth.userInfo) {
-			// navigate("/login");
 			toast.error("User info not found");
+			return redirect("/");
 		}
 
 		// Event listener to close dropdown when clicked outside
@@ -45,7 +44,7 @@ const DashboardHeader = () => {
 		document.addEventListener("mousedown", handleClickOutside);
 		return () =>
 			document.removeEventListener("mousedown", handleClickOutside);
-	}, [auth.userInfo, navigate]);
+	}, [auth.userInfo]);
 
 	const handleUserDropdown = () => {
 		setDropdownOpen(!dropdownOpen);
@@ -56,13 +55,6 @@ const DashboardHeader = () => {
 			await logoutApiCall().unwrap();
 
 			dispatch(logout());
-
-			setTimeout(() => {
-				const currentHost = window.location.host;
-				const mainDomainHost = currentHost.replace(/^app\./, "");
-				const protocol = window.location.protocol;
-				navigate(`${protocol}//${mainDomainHost}/`);
-			}, 0);
 		} catch (error) {
 			toast.error(
 				"User could not be logged out at this time, please refresh the page and try again.",

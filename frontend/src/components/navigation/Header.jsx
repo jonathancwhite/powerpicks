@@ -24,7 +24,7 @@ const Header = () => {
 			await logoutApiCall().unwrap();
 			dispatch(logout());
 			toast.success("User logged out successfully");
-			navigate("/login");
+			navigate("/");
 		} catch (error) {
 			toast.error(
 				"User could not be logged out at this time, please refresh the page and try again.",

@@ -1,8 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { validateUser } from "../services/authService";
 import { setCredentials, logout } from "../slices/authSlice";
-import { useState } from "react";
 
 const useAuth = () => {
 	const dispatch = useDispatch();
@@ -24,8 +23,13 @@ const useAuth = () => {
 			}
 		};
 
-		checkAuthStatus();
-	}, [dispatch]);
+		const hostname = window.location.host;
+		if (hostname.includes("app.")) {
+			checkAuthStatus();
+		} else {
+			setIsLoading(false);
+		}
+	}, [dispatch, isLoading]);
 
 	return isLoading;
 };

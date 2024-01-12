@@ -12,6 +12,7 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import useAuth from "./hooks/useAuth";
 import ActiveLeagues from "./features/pickems/pages/ActiveLeagues";
 import LoadingSpinner from "./components/common/LoadingSpinner";
+import Logout from "./pages/Logout";
 
 function App() {
 	const isLoading = useAuth();
@@ -79,6 +80,14 @@ function App() {
 								<CompressedLayout>
 									<Login />
 								</CompressedLayout>
+							}
+						/>
+						<Route
+							path='/logout'
+							element={
+								<DefaultLayout>
+									<Logout />
+								</DefaultLayout>
 							}
 						/>
 						{/* Add other routes for the main domain */}

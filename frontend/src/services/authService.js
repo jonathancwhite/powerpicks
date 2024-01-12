@@ -8,6 +8,7 @@ export const validateUser = async () => {
 	const baseURL = `${protocol}//${mainDomainHost}`;
 
 	try {
+		console.log("Trying to validate user");
 		// const response = await axios.get(
 		// 	`${baseURL}/api/users/auth/validateUser`,
 		// );
