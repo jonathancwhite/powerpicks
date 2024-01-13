@@ -2,6 +2,9 @@ import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 
+/**
+ * @description Middleware to protect routes
+ */
 const protect = asyncHandler(async (req, res, next) => {
 	let token;
 
@@ -20,8 +23,12 @@ const protect = asyncHandler(async (req, res, next) => {
 			throw new Error("Not authorized, token failed");
 		}
 	} else {
-		res.status(401);
-		throw new Error("Not authorized, no token");
+		res.status(401).json({
+			message: "Not authorized, no token",
+			jwt: token,
+			cookiesProvided: JSON.stringify(req.cookies),
+		});
+		// throw new Error("Not authorized, no token");
 	}
 });
 

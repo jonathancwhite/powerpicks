@@ -13,6 +13,7 @@ const useAuth = () => {
 				const userInfo = await validateUser();
 				if (userInfo) {
 					dispatch(setCredentials(userInfo));
+					localStorage.setItem("userInfo", JSON.stringify(userInfo));
 				} else {
 					dispatch(logout());
 				}

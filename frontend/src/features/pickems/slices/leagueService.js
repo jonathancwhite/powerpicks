@@ -3,12 +3,9 @@ import axios from "axios";
 const LEAGUES_URL = "/api/leagues";
 
 export const createLeague = async (leagueData, token) => {
-	let user = localStorage.getItem("userInfo");
-
 	const config = {
 		headers: {
 			authorization: `Bearer ${token}`,
-			user: user,
 		},
 	};
 	const response = await axios.post(LEAGUES_URL, leagueData, config);

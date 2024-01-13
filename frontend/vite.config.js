@@ -5,8 +5,8 @@ export default defineConfig({
 	plugins: [react()],
 	server: {
 		proxy: {
-			"/api": "http://jcwdev.test:8000",
+			"/api": "http://jcwdev.local:8000",
 		},
-		host: "jcwdev.test",
+		host: "jcwdev.local",
 	},
 });

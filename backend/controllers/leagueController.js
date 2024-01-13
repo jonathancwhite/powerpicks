@@ -3,8 +3,10 @@ import League from "../models/leagueModel.js";
 import bcrypt from "bcryptjs";
 import { body, validationResult } from "express-validator";
 import mongoose from "mongoose";
-import InviteLink from "../models/inviteLinkModel.js";
-import { createInviteLink } from "./inviteLinkController.js";
+import {
+	createInviteLink,
+	getInviteLinkByCode,
+} from "./inviteLinkController.js";
 
 const validate = (validations) => {
 	return async (req, res, next) => {
@@ -24,63 +26,50 @@ const validate = (validations) => {
  * @route  POST /api/leagues
  * @access PRIVATE
  */
-export const createLeague = [
-	// Validations and sanitization
-	body("name").trim().isLength({ min: 3 }).escape(),
-	body("sport").trim().isLength({ min: 3 }).escape(),
-	body("tier").isIn(["Free", "Basic", "Premium"]),
-	body("password").optional().isLength({ min: 6 }),
-	validate,
-	asyncHandler(async (req, res) => {
-		const {
-			name,
-			sport,
-			createdBy,
-			members,
-			isPublic,
-			password,
-			maxPlayers,
-			tier,
-		} = req.body;
+export const createLeague = asyncHandler(async (req, res) => {
+	const {
+		name,
+		sport,
+		createdBy,
+		members,
+		isPublic,
+		password,
+		maxPlayers,
+		tier,
+	} = req.body;
 
-		const hashedPassword = password
-			? await bcrypt.hash(password, 10)
-			: undefined;
+	const hashedPassword = password
+		? await bcrypt.hash(password, 10)
+		: undefined;
 
-		if (!isPublic && password === undefined) {
-			res.status(400);
-			throw new Error("Non public leagues must have passwords");
-		}
+	// creates league Object to then save with league.save()
+	const league = new League({
+		name,
+		sport,
+		createdBy,
+		members,
+		isPublic,
+		password: hashedPassword,
+		maxPlayers,
+		tier,
+	});
 
-		// creates league Object to then save with league.save()
-		const league = new League({
-			name,
-			sport,
-			createdBy,
-			members,
-			isPublic,
-			password: hashedPassword,
-			maxPlayers,
-			tier,
-		});
+	const savedLeague = await league.save();
 
-		const savedLeague = await league.save();
+	if (!savedLeague) {
+		res.status(400);
+		throw new Error("Unable to create league");
+	}
 
-		if (!savedLeague) {
-			res.status(400);
-			throw new Error("Unable to create league");
-		}
+	// Create initial invite link for the league
+	const inviteLink = await createInviteLink({
+		leagueId: savedLeague._id,
+		passwordBypass: true, // by default, initial invite links should bypass password
+		expiresIn: 1000 * 60 * 60 * 24 * 30, // expires in 30 days
+	});
 
-		// Create initial invite link for the league
-		const inviteLink = await createInviteLink({
-			leagueId: savedLeague._id,
-			passwordBypass: true, // by default, initial invite links should bypass password
-			expiresIn: 1000 * 60 * 60 * 24 * 30, // expires in 30 days
-		});
-
-		res.status(201).json({ league: savedLeague, inviteLink });
-	}),
-];
+	res.status(201).json({ league: savedLeague, inviteLink });
+});
 
 /**
  * @desc   Updated current league from user data
@@ -233,7 +222,8 @@ export const joinLeagueViaInvite = asyncHandler(async (req, res) => {
 	const { inviteCode } = req.params;
 	const userId = req.user._id;
 
-	const inviteLink = await InviteLink.findOne({ code: inviteCode });
+	// find invite link by code
+	const inviteLink = getInviteLinkByCode(inviteCode);
 
 	if (!inviteLink || inviteLink.expiresAt < new Date()) {
 		res.status(400);

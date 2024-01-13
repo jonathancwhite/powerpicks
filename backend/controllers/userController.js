@@ -106,9 +106,11 @@ const logoutUser = (req, res) => {
 	res.status(200).json({ message: "Logged out successfully" });
 };
 
-// @desc    Validate the users JWT and log them in
-// @route   POST /api/users/auth/validateUser
-// @access  Public
+/**
+ * @desc    Validate the users JWT and log them in
+ * @route   POST /api/users/auth/validateUser
+ * @access  Public
+ */
 const validateUser = async (req, res) => {
 	try {
 		const token = req.cookies.jwt;
@@ -133,6 +135,7 @@ const validateUser = async (req, res) => {
 			username: user.username,
 			name: user.firstName + " " + user.lastName,
 			email: user.email,
+			jwt: req.cookies.jwt,
 		});
 	} catch (error) {
 		console.error(error);

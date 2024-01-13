@@ -315,6 +315,9 @@
 
 				.sideBar__nav--title {
 					color: #fff;
+					&:visited {
+						color: #fff;
+					}
 				}
 
 				.selected-indicator {
@@ -340,6 +343,11 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 			font-weight: 600;
+			text-decoration: none;
+			&:visited {
+				color: #677897;
+				text-decoration: none;
+			}
 		}
 	}
 }

@@ -13,7 +13,7 @@ export const validateUser = async () => {
 		// 	`${baseURL}/api/users/auth/validateUser`,
 		// );
 		const response = await axios.get(
-			"http://jcwdev.test:8000/api/users/auth/validateUser",
+			"http://jcwdev.local:8000/api/users/auth/validateUser",
 			{ withCredentials: true },
 		);
 

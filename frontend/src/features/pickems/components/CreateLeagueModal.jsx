@@ -97,8 +97,6 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 		let isValid = true;
 		let errors = {};
 
-		console.log(formData);
-
 		switch (currentStep) {
 			case 1: {
 				const sportValidation = isValidSport(formData.sport);
@@ -107,6 +105,7 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 				toast.error(
 					"Sport could not be selected. Please refresh and try again.",
 				);
+				setCurrentStep(1);
 
 				break;
 			}
@@ -161,12 +160,24 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 
 		setFormErrors(errors);
 
-		if (isValid && currentStep === 3) {
-			// use createLeague in leagueSlice to create league
-			const league = await dispatch(createLeague(formData));
+		if (isValid) {
+			if (currentStep === 3) {
+				// convert formData.isPublic to boolean
+				formData.isPublic = formData.isPublic === "true" ? true : false;
 
-			if (league) {
-				toast.success("League created successfully!");
+				let userObject = JSON.parse(localStorage.getItem("userInfo"));
+				let token = userObject.jwt;
+
+				const league = await dispatch(createLeague(token, formData));
+				console.log(league);
+
+				if (league.error) {
+					clearForm();
+					toast.error(league.error.message);
+					console.error(league.error);
+					closeModal();
+				}
+			} else {
 				setCurrentStep(currentStep + 1);
 			}
 		}
@@ -186,6 +197,9 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 
 	const handleSportSelection = (e) => {
 		const sportName = e.target.getAttribute("data-sport-name");
+		if (sportName === null) {
+			return;
+		}
 		console.log(sportName);
 		setFormData({ ...formData, sport: sportName });
 		setCurrentStep(currentStep + 1);

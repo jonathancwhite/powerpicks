@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler";
-import InviteLink from "../models/inviteLinkModel";
-import nanoid, { customRandom } from "nanoid";
+import InviteLink from "../models/inviteLinkModel.js";
+import { customRandom } from "nanoid";
 
 /**
  * @desc  Creates a new invite link for a league
@@ -123,4 +123,22 @@ export const createInviteLinkUrl = asyncHandler(async (req, res) => {
 		url: `http://${domain}/invite/${code}`,
 		message: "Invite link created",
 	});
+});
+
+/**
+ * @desc gets invite link by code
+ * @param {string} code - the invite link's code
+ * @returns {object} - the invite link object
+ */
+export const getInviteLinkByCode = asyncHandler(async (req, res) => {
+	const { code } = req.params;
+
+	const inviteLink = InviteLink.find({ code });
+
+	if (!inviteLink) {
+		res.status(404);
+		throw new Error("Invite link not found");
+	}
+
+	res.status(200).json(inviteLink);
 });

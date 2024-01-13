@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
 import path from "path";
 dotenv.config();
 import colors from "colors";
@@ -16,10 +17,11 @@ connectDB();
 const app = express();
 
 app.use(cookieParser());
+app.use(bodyParser.json());
 
 app.use(
 	cors({
-		origin: ["http://jcwdev.test:5173", "http://app.jcwdev.test:5173"],
+		origin: ["http://jcwdev.local:5173", "http://app.jcwdev.local:5173"],
 		credentials: true,
 	}),
 );

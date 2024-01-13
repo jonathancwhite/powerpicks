@@ -25,6 +25,9 @@ export const getAllJoinableLeagues = createAsyncThunk(
 					error.response.data.message) ||
 				error.message ||
 				error.toString();
+			console.log(
+				`leagueSlice.js - getAllJoinableLeagues() - ${message}`,
+			);
 			return thunkAPI.rejectWithValue(message);
 		}
 	},
@@ -47,18 +50,16 @@ export const getUserLeagues = createAsyncThunk(
 					error.response.data.message) ||
 				error.message ||
 				error.toString();
-			console.log(message);
+			console.log(`leagueSlice.js - getUserLeagues() - ${message}`);
 			return thunkAPI.rejectWithValue(message);
 		}
 	},
 );
 
 export const createLeague = createAsyncThunk(
-	"leagues/create",
-	async (leagueData, thunkAPI) => {
+	"leagues/createLeague",
+	async ({ token, leagueData }, thunkAPI) => {
 		try {
-			// const token = thunkAPI.getState().auth.userInfo.token;
-			const token = Cookies.get("jwt");
 			const result = await leagueService.createLeague(leagueData, token);
 			return result;
 		} catch (error) {
