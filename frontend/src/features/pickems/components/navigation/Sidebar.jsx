@@ -132,7 +132,12 @@ const Sidebar = () => {
 					</div>
 				</div>
 			</div>
-			{isModalOpen && <CreateLeagueModal closeModal={toggleModal} />}
+			{isModalOpen && (
+				<CreateLeagueModal
+					closeModal={toggleModal}
+					user={auth.userInfo}
+				/>
+			)}
 		</div>
 	);
 };

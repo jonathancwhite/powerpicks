@@ -1,4 +1,5 @@
 import express from "express";
+import authMiddleware from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 import {
@@ -8,10 +9,10 @@ import {
 	getUserLeagues,
 } from "../controllers/leagueController.js";
 
-router.post("/", createLeague);
-router.put("/:id", updateLeague);
-router.get("/", getAllJoinableLeagues);
-router.get("/user/:id", getUserLeagues);
+router.post("/", authMiddleware, createLeague);
+router.put("/:id", authMiddleware, updateLeague);
+router.get("/", authMiddleware, getAllJoinableLeagues);
+router.get("/user/:id", authMiddleware, getUserLeagues);
 
 router.get("/hello", (req, res) => {
 	res.status(200).json({

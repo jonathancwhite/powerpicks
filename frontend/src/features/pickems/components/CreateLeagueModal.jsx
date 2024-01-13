@@ -3,16 +3,19 @@ import { IoMdClose, IoMdArrowBack } from "react-icons/io";
 import { toast } from "react-toastify";
 import SportSelector from "./SportSelector";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { createLeague } from "../slices/leagueSlice";
+import PropTypes from "prop-types";
 
-const CreateLeagueModal = ({ closeModal }) => {
+const CreateLeagueModal = ({ closeModal, user }) => {
 	let initialFormData = {
 		sport: "",
 		name: "",
 		maxPlayers: "8",
 		isPublic: "true",
 		password: "",
+		tier: "FREE",
+		members: [user._id],
+		createdBy: user._id,
 	};
 
 	const [currentStep, setCurrentStep] = useState(1);
@@ -20,7 +23,6 @@ const CreateLeagueModal = ({ closeModal }) => {
 	const [formErrors, setFormErrors] = useState({});
 
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 
 	const stepHeaders = [
 		"Choose Your Sport",
@@ -35,6 +37,16 @@ const CreateLeagueModal = ({ closeModal }) => {
 		"If you don't want everyone to be able to join off of the leagues page, select no and add a password. Don't worry, you can always send your friends and invite link to join.",
 		"Send out a custom invite link to your friends",
 	];
+
+	const isValidSport = (sport) => {
+		const isValid = sport === null || sport.trim() !== "";
+		return {
+			isValid,
+			message: isValid
+				? ""
+				: "Sport selection unable to be made. Please refresh and try again.",
+		};
+	};
 
 	const isValidName = (name) => {
 		const isValid = name.trim() !== "" && name.length > 3;
@@ -85,9 +97,19 @@ const CreateLeagueModal = ({ closeModal }) => {
 		let isValid = true;
 		let errors = {};
 
+		console.log(formData);
+
 		switch (currentStep) {
-			case 1:
+			case 1: {
+				const sportValidation = isValidSport(formData.sport);
+				errors.sport = sportValidation.message;
+				isValid = false;
+				toast.error(
+					"Sport could not be selected. Please refresh and try again.",
+				);
+
 				break;
+			}
 			case 2: {
 				const nameValidation = isValidName(formData.name);
 
@@ -139,29 +161,21 @@ const CreateLeagueModal = ({ closeModal }) => {
 
 		setFormErrors(errors);
 
-		if (isValid) {
-			if (currentStep === 3) {
-				const maxPlayersInt = parseInt(formData.maxPlayers, 10);
-				const leagueData = {
-					...formData,
-					maxPlayers: maxPlayersInt,
-				};
+		if (isValid && currentStep === 3) {
+			// use createLeague in leagueSlice to create league
+			const league = await dispatch(createLeague(formData));
 
-				try {
-					await dispatch(createLeague(leagueData).unwrap());
-					clearForm();
-					setCurrentStep(4);
-				} catch (err) {
-					toast.error(err?.data?.message || err.error);
-				}
-			} else {
+			if (league) {
+				toast.success("League created successfully!");
 				setCurrentStep(currentStep + 1);
 			}
 		}
 	};
 
 	const handleShare = async () => {
-		toast.info("SHARE CODE NOT SETUP YET");
+		// get invite link from backend
+		// copy to clipboard
+		// toast success
 	};
 
 	const handleBack = () => {
@@ -172,6 +186,7 @@ const CreateLeagueModal = ({ closeModal }) => {
 
 	const handleSportSelection = (e) => {
 		const sportName = e.target.getAttribute("data-sport-name");
+		console.log(sportName);
 		setFormData({ ...formData, sport: sportName });
 		setCurrentStep(currentStep + 1);
 	};
@@ -325,6 +340,11 @@ const CreateLeagueModal = ({ closeModal }) => {
 			</div>
 		</div>
 	);
+};
+
+CreateLeagueModal.propTypes = {
+	closeModal: PropTypes.func.isRequired,
+	user: PropTypes.object,
 };
 
 export default CreateLeagueModal;

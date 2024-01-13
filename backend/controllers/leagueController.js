@@ -3,6 +3,8 @@ import League from "../models/leagueModel.js";
 import bcrypt from "bcryptjs";
 import { body, validationResult } from "express-validator";
 import mongoose from "mongoose";
+import InviteLink from "../models/inviteLinkModel.js";
+import { createInviteLink } from "./inviteLinkController.js";
 
 const validate = (validations) => {
 	return async (req, res, next) => {
@@ -37,16 +39,20 @@ export const createLeague = [
 			members,
 			isPublic,
 			password,
-			inviteCode,
 			maxPlayers,
 			tier,
 		} = req.body;
 
-		// If a password is provided, hash it
 		const hashedPassword = password
 			? await bcrypt.hash(password, 10)
 			: undefined;
 
+		if (!isPublic && password === undefined) {
+			res.status(400);
+			throw new Error("Non public leagues must have passwords");
+		}
+
+		// creates league Object to then save with league.save()
 		const league = new League({
 			name,
 			sport,
@@ -54,13 +60,25 @@ export const createLeague = [
 			members,
 			isPublic,
 			password: hashedPassword,
-			inviteCode,
 			maxPlayers,
 			tier,
 		});
 
-		const createdLeague = await league.save();
-		res.status(201).json(createdLeague);
+		const savedLeague = await league.save();
+
+		if (!savedLeague) {
+			res.status(400);
+			throw new Error("Unable to create league");
+		}
+
+		// Create initial invite link for the league
+		const inviteLink = await createInviteLink({
+			leagueId: savedLeague._id,
+			passwordBypass: true, // by default, initial invite links should bypass password
+			expiresIn: 1000 * 60 * 60 * 24 * 30, // expires in 30 days
+		});
+
+		res.status(201).json({ league: savedLeague, inviteLink });
 	}),
 ];
 
@@ -145,6 +163,7 @@ export const getUserLeagues = asyncHandler(async (req, res) => {
 		throw new Error("Invalid user ID");
 	}
 
+	// find all leagues that the user is a member of
 	const leagues = await League.find({
 		members: { $in: [mongoose.Types.ObjectId(userId)] },
 	});
@@ -155,4 +174,88 @@ export const getUserLeagues = asyncHandler(async (req, res) => {
 	}
 
 	res.status(200).json(leagues);
+});
+
+/**
+ * @desc   Join league
+ * @params id - user._id, league_id - league._id, ?password - league.password
+ * @route  PUT /api/leagues/:id
+ * @access PRIVATE
+ */
+export const joinLeague = asyncHandler(async (req, res) => {
+	const userId = req.user._id;
+	const leagueId = req.params.id;
+	const { password } = req.body;
+
+	const league = await League.findById(leagueId);
+
+	// check if user is already in league
+	if (league.members.includes(userId)) {
+		res.status(400);
+		throw new Error("User is already a member of this league");
+	}
+
+	// check if league is full
+	if (league.members.length >= league.maxPlayers) {
+		res.status(400);
+		throw new Error("League is full");
+	}
+
+	// check if league is private & if password is correct
+	if (!league.isPublic) {
+		if (!password) {
+			res.status(400);
+			throw new Error("League is private. Password is required");
+		}
+
+		const isMatch = await bcrypt.compare(password, league.password);
+
+		if (!isMatch) {
+			res.status(400);
+			throw new Error("Password is incorrect");
+		}
+
+		// if password is correct, add user to league
+		league.members.push(userId);
+	}
+
+	// add user to league if league is public
+	league.members.push(userId);
+});
+
+/**
+ * @desc   Join league via an invite code & increment the number of uses
+ * @params id - user._id, inviteLink - inviteLink.code
+ * @route  PUT /api/leagues/inviteLink
+ * @access PRIVATE
+ */
+export const joinLeagueViaInvite = asyncHandler(async (req, res) => {
+	const { inviteCode } = req.params;
+	const userId = req.user._id;
+
+	const inviteLink = await InviteLink.findOne({ code: inviteCode });
+
+	if (!inviteLink || inviteLink.expiresAt < new Date()) {
+		res.status(400);
+		throw new Error("Invalid or expired invite link");
+	}
+
+	const league = await League.findById(inviteLink.leagueId);
+	league.members.push(userId);
+	const didJoin = await league.save();
+
+	if (didJoin) {
+		// Increment the number of uses for the invite link
+		InviteLink.updateOne(
+			{ _id: inviteLink._id },
+			{ $inc: { numOfUses: 1 } },
+		);
+
+		res.status(200).json({ message: "Joined league successfully" });
+	}
+
+	if (!didJoin) {
+		res.status(400);
+		throw new Error("Unable to join league");
+	}
 });

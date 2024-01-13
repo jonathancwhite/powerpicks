@@ -47,6 +47,7 @@ export const getUserLeagues = createAsyncThunk(
 					error.response.data.message) ||
 				error.message ||
 				error.toString();
+			console.log(message);
 			return thunkAPI.rejectWithValue(message);
 		}
 	},

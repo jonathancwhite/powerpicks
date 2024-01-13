@@ -16,7 +16,6 @@ const LeagueDisplay = () => {
 
 	useEffect(() => {
 		if (isError) {
-			console.log("error");
 			console.log(isError);
 		}
 
