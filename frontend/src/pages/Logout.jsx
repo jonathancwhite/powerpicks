@@ -9,30 +9,30 @@ import LoadingSpinner from "../components/common/LoadingSpinner";
 const Logout = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const [logoutApiCall] = useLogoutMutation();
+	const [logoutApiCall, { isLoading }] = useLogoutMutation();
 
 	const forceLogout = async () => {
 		try {
 			await logoutApiCall().unwrap();
+			toast.info(
+				"You have been logged out due to a session timeout. Please log back in.",
+			);
 			dispatch(logout());
-			toast.success("User logged out successfully");
 			navigate("/");
 		} catch (error) {
 			toast.error(
-				"User could not be logged out at this time, please refresh the page and try again.",
+				"User could verified. Please refresh the page and try again.",
 			);
 		}
+		dispatch(logout());
+		navigate("/");
 	};
 
 	useEffect(() => {
 		forceLogout();
 	}, []);
 
-	return (
-		<>
-			<LoadingSpinner />
-		</>
-	);
+	return isLoading ? <LoadingSpinner /> : null;
 };
 
 export default Logout;

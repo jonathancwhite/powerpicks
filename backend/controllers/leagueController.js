@@ -61,12 +61,22 @@ export const createLeague = asyncHandler(async (req, res) => {
 		throw new Error("Unable to create league");
 	}
 
+	console.group(`Create League - leagueController.js`);
+	console.log(`savedLeague:`, savedLeague);
+	console.groupEnd();
+
 	// Create initial invite link for the league
-	const inviteLink = await createInviteLink({
+	const inviteLink = createInviteLink({
 		leagueId: savedLeague._id,
 		passwordBypass: true, // by default, initial invite links should bypass password
 		expiresIn: 1000 * 60 * 60 * 24 * 30, // expires in 30 days
+		user: req.user,
 	});
+
+	if (!inviteLink) {
+		res.status(400);
+		throw new Error("Unable to create invite link, check db for league");
+	}
 
 	res.status(201).json({ league: savedLeague, inviteLink });
 });

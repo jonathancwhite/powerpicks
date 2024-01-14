@@ -84,33 +84,41 @@ const Sidebar = () => {
 							</div>
 						</div>
 					</div>
-					{leagues.map((league) => (
-						<LinkContainer
-							to={`/leagues/${league._id}`}
-							key={league._id}>
-							<div className='sideBar__navLeagueItem'>
-								<div className='topic-indicator'>
-									<div className='indicator'></div>
-								</div>
-								<div className='selected-indicator-wrapper'>
-									<div className='selected-indicator'></div>
-								</div>
+					{/* Add Loading spinner while dispatch isLoading */}
 
-								<div className='nav-league-item'>
-									<div className='nav-info-container'>
-										<div className='league-name'>
-											{league.name}
-										</div>
-										<div className='format-container'>
-											<div className='sport'>
-												{league.sport}
+					{isLoading ? (
+						<div className='centeredContainer'>
+							<div className='spinner'></div>
+						</div>
+					) : (
+						leagues.map((league) => (
+							<LinkContainer
+								to={`/leagues/${league._id}`}
+								key={league._id}>
+								<div className='sideBar__navLeagueItem'>
+									<div className='topic-indicator'>
+										<div className='indicator'></div>
+									</div>
+									<div className='selected-indicator-wrapper'>
+										<div className='selected-indicator'></div>
+									</div>
+
+									<div className='nav-league-item'>
+										<div className='nav-info-container'>
+											<div className='league-name'>
+												{league.name}
+											</div>
+											<div className='format-container'>
+												<div className='sport'>
+													{league.sport}
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-						</LinkContainer>
-					))}
+							</LinkContainer>
+						))
+					)}
 				</div>
 				<div className='sideBar__footer'>
 					<div className='sideBar__profile'>

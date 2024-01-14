@@ -13,7 +13,7 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 		maxPlayers: "8",
 		isPublic: "true",
 		password: "",
-		tier: "FREE",
+		tier: "Free",
 		members: [user._id],
 		createdBy: user._id,
 	};
@@ -168,14 +168,24 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 				let userObject = JSON.parse(localStorage.getItem("userInfo"));
 				let token = userObject.jwt;
 
-				const league = await dispatch(createLeague(token, formData));
-				console.log(league);
+				console.group(`Create League - CreateLeagueModal.jsx`);
+				console.log(`token:`, token);
+				console.log(`formData:`, formData);
+				console.groupEnd();
+
+				const league = await dispatch(
+					createLeague({ token, leagueData: formData }),
+				);
+
+				console.log(league.payload);
 
 				if (league.error) {
 					clearForm();
 					toast.error(league.error.message);
 					console.error(league.error);
 					closeModal();
+				} else {
+					setCurrentStep(currentStep + 1);
 				}
 			} else {
 				setCurrentStep(currentStep + 1);

@@ -16,7 +16,7 @@ const Header = () => {
 	const protocol = window.location.protocol;
 	const dashboardUrl = `${protocol}//app.${currentHost}/`;
 
-	const [logoutApiCall] = useLogoutMutation();
+	const [logoutApiCall, { isLoading }] = useLogoutMutation();
 	const auth = useSelector((state) => state.auth);
 
 	const handleLogout = async () => {
@@ -61,8 +61,13 @@ const Header = () => {
 								<LinkContainer to={""}>
 									<button
 										className='btn btn--secondary'
-										onClick={handleLogout}>
-										Log Out
+										onClick={handleLogout}
+										disabled={isLoading}>
+										{isLoading ? (
+											<div className='spinner'></div>
+										) : (
+											"Log Out"
+										)}
 									</button>
 								</LinkContainer>
 							</li>

@@ -18,6 +18,7 @@ const leagueSchema = mongoose.Schema(
 			type: String,
 			required: true,
 			enum: ["Free", "Basic", "Premium"],
+			default: "Free",
 		},
 	},
 	{

@@ -79,8 +79,13 @@ const LoginForm = () => {
 					<div className='loginForm__actions'>
 						<button
 							className='btn btn--cta'
-							onClick={handleFormSubmit}>
-							Log In
+							onClick={handleFormSubmit}
+							disabled={isLoading}>
+							{isLoading ? (
+								<div className='spinner'></div>
+							) : (
+								"Log In"
+							)}
 						</button>
 					</div>
 				</form>
