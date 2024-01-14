@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler";
 import InviteLink from "../models/inviteLinkModel.js";
-import { customRandom } from "nanoid";
+import { customAlphabet } from "nanoid";
 
 /**
  * @desc  Creates a new invite link for a league
@@ -15,7 +15,7 @@ export const createInviteLink = async (
 	expiresIn,
 	user,
 ) => {
-	let code = await generateUniqueInviteCode();
+	let code = await generateUniqueInviteCode(); // should we wrap in try catch
 
 	const expiresAt = expiresIn ? new Date(Date.now() + expiresIn) : undefined;
 
@@ -29,9 +29,8 @@ export const createInviteLink = async (
 		numOfUses: 0,
 	});
 
-	await inviteLink.save();
-
-	return inviteLink;
+	const savedInviteLink = await inviteLink.save();
+	return savedInviteLink;
 };
 
 /**
@@ -39,15 +38,15 @@ export const createInviteLink = async (
  * @returns {string} - unique invite code (InviteLink.code)
  * @private - Should only used during createInviteLink
  */
+const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+const size = 8;
 const generateUniqueInviteCode = async () => {
+	const nanoid = customAlphabet(alphabet, size);
 	let code;
 	let codeExists = true;
 
 	while (codeExists) {
-		code = customRandom(
-			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-			8,
-		);
+		code = nanoid();
 		const codeCheck = await InviteLink.findOne({ code });
 		if (!codeCheck) {
 			codeExists = false;
@@ -60,14 +59,17 @@ const generateUniqueInviteCode = async () => {
 /**
  * @desc Gets an invite link by league id
  * @param {Mongoose.ObjectID} leagueId - the league's id
- * @returns {object} - the invite link object
+ * @returns {Array} - result of InviteLink.find()
+ * TODO: this should be getInviteLinksByLeagueId since it returns an array with .find()
  */
 export const getInviteLinkByLeagueId = async (id, user) => {
-	let inviteLink = InviteLink.find({ leagueId: id });
+	// Await the find operation to get the actual result
+	let inviteLink = await InviteLink.find({ leagueId: id });
 
-	// if no inviteLink found, we create one with default values
-	if (!inviteLink) {
-		inviteLink = await createInviteLink(id, false, 604800000, user);
+	// Check if inviteLink array is empty
+	if (inviteLink.length === 0) {
+		// await the creation of the new invite link
+		inviteLink = [await createInviteLink(id, false, 604800000, user)];
 	}
 
 	return inviteLink;

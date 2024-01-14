@@ -179,6 +179,12 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 
 				console.log(league.payload);
 
+				if (league.payload) {
+					const leaguePayload = league.payload;
+					const inviteLinkCode = leaguePayload.inviteLink[0].code;
+					toast.info(`http://jcwdev.local/invites/${inviteLinkCode}`);
+				}
+
 				if (league.error) {
 					clearForm();
 					toast.error(league.error.message);

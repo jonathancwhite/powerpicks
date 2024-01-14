@@ -5,7 +5,6 @@ import Signup from "./pages/Signup";
 import CompressedLayout from "./layouts/CompressedLayout";
 import Login from "./pages/Login";
 import Dashboard from "./features/pickems/pages/Dashboard";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ProtectedRoute } from "./components/navigation/ProtectedRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
@@ -16,11 +15,22 @@ import Logout from "./pages/Logout";
 import AccountSettings from "./features/pickems/pages/settings/accountSettings";
 import Settings from "./features/pickems/pages/settings/Settings";
 import ProfileSettings from "./features/pickems/pages/settings/ProfileSettings";
+import { ToastContainer } from "react-toastify";
 
 function App() {
 	const isLoading = useAuth();
 	const hostname = window.location.hostname;
 	const isSubdomain = hostname.startsWith("app.");
+	let toastOptions = {
+		position: "top-right",
+		autoClose: 3000,
+		hideProgressBar: false,
+		closeOnClick: true,
+		pauseOnHover: true,
+		draggable: true,
+		progress: 2,
+		theme: "dark",
+	};
 
 	if (isLoading) {
 		return (
@@ -34,7 +44,7 @@ function App() {
 
 	return (
 		<>
-			<ToastContainer />
+			<ToastContainer {...toastOptions} />
 			<Routes>
 				{isSubdomain ? (
 					<>

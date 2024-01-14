@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import {
 	createInviteLink,
 	getInviteLinkByCode,
+	getInviteLinkByLeagueId,
 } from "./inviteLinkController.js";
 
 const validate = (validations) => {
@@ -24,6 +25,9 @@ const validate = (validations) => {
 /**
  * @desc   Creates a new league from user data
  * @route  POST /api/leagues
+ * @param	{object} req - the request object
+ * @returns {object} - the league object
+ * @returns {array} - the invite links
  * @access PRIVATE
  */
 export const createLeague = asyncHandler(async (req, res) => {
@@ -37,6 +41,8 @@ export const createLeague = asyncHandler(async (req, res) => {
 		maxPlayers,
 		tier,
 	} = req.body;
+
+	const user = req.user;
 
 	const hashedPassword = password
 		? await bcrypt.hash(password, 10)
@@ -61,22 +67,17 @@ export const createLeague = asyncHandler(async (req, res) => {
 		throw new Error("Unable to create league");
 	}
 
-	console.group(`Create League - leagueController.js`);
-	console.log(`savedLeague:`, savedLeague);
-	console.groupEnd();
+	// slightly counterintuitive, but we will try to getInviteLinkByLeagueId
+	// if no inviteLink is found, we will create one with default values
+	let inviteLink;
 
-	// Create initial invite link for the league
-	const inviteLink = createInviteLink({
-		leagueId: savedLeague._id,
-		passwordBypass: true, // by default, initial invite links should bypass password
-		expiresIn: 1000 * 60 * 60 * 24 * 30, // expires in 30 days
-		user: req.user,
-	});
-
-	if (!inviteLink) {
-		res.status(400);
-		throw new Error("Unable to create invite link, check db for league");
+	try {
+		inviteLink = await getInviteLinkByLeagueId(savedLeague._id, user);
+	} catch (error) {
+		console.error(error);
 	}
+
+	console.log(inviteLink);
 
 	res.status(201).json({ league: savedLeague, inviteLink });
 });

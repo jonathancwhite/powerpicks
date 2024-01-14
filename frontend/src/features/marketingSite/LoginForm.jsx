@@ -45,6 +45,7 @@ const LoginForm = () => {
 	useEffect(() => {
 		if (userInfo) {
 			toast.success("User logged in successfully");
+
 			navigate("/");
 		}
 	}, [navigate, userInfo]);
