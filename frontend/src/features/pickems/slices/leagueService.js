@@ -56,11 +56,37 @@ export const getAllJoinableLeagues = async (token) => {
 	return response.data;
 };
 
+export const joinLeagueByCode = async (code, token) => {
+	let user = localStorage.getItem("userInfo");
+	const config = {
+		headers: {
+			authorization: `Bearer ${token}`,
+			user: user,
+		},
+	};
+	const response = await axios.post(`${LEAGUES_URL}/join/${code}`, config);
+	return response.data;
+};
+
+export const getLeagueById = async (id, token) => {
+	let user = localStorage.getItem("userInfo");
+	const config = {
+		headers: {
+			authorization: `Bearer ${token}`,
+			user: user,
+		},
+	};
+	const response = await axios.get(`${LEAGUES_URL}/${id}`, config);
+	return response.data;
+};
+
 const leagueService = {
 	createLeague,
 	updateLeague,
 	getAllJoinableLeagues,
 	getUserLeagues,
+	joinLeagueByCode,
+	getLeagueById,
 };
 
 export default leagueService;

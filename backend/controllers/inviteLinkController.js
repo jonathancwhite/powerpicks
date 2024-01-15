@@ -129,13 +129,13 @@ export const createInviteLinkUrl = async (id) => {
 /**
  * @desc gets invite link by code
  * @param {string} code - the invite link's code
- * @returns {object} - the invite link object
+ * @returns {array} - result of InviteLink.find()
  * @throws {Error} - if invite link not found
  */
 export const getInviteLinkByCode = (code) => {
-	const inviteLink = InviteLink.find({ code });
+	const inviteLink = InviteLink.findOne({ code });
 
-	if (!inviteLink) {
+	if (inviteLink.length === 0 || !inviteLink) {
 		throw new Error("Invite link not found");
 	}
 

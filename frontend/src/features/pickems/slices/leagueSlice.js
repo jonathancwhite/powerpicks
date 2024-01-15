@@ -97,6 +97,43 @@ export const updateLeague = createAsyncThunk(
 	},
 );
 
+export const joinLeagueByCode = createAsyncThunk(
+	"leagues/joinLeagueByCode",
+	async (code, thunkAPI) => {
+		try {
+			const token = Cookies.get("jwt");
+			const result = await leagueService.joinLeagueByCode(code, token);
+			return result;
+		} catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+			return thunkAPI.rejectWithValue(message);
+		}
+	},
+);
+
+export const getLeagueById = createAsyncThunk(
+	"leagues/getLeagueById",
+	async ({ id, token }, thunkAPI) => {
+		try {
+			const result = await leagueService.getLeagueById(id, token);
+			return result;
+		} catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+			return thunkAPI.rejectWithValue(message);
+		}
+	},
+);
+
 const leagueSlice = createSlice({
 	name: "league",
 	initialState: initialState,
@@ -158,6 +195,32 @@ const leagueSlice = createSlice({
 				state.leagues.push(action.payload);
 			})
 			.addCase(createLeague.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			.addCase(joinLeagueByCode.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(joinLeagueByCode.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.leagues.push(action.payload);
+			})
+			.addCase(joinLeagueByCode.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			.addCase(getLeagueById.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getLeagueById.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.leagues = action.payload; // only want the one league
+			})
+			.addCase(getLeagueById.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;

@@ -18,7 +18,10 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 		createdBy: user._id,
 	};
 
+	let leagueInviteURL = "";
+
 	const [currentStep, setCurrentStep] = useState(1);
+	const [isCopied, setIsCopied] = useState(false);
 	const [formData, setFormData] = useState(initialFormData);
 	const [formErrors, setFormErrors] = useState({});
 
@@ -182,7 +185,9 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 				if (league.payload) {
 					const leaguePayload = league.payload;
 					const inviteLinkCode = leaguePayload.inviteLink[0].code;
-					toast.info(`http://jcwdev.local/invites/${inviteLinkCode}`);
+					// set invite url to variable
+					leagueInviteURL = `http://jcwdev.local/invites/${inviteLinkCode}`;
+					toast.info(leagueInviteURL);
 				}
 
 				if (league.error) {
@@ -199,10 +204,50 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 		}
 	};
 
-	const handleShare = async () => {
-		// get invite link from backend
-		// copy to clipboard
-		// toast success
+	const handleShare = () => {
+		if (navigator.clipboard) {
+			navigator.clipboard
+				.writeText(leagueInviteURL)
+				.then(() => setIsCopied(true))
+				.catch((err) => console.error("Failed to copy text: ", err));
+			if (isCopied) {
+				toast.info("Copied to clipboard!");
+			}
+		} else {
+			// Fallback for older browsers
+			const textArea = document.createElement("textarea");
+			textArea.value = leagueInviteURL;
+			document.body.appendChild(textArea);
+			textArea.select();
+			try {
+				const successful = document.execCommand("copy");
+				setIsCopied(successful);
+				if (isCopied) {
+					toast.info("Copied to clipboard!");
+				} else {
+					toast.error(
+						`Oops, unable to copy! Your invite link: ${leagueInviteURL}`,
+						{
+							autoClose: false,
+							hideProgressBar: true,
+							closeOnClick: false,
+						},
+					);
+				}
+			} catch (err) {
+				console.error("Fallback: Oops, unable to copy", err);
+				toast.error(
+					`Oops, unable to copy! Your invite link: ${leagueInviteURL}`,
+					{
+						autoClose: false,
+						hideProgressBar: true,
+						closeOnClick: false,
+					},
+				);
+			}
+			document.body.removeChild(textArea);
+		}
+		setTimeout(() => setIsCopied(false), 1500);
 	};
 
 	const handleBack = () => {

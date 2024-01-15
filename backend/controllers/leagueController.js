@@ -8,6 +8,7 @@ import {
 	getInviteLinkByCode,
 	getInviteLinkByLeagueId,
 } from "./inviteLinkController.js";
+import InviteLink from "../models/inviteLinkModel.js";
 
 const validate = (validations) => {
 	return async (req, res, next) => {
@@ -225,16 +226,27 @@ export const joinLeague = asyncHandler(async (req, res) => {
 
 /**
  * @desc   Join league via an invite code & increment the number of uses
- * @params id - user._id, inviteLink - inviteLink.code
- * @route  PUT /api/leagues/inviteLink
- * @access PRIVATE
+ * @route  PUT /api/leagues/join/:code
+ * @access PRIVATE - user must be logged in
+ * @param {string} code - the invite link code
+ * @param {string} userId - logged in user's id
+ * @throws {Error} - if user not found
  */
-export const joinLeagueViaInvite = asyncHandler(async (req, res) => {
-	const { inviteCode } = req.params;
+export const joinLeagueByCode = asyncHandler(async (req, res) => {
+	const { code } = req.params;
 	const userId = req.user._id;
 
+	if (!userId) {
+		res.status(400);
+		throw new Error("User not found");
+	}
+
 	// find invite link by code
-	const inviteLink = getInviteLinkByCode(inviteCode);
+	const inviteLink = getInviteLinkByCode(code);
+
+	console.group(`joinLeagueByCode - leagueController.js`);
+	console.log(inviteLink);
+	console.groupEnd();
 
 	if (!inviteLink || inviteLink.expiresAt < new Date()) {
 		res.status(400);
@@ -247,16 +259,37 @@ export const joinLeagueViaInvite = asyncHandler(async (req, res) => {
 
 	if (didJoin) {
 		// Increment the number of uses for the invite link
-		InviteLink.updateOne(
+		await InviteLink.updateOne(
 			{ _id: inviteLink._id },
 			{ $inc: { numOfUses: 1 } },
 		);
 
-		res.status(200).json({ message: "Joined league successfully" });
-	}
-
-	if (!didJoin) {
+		res.status(200).json({
+			message: "Joined league successfully",
+			league: league,
+		});
+	} else {
 		res.status(400);
 		throw new Error("Unable to join league");
 	}
+});
+
+/**
+ * @desc  Get league by id
+ * @route GET /api/leagues/:id
+ * @access PRIVATE
+ * @param {string} id - the league id
+ * @throws {Error} - if league not found
+ */
+export const getLeagueById = asyncHandler(async (req, res) => {
+	const leagueId = req.params.id;
+
+	const league = await League.findById(leagueId);
+
+	if (!league) {
+		res.status(404);
+		throw new Error("League not found");
+	}
+
+	res.status(200).json(league);
 });

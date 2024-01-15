@@ -8,9 +8,9 @@ import {
 } from "../controllers/inviteLinkController";
 
 // Route to handle creation of invite link
-router.post("/", createInviteLink);
-router.delete("/:id", deleteInviteLink);
-router.get("/:id", getInviteLinkByLeagueId);
-router.get("/:id/url", createInviteLinkUrl);
+// router.post("/", createInviteLink);
+// router.delete("/:id", deleteInviteLink);
+// router.get("/:id", getInviteLinkByLeagueId);
+// router.get("/:code");
 
 module.exports = router;

@@ -16,6 +16,8 @@ import AccountSettings from "./features/pickems/pages/settings/accountSettings";
 import Settings from "./features/pickems/pages/settings/Settings";
 import ProfileSettings from "./features/pickems/pages/settings/ProfileSettings";
 import { ToastContainer } from "react-toastify";
+import LeagueInvite from "./features/marketingSite/LeagueInvite";
+import UserLeagues from "./features/pickems/pages/UserLeagues";
 
 function App() {
 	const isLoading = useAuth();
@@ -64,6 +66,16 @@ function App() {
 								<ProtectedRoute>
 									<DashboardLayout>
 										<ActiveLeagues />
+									</DashboardLayout>
+								</ProtectedRoute>
+							}
+						/>
+						<Route
+							path='/leagues/:id'
+							element={
+								<ProtectedRoute>
+									<DashboardLayout>
+										<UserLeagues />
 									</DashboardLayout>
 								</ProtectedRoute>
 							}
@@ -125,6 +137,14 @@ function App() {
 								<DefaultLayout>
 									<Logout />
 								</DefaultLayout>
+							}
+						/>
+						<Route
+							path='/invite/:code'
+							element={
+								<CompressedLayout>
+									<LeagueInvite />
+								</CompressedLayout>
 							}
 						/>
 						{/* Add other routes for the main domain */}
