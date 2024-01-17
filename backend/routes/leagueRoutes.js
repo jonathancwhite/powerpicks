@@ -6,7 +6,7 @@ import {
 	createLeague,
 	updateLeague,
 	getAllJoinableLeagues,
-	getUserLeagues,
+	getAllJoinedLeagues,
 	joinLeagueByCode,
 	getLeagueById,
 } from "../controllers/leagueController.js";
@@ -14,7 +14,7 @@ import {
 router.post("/", protect, createLeague);
 router.put("/:id", protect, updateLeague);
 router.get("/", protect, getAllJoinableLeagues);
-router.get("/user/:id", protect, getUserLeagues);
+router.get("/user/:id", protect, getAllJoinedLeagues);
 router.put("/join/:code", protect, joinLeagueByCode);
 router.get("/:id", protect, getLeagueById);
 

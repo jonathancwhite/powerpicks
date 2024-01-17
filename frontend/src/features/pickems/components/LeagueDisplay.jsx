@@ -1,14 +1,14 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllJoinableLeagues } from "../slices/leagueSlice";
+import { getAllJoinableLeagues } from "../slices/leaguesAvailableSlice";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
 import LeagueDisplayItem from "./LeagueDisplayItem";
 
 const LeagueDisplay = () => {
-	const filterSport = useSelector((state) => state.league.filter);
-	const { leagues, isLoading, isError, message } = useSelector(
-		(state) => state.league,
+	const filterSport = useSelector((state) => state.leaguesAvailable.filter);
+	const { leaguesAvailable, isLoading, isError, message } = useSelector(
+		(state) => state.leaguesAvailable,
 	);
 
 	const navigate = useNavigate();
@@ -16,16 +16,16 @@ const LeagueDisplay = () => {
 
 	useEffect(() => {
 		if (isError) {
-			console.log(isError);
+			console.log(message);
 		}
 
 		dispatch(getAllJoinableLeagues());
 	}, [isError, message, dispatch, navigate]);
 
-	const filteredLeagues = leagues.filter(
+	const filteredLeagues = leaguesAvailable.filter(
 		(league) =>
 			filterSport === "ALL" ||
-			(league.active &&
+			(league.isActive &&
 				league.isPublic &&
 				league.members.length < league.maxPlayers &&
 				league.sport === filterSport),

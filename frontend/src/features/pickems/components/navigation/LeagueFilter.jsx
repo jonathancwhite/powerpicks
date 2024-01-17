@@ -3,12 +3,12 @@ import { IoAmericanFootballOutline } from "react-icons/io5";
 import { IoIosFootball, IoIosTrophy } from "react-icons/io";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { setFilter } from "../../slices/leagueSlice";
+import { setFilter } from "../../slices/leaguesAvailableSlice";
 import { LiaHockeyPuckSolid } from "react-icons/lia";
 
 const LeagueFilter = () => {
 	const dispatch = useDispatch();
-	const filterSport = useSelector((state) => state.league.filter);
+	const filterSport = useSelector((state) => state.leaguesAvailable.filter);
 
 	const setLeagueFilter = (filter) => {
 		try {

@@ -78,8 +78,6 @@ export const createLeague = asyncHandler(async (req, res) => {
 		console.error(error);
 	}
 
-	console.log(inviteLink);
-
 	res.status(201).json({ league: savedLeague, inviteLink });
 });
 
@@ -156,17 +154,17 @@ export const getAllJoinableLeagues = asyncHandler(async (req, res) => {
  * @route  GET /api/leagues/user/:id
  * @access PRIVATE
  */
-export const getUserLeagues = asyncHandler(async (req, res) => {
+export const getAllJoinedLeagues = asyncHandler(async (req, res) => {
 	const userId = req.params.id;
 
-	if (!mongoose.Types.ObjectId.isValid(userId)) {
+	if (userId === "undefined" || userId === undefined) {
 		res.status(400);
-		throw new Error("Invalid user ID");
+		throw new Error("No user id provided");
 	}
 
 	// find all leagues that the user is a member of
 	const leagues = await League.find({
-		members: { $in: [mongoose.Types.ObjectId(userId)] },
+		members: { $in: userId },
 	});
 
 	if (!leagues) {

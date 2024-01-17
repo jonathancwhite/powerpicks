@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { joinLeague } from "../../../../backend/controllers/leagueController";
-import { joinLeagueByCode } from "../pickems/slices/leagueService";
+import { joinLeagueByCode } from "../pickems/slices/leaguesJoinedSlice";
 import Cookies from "js-cookie";
 
 const LeagueInvite = () => {

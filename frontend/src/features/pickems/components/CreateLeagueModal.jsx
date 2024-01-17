@@ -3,7 +3,7 @@ import { IoMdClose, IoMdArrowBack } from "react-icons/io";
 import { toast } from "react-toastify";
 import SportSelector from "./SportSelector";
 import { useDispatch } from "react-redux";
-import { createLeague } from "../slices/leagueSlice";
+import { createAndJoinLeague } from "../slices/leaguesJoinedSlice";
 import PropTypes from "prop-types";
 
 const CreateLeagueModal = ({ closeModal, user }) => {
@@ -177,10 +177,8 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 				console.groupEnd();
 
 				const league = await dispatch(
-					createLeague({ token, leagueData: formData }),
+					createAndJoinLeague({ token, leagueData: formData }),
 				);
-
-				console.log(league.payload);
 
 				if (league.payload) {
 					const leaguePayload = league.payload;
@@ -261,7 +259,6 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 		if (sportName === null) {
 			return;
 		}
-		console.log(sportName);
 		setFormData({ ...formData, sport: sportName });
 		setCurrentStep(currentStep + 1);
 	};

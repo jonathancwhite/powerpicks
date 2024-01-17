@@ -10,7 +10,7 @@ export const ProtectedRoute = ({ children }) => {
 		window.location.href = `${protocol}//${mainDomainHost}/logout`;
 		return null;
 	} else {
-		console.log("ProtectedRoute -> userInfo detected");
+		// console.log("ProtectedRoute -> userInfo detected");
 	}
 
 	return <>{children}</>;

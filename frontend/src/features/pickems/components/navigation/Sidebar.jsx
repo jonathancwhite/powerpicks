@@ -7,12 +7,12 @@ import { toast } from "react-toastify";
 import { IoCogSharp } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import CreateLeagueModal from "../CreateLeagueModal";
-import { getUserLeagues } from "../../slices/leagueSlice";
+import { getAllJoinedLeagues } from "../../slices/leaguesJoinedSlice";
 
 const Sidebar = () => {
 	const auth = useSelector((state) => state.auth);
-	const { leagues, isLoading, isError, message } = useSelector(
-		(state) => state.league,
+	const { leaguesJoined, isLoading, isError, message } = useSelector(
+		(state) => state.leaguesJoined,
 	);
 
 	const dispatch = useDispatch();
@@ -34,12 +34,11 @@ const Sidebar = () => {
 
 	useEffect(() => {
 		if (isError) {
-			console.log("error");
-			console.log(isError);
+			console.log(message);
 		}
 
-		dispatch(getUserLeagues());
-	}, [isError, message, dispatch]);
+		dispatch(getAllJoinedLeagues(auth.userInfo._id));
+	}, [isError, message, dispatch, auth.userInfo._id]);
 
 	return (
 		<div className='sideBar'>
@@ -91,7 +90,7 @@ const Sidebar = () => {
 							<div className='spinner'></div>
 						</div>
 					) : (
-						leagues.map((league) => (
+						leaguesJoined.map((league) => (
 							<LinkContainer
 								to={`/leagues/${league._id}`}
 								key={league._id}>
