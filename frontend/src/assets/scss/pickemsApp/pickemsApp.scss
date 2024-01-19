@@ -4,6 +4,8 @@
 @import "./components/leagueDisplay";
 @import "./components/sportSelector";
 @import "./components/settings";
+@import "./components/userLeagues";
+@import "./components/membersList";
 
 .pickemsApp {
 	height: 100vh;
@@ -65,6 +67,10 @@
 					font-size: 24px;
 					font-weight: 800;
 					line-height: 32px;
+					span {
+						font-weight: 600;
+						font-size: 20px;
+					}
 				}
 			}
 		}

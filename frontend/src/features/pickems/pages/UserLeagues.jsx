@@ -2,8 +2,12 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { getLeagueById } from "../slices/leagueSlice";
+import { useEffect, useState } from "react";
+import { getLeagueByIdWithDetails } from "../slices/leagueSlice";
+import { IoMdCog } from "react-icons/io";
+import { toast } from "react-toastify";
+import MembersList from "../components/MembersList";
+import CurrentLeagueSettingsModal from "../components/CurrentLeagueSettingsModal";
 
 const UserLeagues = () => {
 	const { id } = useParams();
@@ -14,6 +18,9 @@ const UserLeagues = () => {
 		(state) => state.league,
 	);
 
+	const [showLeagueSettingsModal, setShowLeagueSettingsModal] =
+		useState(false);
+
 	const token = Cookies.get("jwt");
 
 	useEffect(() => {
@@ -22,11 +29,17 @@ const UserLeagues = () => {
 		}
 
 		try {
-			dispatch(getLeagueById({ id, token }));
+			dispatch(getLeagueByIdWithDetails({ id, token }));
 		} catch (error) {
 			console.log(error);
 		}
-	}, [dispatch, id, token, userInfo, navigate]);
+	}, [id, userInfo, navigate]);
+
+	const handleSettingsClick = () => {
+		setShowLeagueSettingsModal(!showLeagueSettingsModal);
+	};
+
+	const isOwner = league && league.createdBy === userInfo._id;
 
 	return (
 		<>
@@ -34,12 +47,52 @@ const UserLeagues = () => {
 				<div className='centeredContainer'>
 					<div className='spinner'></div>
 				</div>
-			) : (
+			) : league && league.members ? (
 				<>
-					<h1>{league.name}</h1>
-					<p>{league.sport}</p>
-					<p>{league.tier}</p>
+					<div className='currentLeague'>
+						<div className='currentLeague__controlBar'>
+							<div className='currentLeague__header'>
+								<h2>{league.name}</h2>
+								<span> {league.sport}</span>
+							</div>
+							<div className='currentLeague__settings'>
+								<button
+									className='btn btn--inline'
+									onClick={handleSettingsClick}>
+									<IoMdCog />
+								</button>
+							</div>
+						</div>
+						<div className='currentLeague__main'>
+							<div className='currentLeague__paper xl'>
+								<div className='centeredContainer'>
+									<h3>Main Panel</h3>
+								</div>
+							</div>
+							<div className='currentLeague__paper sm'>
+								<div className='currentLeague__members'>
+									<MembersList
+										membersList={league.members}
+										isAdmin={isOwner}
+										leagueId={league._id}
+										userId={userInfo._id}
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					{showLeagueSettingsModal ? (
+						<CurrentLeagueSettingsModal
+							isAdmin={isOwner}
+							closeHandler={handleSettingsClick}
+							league={league}
+						/>
+					) : null}
 				</>
+			) : (
+				<div className='centeredContainer'>
+					<p>League data is not available.</p>
+				</div>
 			)}
 		</>
 	);

@@ -1,27 +1,13 @@
 import asyncHandler from "express-async-handler";
 import League from "../models/leagueModel.js";
+import InviteLink from "../models/inviteLinkModel.js";
 import bcrypt from "bcryptjs";
 import { body, validationResult } from "express-validator";
-import mongoose from "mongoose";
 import {
 	createInviteLink,
 	getInviteLinkByCode,
 	getInviteLinkByLeagueId,
 } from "./inviteLinkController.js";
-import InviteLink from "../models/inviteLinkModel.js";
-
-const validate = (validations) => {
-	return async (req, res, next) => {
-		await Promise.all(validations.map((validation) => validation.run(req)));
-
-		const errors = validationResult(req);
-		if (!errors.isEmpty()) {
-			return res.status(400).json({ errors: errors.array() });
-		}
-
-		next();
-	};
-};
 
 /**
  * @desc   Creates a new league from user data
@@ -91,7 +77,6 @@ export const updateLeague = [
 	body("name").optional().trim().isLength({ min: 3 }).escape(),
 	body("isPublic").optional().isBoolean(),
 	body("password").optional().isLength({ min: 6 }),
-	validate,
 	asyncHandler(async (req, res) => {
 		const leagueId = req.params.id;
 		const updateData = req.body;
@@ -290,4 +275,106 @@ export const getLeagueById = asyncHandler(async (req, res) => {
 	}
 
 	res.status(200).json(league);
+});
+
+/**
+ * @desc   Get league by id with members populated
+ * @route  GET/api/leagues/:id/members
+ * @access PRIVATE
+ * @param {string} leagueId - league._id
+ * @deprecated - use getLeagueByIdWithDetails instead
+ */
+export const getLeagueByIdWithMembers = asyncHandler(async (req, res) => {
+	const leagueId = req.params.id;
+
+	const league = await League.findById(leagueId).populate("members");
+
+	if (!league) {
+		res.status(404);
+		throw new Error("League not found");
+	}
+
+	res.status(200).json(league);
+});
+
+/**
+ * @desc    Get league by ID with members and invite links
+ * @route   GET /api/leagues/:id
+ * @access  Private
+ * @returns {object} - the league object
+ */
+export const getLeagueByIdWithDetails = async (req, res) => {
+	try {
+		const leagueId = req.params.id;
+		const user = req.user;
+
+		// Fetch the league and populate members details
+		const league = await League.findById(leagueId).populate(
+			"members",
+			"profilePicture _id username",
+		);
+
+		if (!league) {
+			return res.status(404).json({ message: "League not found" });
+		}
+
+		// Fetch invite links associated with the league
+		const inviteLinks = await InviteLink.find({ leagueId: leagueId });
+
+		// Check if inviteLink array is empty
+		if (inviteLinks.length === 0) {
+			inviteLinks = [
+				await createInviteLink(leagueId, false, 604800000, user),
+			];
+		}
+
+		// remove any expired invite links
+		for (let i = 0; i < inviteLinks.length; i++) {
+			if (inviteLinks[i].expiresAt < new Date()) {
+				// remove expired invite link from array
+				inviteLinks.splice(i, 1);
+			}
+		}
+
+		// Combine league and invite links into one object
+		const leagueWithInviteLinks = {
+			...league.toObject(),
+			inviteLinks,
+		};
+
+		res.json(leagueWithInviteLinks);
+	} catch (error) {
+		console.error(`Error in getLeagueByIdWithDetails: ${error}`);
+		res.status(500).json({ message: "Server error" });
+	}
+};
+
+/**
+ * @desc   Remove member from league
+ * @route  DELETE /api/leagues/:id/members/:memberId
+ * @access PRIVATE
+ * @param  {string} leagueId - league._id
+ * @param  {string} memberId - member._id
+ */
+export const removeMemberById = asyncHandler(async (req, res) => {
+	const { leagueId, memberId } = req.params;
+
+	const league = await League.findById(leagueId);
+
+	if (!league) {
+		res.status(404);
+		throw new Error("League not found");
+	}
+
+	// remove member from league
+	league.members.pull(memberId);
+
+	const updatedLeague = await league.save();
+
+	if (!updatedLeague) {
+		res.status(400);
+		throw new Error("Unable to remove member from league");
+	}
+
+	res.status(200).json(updatedLeague);
 });

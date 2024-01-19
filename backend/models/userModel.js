@@ -29,6 +29,10 @@ const userSchema = mongoose.Schema(
 			type: Date,
 			required: [true, "Please add your date of birth"],
 		},
+		profilePicture: {
+			type: String,
+			default: "generic-cat-ai.webp",
+		},
 	},
 	{
 		timestamps: true,

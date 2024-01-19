@@ -20,6 +20,10 @@ const leagueSchema = mongoose.Schema(
 			enum: ["Free", "Basic", "Premium"],
 			default: "Free",
 		},
+		activeYear: {
+			type: Number,
+			default: new Date().getFullYear(),
+		},
 	},
 	{
 		timestamps: true,

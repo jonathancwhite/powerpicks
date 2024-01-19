@@ -20,9 +20,8 @@ const Logout = () => {
 			dispatch(logout());
 			navigate("/");
 		} catch (error) {
-			toast.error(
-				"User could verified. Please refresh the page and try again.",
-			);
+			console.error(error);
+			navigate("/");
 		}
 		dispatch(logout());
 		navigate("/");

@@ -56,6 +56,13 @@ body {
 		}
 	}
 
+	&--inline {
+		padding: 0.5em;
+		background: rgba(58, 70, 91, 0.5);
+		color: rgb(99, 118, 151);
+		font-size: 26px;
+	}
+
 	&--close,
 	&--back {
 		border: none;
@@ -63,6 +70,18 @@ body {
 		padding: 0;
 		margin: 0;
 		font-size: 30px;
+	}
+	&--remove {
+		background: none;
+		border: none;
+		padding: 0;
+		margin: 0;
+		color: #b92525;
+		font-size: 24px;
+		&:hover {
+			color: #e41414;
+			translate: scale(1.1);
+		}
 	}
 }
 

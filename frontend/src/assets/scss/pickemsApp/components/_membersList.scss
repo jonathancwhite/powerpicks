@@ -1,0 +1,28 @@
+.membersList {
+	&__header {
+		margin-bottom: 1.5rem;
+		font-size: 24px;
+		font-weight: 700;
+		display: flex;
+		justify-content: center;
+		align-content: center;
+	}
+	&__member {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 1rem;
+	}
+
+	&__details {
+		display: flex;
+		align-items: center;
+
+		img {
+			border-radius: 16px;
+			height: 40px;
+			width: 40px;
+			margin-right: 1rem;
+		}
+	}
+}

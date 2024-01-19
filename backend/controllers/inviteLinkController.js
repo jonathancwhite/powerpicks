@@ -17,6 +17,11 @@ export const createInviteLink = async (
 ) => {
 	let code = await generateUniqueInviteCode(); // should we wrap in try catch
 
+	// if code contains a space, generate new code
+	// while (code.includes(" ")) {
+	// 	code = await generateUniqueInviteCode();
+	// }
+
 	const expiresAt = expiresIn ? new Date(Date.now() + expiresIn) : undefined;
 
 	// Create invite link object
@@ -57,18 +62,21 @@ const generateUniqueInviteCode = async () => {
 };
 
 /**
- * @desc Gets an invite link by league id
- * @param {Mongoose.ObjectID} leagueId - the league's id
+ * @desc Gets the first unexpired invite link by league id
+ * @param {string} leagueId - the league's id
  * @returns {Array} - result of InviteLink.find()
- * TODO: this should be getInviteLinksByLeagueId since it returns an array with .find()
  */
 export const getInviteLinkByLeagueId = async (id, user) => {
 	// Await the find operation to get the actual result
 	let inviteLink = await InviteLink.find({ leagueId: id });
 
+	// check if invite link is expired
+	if (inviteLink.expiresAt < new Date()) {
+		inviteLink = [await createInviteLink(id, false, 604800000, user)];
+	}
+
 	// Check if inviteLink array is empty
 	if (inviteLink.length === 0) {
-		// await the creation of the new invite link
 		inviteLink = [await createInviteLink(id, false, 604800000, user)];
 	}
 
@@ -77,13 +85,32 @@ export const getInviteLinkByLeagueId = async (id, user) => {
 
 /**
  * @desc Gets an invite link URL by league id
- * @param {Mongoose.ObjectId} leagueId - the league's id
+ * @param {string} leagueId - the league's id
+ */
+export const getInviteLinkUrlByLeagueId = asyncHandler(async (req, res) => {
+	// Get id (league._id) from req.params
+	const { id } = req.params;
+	if (!id) {
+		res.status(400);
+		throw new Error("League id not provided");
+	}
+	const user = req.user;
+
+	let inviteLinkUrl = await getInviteLinkUrl(id, user);
+	// console.log(inviteLinkUrl);
+
+	res.status(200).json(inviteLinkUrl);
+});
+
+/**
+ * @desc Gets an invite link URL by league id
+ * @param {string} league_id - the league's id
  * @return {string} - the invite link URL
  */
-export const getInviteLinkUrlByLeagueId = async (id) => {
-	const inviteLink = await getInviteLinkByLeagueId(id);
+export const getInviteLinkUrl = async (league_id, user) => {
+	const inviteLink = await getInviteLinkByLeagueId(league_id, user);
 
-	return createInviteLinkUrl(inviteLink._id);
+	return createInviteLinkUrl(inviteLink[0]._id);
 };
 
 /**
@@ -112,18 +139,28 @@ export const deleteInviteLink = asyncHandler(async (req, res) => {
 
 /**
  * @desc creates URL for invite link
- * @param {string} id - the invite link's id
- * @returns {string} - the invite link URL
+ * @param {string} inviteLink_id - the invite link's id
+ * @returns {Promise<string>} - the invite link URL
  */
-export const createInviteLinkUrl = async (id) => {
-	const inviteLink = InviteLink.find({ _id: id });
-	let code = inviteLink.code;
-	const domain = process.env.DOMAIN;
+export const createInviteLinkUrl = async (inviteLink_id) => {
+	try {
+		const inviteLink = await InviteLink.findOne({ _id: inviteLink_id });
 
-	if (process.env.NODE_ENV === "development") {
-		return `http://${domain}:5173/invite/${code}`;
+		if (!inviteLink) {
+			throw new Error("Invite link not found");
+		}
+
+		let code = inviteLink.code;
+		const domain = process.env.DOMAIN;
+
+		if (process.env.NODE_ENV === "development") {
+			return `${domain}:5173/invite/${code}`;
+		}
+		return `${domain}/invite/${code}`;
+	} catch (error) {
+		console.error(`Error in createInviteLinkUrl: ${error}`);
+		throw error;
 	}
-	return `http://${domain}/invite/${code}`;
 };
 
 /**
