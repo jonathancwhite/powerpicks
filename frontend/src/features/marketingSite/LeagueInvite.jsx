@@ -1,20 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { useParams, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { joinLeagueByCode } from "../pickems/slices/leaguesJoinedSlice";
-import Cookies from "js-cookie";
 import { validateUser } from "../../services/authService";
 import { setCredentials, logout } from "../../slices/authSlice";
+import { getLeagueByCode } from "../pickems/slices/leagueSlice";
 
 const LeagueInvite = () => {
 	const { code } = useParams();
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
-	const [error, setError] = useState(null);
 	let token = "";
 	let userInfo = "";
 	const [isLoading, setIsLoading] = useState(true);
+
+	const { league, isError, message } = useSelector((state) => state.league);
+
+	useEffect(() => {
+		if (isError) {
+			console.log(message);
+			toast.error(message);
+		}
+
+		dispatch(getLeagueByCode(code));
+	});
 
 	const handleJoinLeague = async () => {
 		try {
@@ -53,27 +62,40 @@ const LeagueInvite = () => {
 	};
 
 	return (
-		<div className='centeredContainer'>
-			<div className='container'>
-				<div className='row'>
-					<div className='col-12'>
-						<h1>League Invite</h1>
+		<>
+			{league ? (
+				<div className='centeredContainer'>
+					<div className='container'>
+						<div className='row'>
+							<div className='col-12'>
+								<h1>League Invite</h1>
+								<h4>{league.name}</h4>
+							</div>
+						</div>
+						<div className='row'>
+							<div className='col-12'>
+								<p>{code}</p>
+							</div>
+							<div className='col-12'>
+								<button
+									className='btn btn--cta'
+									onClick={handleJoinLeague}>
+									{isLoading ? (
+										<div className='spinner'></div>
+									) : (
+										<>Join</>
+									)}
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div className='row'>
-					<div className='col-12'>
-						<p>{code}</p>
-					</div>
-					<div className='col-12'>
-						<button
-							className='btn btn--cta'
-							onClick={handleJoinLeague}>
-							Join
-						</button>
-					</div>
+			) : (
+				<div className='centeredContainer'>
+					<div className='spinner'></div>
 				</div>
-			</div>
-		</div>
+			)}
+		</>
 	);
 };
 

@@ -7,14 +7,14 @@ const referralSchema = mongoose.Schema(
 			ref: "User",
 			required: true,
 		},
-		referred: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "User",
-			required: true,
-		},
+		referred: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 		code: {
 			type: String,
 			required: true,
+		},
+		uses: {
+			type: Number,
+			default: 0,
 		},
 	},
 	{

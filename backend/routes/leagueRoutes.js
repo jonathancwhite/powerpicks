@@ -8,6 +8,7 @@ import {
 	getAllJoinableLeagues,
 	getAllJoinedLeagues,
 	joinLeagueByCode,
+	getLeagueByCode,
 	getLeagueById,
 	getLeagueByIdWithDetails,
 	removeMemberById,
@@ -24,6 +25,7 @@ router.get("/:id", protect, getLeagueById);
 router.get("/:id/invite", protect, getInviteLinkUrlByLeagueId);
 router.get("/:id/details", protect, getLeagueByIdWithDetails);
 router.delete("/:id/members/:memberId", protect, removeMemberById);
+router.get("/code/:code", getLeagueByCode);
 
 router.get("/hello", (req, res) => {
 	res.status(200).json({

@@ -117,6 +117,24 @@ export const getInviteLinkUrlByLeagueId = createAsyncThunk(
 	},
 );
 
+export const getLeagueByCode = createAsyncThunk(
+	"league/getLeagueByCode",
+	async (code, thunkAPI) => {
+		try {
+			const result = await leagueService.getLeagueByCode(code);
+			return result;
+		} catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+			return thunkAPI.rejectWithValue(message);
+		}
+	},
+);
+
 const leagueSlice = createSlice({
 	name: "league",
 	initialState: initialState,
@@ -180,6 +198,19 @@ const leagueSlice = createSlice({
 			})
 			.addCase(getInviteLinkUrlByLeagueId.rejected, (state, action) => {
 				// state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			.addCase(getLeagueByCode.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getLeagueByCode.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.league = action.payload;
+			})
+			.addCase(getLeagueByCode.rejected, (state, action) => {
+				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
 			});

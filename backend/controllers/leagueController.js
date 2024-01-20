@@ -261,6 +261,32 @@ export const joinLeagueByCode = asyncHandler(async (req, res) => {
 });
 
 /**
+ * @desc   Get league by code
+ * @route  GET /api/leagues/code/:code
+ * @access PUBLIC
+ * @param {string} code - the invite link code
+ */
+export const getLeagueByCode = asyncHandler(async (req, res) => {
+	const { code } = req.params;
+
+	const inviteLink = await getInviteLinkByCode(code);
+
+	if (!inviteLink) {
+		res.status(400);
+		throw new Error("Invalid invite link");
+	}
+
+	const league = await League.findById(inviteLink.leagueId);
+
+	if (!league) {
+		res.status(400);
+		throw new Error("Invalid invite link");
+	}
+
+	res.status(200).json(league);
+});
+
+/**
  * @desc  Get league by id
  * @route GET /api/leagues/:id
  * @access PRIVATE

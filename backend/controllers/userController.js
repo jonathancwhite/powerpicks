@@ -20,11 +20,14 @@ const registerUser = asyncHandler(async (req, res) => {
 	} = req.body;
 
 	const userExists = await User.findOne({ email });
+	let referralRegistered = null;
 
 	if (userExists) {
 		res.status(400);
 		throw new Error("User already exists");
 	}
+
+	let profilePicture = generateRandomProfilePicture();
 
 	const user = await User.create({
 		username,
@@ -33,18 +36,30 @@ const registerUser = asyncHandler(async (req, res) => {
 		email,
 		password,
 		dateOfBirth,
+		profilePicture,
 	});
 
 	if (referral) {
-		// create new referral document
+		referralRegistered = await registerReferralCodeUse(referral, user);
 	}
 
 	if (user) {
 		generateToken(res, user._id);
 
+		if (referralRegistered !== null) {
+			res.status(201).json({
+				_id: user._id,
+				username: user.username,
+				name: user.firstName + " " + user.lastName,
+				email: user.email,
+				referralUsed: referralRegistered,
+			});
+		}
+
 		res.status(201).json({
 			_id: user._id,
-			name: user.name,
+			username: user.username,
+			name: user.firstName + " " + user.lastName,
 			email: user.email,
 		});
 	} else {
@@ -95,13 +110,20 @@ const getUserProfile = asyncHandler(async (req, res) => {
 	}
 });
 
-// @desc    Logout user / clear cookie
-// @route   POST /api/users/logout
-// @access  Public
+/**
+ * @desc    Logout user / clear cookie
+ * @route   POST /api/users/logout
+ * @access  Public
+ */
 const logoutUser = (req, res) => {
-	res.cookie("jwt", "", {
+	let token = "";
+	// create cookie with same name, but expired to clear
+	res.cookie("jwt", token, {
 		httpOnly: true,
+		secure: false,
+		sameSite: "lax",
 		expires: new Date(0),
+		domain: ".jcwdev.local",
 	});
 	res.status(200).json({ message: "Logged out successfully" });
 };
@@ -144,6 +166,21 @@ const validateUser = async (req, res) => {
 			errorMessage: error,
 		});
 	}
+};
+
+/**
+ * @desc    Generate a random profile picture
+ * @returns {string} profilePicture
+ */
+const generateRandomProfilePicture = () => {
+	let animals = ["cat", "dog", "tiger", "bird", "bear", "fox", "otter"];
+
+	// get random animal
+	let animal = animals[Math.floor(Math.random() * animals.length)];
+
+	let profilePicture = `generic-${animal}-ai.webp`;
+
+	return profilePicture;
 };
 
 export { registerUser, authUser, getUserProfile, logoutUser, validateUser };

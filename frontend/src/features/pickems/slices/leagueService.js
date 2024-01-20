@@ -74,9 +74,15 @@ export const getInviteLinkUrlByLeagueId = async (leagueId, token) => {
 	return response.data;
 };
 
+export const getLeagueByCode = async (code) => {
+	const response = await axios.get(`${LEAGUES_URL}/code/${code}`);
+	return response.data;
+};
+
 const leagueService = {
 	updateLeague,
 	getLeagueById,
+	getLeagueByCode,
 	getLeagueByIdWithDetails,
 	getInviteLinkUrlByLeagueId,
 };
