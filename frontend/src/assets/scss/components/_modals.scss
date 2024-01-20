@@ -7,7 +7,36 @@
 	justify-content: center;
 	top: 0;
 	left: 0;
-	z-index: 9999;
+	z-index: 102;
+}
+
+.modal.settings.small {
+	position: unset;
+	width: unset;
+	height: unset;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 102;
+
+	.modal-backdrop {
+		position: absolute;
+		transition: unset;
+		background-color: transparent;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		.modal-item {
+			position: absolute;
+			left: 50svw;
+			top: 13svh;
+			transform: unset;
+			width: max-content;
+			.modal-content {
+				margin: 0;
+			}
+		}
+	}
 }
 
 .modal-backdrop {
@@ -21,7 +50,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	z-index: 101;
+	z-index: 103;
 }
 
 .modal-item {
@@ -139,14 +168,12 @@
 .current-league-modal {
 	width: max-content;
 	height: auto;
-	padding: 24px;
 	border-radius: 24px;
 	box-shadow: 1px 1px 10px #18202f;
 	background: #283245;
-	overflow: auto;
 	color: #fff;
 	background: #2d3649;
-	z-index: 102;
+	z-index: 104;
 
 	&-settings-item {
 		display: flex;

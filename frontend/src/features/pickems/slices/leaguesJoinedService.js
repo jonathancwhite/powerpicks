@@ -15,7 +15,20 @@ export const getAllJoinedLeagues = async (id, token) => {
 	return response.data;
 };
 
+export const joinLeagueByCode = async (code, token) => {
+	let user = localStorage.getItem("userInfo");
+	const config = {
+		headers: {
+			authorization: `Bearer ${token}`,
+			user: user,
+		},
+	};
+	const response = await axios.put(`${LEAGUES_URL}/join/${code}`, {}, config);
+	return response.data;
+};
+
 const leaguesJoinedService = {
+	joinLeagueByCode,
 	getAllJoinedLeagues,
 };
 

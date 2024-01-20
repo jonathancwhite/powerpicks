@@ -58,9 +58,8 @@ export const getAllJoinedLeagues = createAsyncThunk(
 
 export const joinLeagueByCode = createAsyncThunk(
 	"leagues/joinLeagueByCode",
-	async (code, thunkAPI) => {
+	async ({ code, token }, thunkAPI) => {
 		try {
-			const token = Cookies.get("jwt");
 			const result = await leaguesJoinedService.joinLeagueByCode(
 				code,
 				token,

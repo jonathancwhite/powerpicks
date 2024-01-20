@@ -61,6 +61,13 @@ const UserLeagues = () => {
 									onClick={handleSettingsClick}>
 									<IoMdCog />
 								</button>
+								{showLeagueSettingsModal ? (
+									<CurrentLeagueSettingsModal
+										isAdmin={isOwner}
+										closeHandler={handleSettingsClick}
+										league={league}
+									/>
+								) : null}
 							</div>
 						</div>
 						<div className='currentLeague__main'>
@@ -81,13 +88,6 @@ const UserLeagues = () => {
 							</div>
 						</div>
 					</div>
-					{showLeagueSettingsModal ? (
-						<CurrentLeagueSettingsModal
-							isAdmin={isOwner}
-							closeHandler={handleSettingsClick}
-							league={league}
-						/>
-					) : null}
 				</>
 			) : (
 				<div className='centeredContainer'>

@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const CurrentLeagueSettingsModal = ({ isAdmin, closeHandler, league }) => {
+	const navigate = useNavigate();
+
 	const [isCopied, setIsCopied] = useState(false);
 
 	const handleModalContentClick = (e) => {
@@ -28,8 +31,31 @@ const CurrentLeagueSettingsModal = ({ isAdmin, closeHandler, league }) => {
 		}
 	};
 
+	const handleTransfer = async () => {
+		if (isAdmin) {
+			closeHandler();
+			// will need to select a new owner
+			toast.info(`You have transfered ownership of ${league.name} to: `);
+		} else {
+			// leave league logic (await)
+			closeHandler();
+			console.log("leave team");
+			toast.info(`You have left ${league.name}`);
+			navigate("/");
+		}
+	};
+
+	const handleDeleteLeague = async () => {
+		if (isAdmin) {
+			// delete league logic
+			console.log("delete league");
+			toast.info(`${league.name} would have been deleted`);
+			navigate("/");
+		}
+	};
+
 	return (
-		<div className='modal small'>
+		<div className='modal settings small'>
 			<div className='modal-backdrop' onClick={closeHandler}>
 				<div className='modal-item' onClick={handleModalContentClick}>
 					<div className='current-league-modal'>
@@ -48,6 +74,37 @@ const CurrentLeagueSettingsModal = ({ isAdmin, closeHandler, league }) => {
 										<p>Invite league members</p>
 									</>
 								)}
+							</div>
+							<div
+								className='current-league-modal-settings-item transfer'
+								onClick={handleTransfer}>
+								{isAdmin ? (
+									<>
+										<h4>Transfer Ownership</h4>
+										<p>
+											Transfer ownership of this league to
+											another member
+										</p>
+									</>
+								) : (
+									<>
+										<h4>Leave League</h4>
+										<p>Leave this league</p>
+									</>
+								)}
+							</div>
+							<div
+								className='current-league-modal-settings-item delete'
+								onClick={handleDeleteLeague}>
+								{isAdmin ? (
+									<>
+										<h4>Close League</h4>
+										<p>
+											This will permanently delete the
+											league.
+										</p>
+									</>
+								) : null}
 							</div>
 						</div>
 					</div>

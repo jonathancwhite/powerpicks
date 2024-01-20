@@ -1,42 +1,56 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { joinLeague } from "../../../../backend/controllers/leagueController";
+import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { joinLeagueByCode } from "../pickems/slices/leaguesJoinedSlice";
 import Cookies from "js-cookie";
+import { validateUser } from "../../services/authService";
+import { setCredentials, logout } from "../../slices/authSlice";
 
 const LeagueInvite = () => {
 	const { code } = useParams();
-	// const history = useHistory();
 	const dispatch = useDispatch();
-	const { userInfo } = useSelector((state) => state.auth);
+	const navigate = useNavigate();
 	const [error, setError] = useState(null);
-	// get jwt from cookies
-	const token = Cookies.get("jwt");
+	let token = "";
+	let userInfo = "";
+	const [isLoading, setIsLoading] = useState(true);
 
-	toast.info(code);
+	const handleJoinLeague = async () => {
+		try {
+			setIsLoading(true);
+			userInfo = await validateUser();
+			if (userInfo) {
+				let response = dispatch(setCredentials(userInfo));
+				localStorage.setItem("userInfo", JSON.stringify(userInfo));
+				if (response.payload) {
+					token = response.payload;
+					console.log(token);
 
-	// check if user is logged in
-	useEffect(() => {
-		if (!userInfo || !token) {
-			history.push("/login");
-		} else {
-			const league = dispatch(joinLeagueByCode({ code, token }));
-			if (league.payload) {
-				const leaguePayload = league.payload;
-				const leagueId = leaguePayload._id;
-				toast.info(`http://jcwdev.local/leagues/${leagueId}`);
+					const league = await dispatch(
+						joinLeagueByCode({ code, token }),
+					);
+
+					if (league.payload.name) {
+						toast.success(
+							`Joined ${league.payload.name} Successfully`,
+						);
+
+						const currentHost = window.location.host;
+
+						// Redirect to the login page on the main domain
+						const protocol = window.location.protocol;
+						const dashboardUrl = `${protocol}//app.${currentHost}/`;
+						window.location.href = dashboardUrl;
+					}
+				}
+			} else {
+				dispatch(logout());
 			}
-
-			if (league.error) {
-				toast.error(league.error.message);
-				console.error(league.error);
-			}
+		} catch (error) {
+			dispatch(logout());
 		}
-	});
-
-	// do we get all league info on page load so that the user knows the league name and total member number?
+	};
 
 	return (
 		<div className='centeredContainer'>
@@ -49,6 +63,13 @@ const LeagueInvite = () => {
 				<div className='row'>
 					<div className='col-12'>
 						<p>{code}</p>
+					</div>
+					<div className='col-12'>
+						<button
+							className='btn btn--cta'
+							onClick={handleJoinLeague}>
+							Join
+						</button>
 					</div>
 				</div>
 			</div>

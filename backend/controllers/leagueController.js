@@ -225,11 +225,8 @@ export const joinLeagueByCode = asyncHandler(async (req, res) => {
 	}
 
 	// find invite link by code
-	const inviteLink = getInviteLinkByCode(code);
-
-	console.group(`joinLeagueByCode - leagueController.js`);
-	console.log(inviteLink);
-	console.groupEnd();
+	const inviteLink = await getInviteLinkByCode(code);
+	// console.log(inviteLink);
 
 	if (!inviteLink || inviteLink.expiresAt < new Date()) {
 		res.status(400);
@@ -237,6 +234,12 @@ export const joinLeagueByCode = asyncHandler(async (req, res) => {
 	}
 
 	const league = await League.findById(inviteLink.leagueId);
+
+	if (league.members.includes(userId)) {
+		res.status(400);
+		throw new Error("User is already a member of this league");
+	}
+
 	league.members.push(userId);
 	const didJoin = await league.save();
 
@@ -247,14 +250,14 @@ export const joinLeagueByCode = asyncHandler(async (req, res) => {
 			{ $inc: { numOfUses: 1 } },
 		);
 
-		res.status(200).json({
-			message: "Joined league successfully",
-			league: league,
-		});
+		res.status(200).json(league);
 	} else {
 		res.status(400);
 		throw new Error("Unable to join league");
 	}
+
+	res.status(400);
+	throw new Error("Unable to join league");
 });
 
 /**

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useLoginMutation } from "../../slices/userSlice.js";
 import { setCredentials } from "../../slices/authSlice.js";
 
@@ -24,6 +24,9 @@ const LoginForm = () => {
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const location = useLocation();
+	const from = location.state?.from || "/";
+
 	const [login, { isLoading }] = useLoginMutation();
 
 	const [formData, setFormData] = useState(initialFormData);
@@ -35,20 +38,24 @@ const LoginForm = () => {
 	const handleFormSubmit = async () => {
 		try {
 			const user = await login(formData).unwrap();
-			dispatch(setCredentials(user));
-			navigate("/");
+			let payload = dispatch(setCredentials(user));
+
+			if (payload.payload.message === "User logged in successfully") {
+				toast.success(payload.payload.message);
+				navigate(from);
+			}
 		} catch (err) {
 			toast.error(err?.data?.message || err.error);
 		}
 	};
 
+	// redundant?
 	useEffect(() => {
-		if (userInfo) {
+		if (userInfo && location.pathname === "/login") {
 			toast.success("User logged in successfully");
-
-			navigate("/");
+			navigate(from);
 		}
-	}, [navigate, userInfo]);
+	}, [navigate, userInfo, from, location.pathname]);
 
 	return (
 		<div className='login'>

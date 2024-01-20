@@ -22,12 +22,12 @@ const SignUpForm = () => {
 
 	if (inDevelopment) {
 		initialFormData = {
-			username: "testjon",
-			email: "testemail@email.com",
+			username: "jetlinerrr",
+			email: "testjetlinerr@email.com",
 			referral: "",
-			firstName: "Jon",
-			lastName: "Test",
-			dateOfBirth: "02-18-1997",
+			firstName: "Jackson",
+			lastName: "Theimer",
+			dateOfBirth: "12-10-1996",
 			password: "iRZygRV*BsAy",
 			agreeToTerms: true,
 		};
@@ -107,6 +107,7 @@ const SignUpForm = () => {
 		};
 	};
 
+	// will need to check database for existing username while typing
 	const handleInputChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 		setFormErrors({ ...formErrors, [e.target.name]: "" });
