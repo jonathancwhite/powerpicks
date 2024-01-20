@@ -10,11 +10,12 @@ import { getLeagueByCode } from "../pickems/slices/leagueSlice";
 const LeagueInvite = () => {
 	const { code } = useParams();
 	const dispatch = useDispatch();
-	let token = "";
-	let userInfo = "";
-	const [isLoading, setIsLoading] = useState(true);
+	const [isJoinLoading, setIsJoinLoading] = useState(false);
 
-	const { league, isError, message } = useSelector((state) => state.league);
+	const { league, isLoading, isError, message } = useSelector(
+		(state) => state.league,
+	);
+	const { userInfo } = useSelector((state) => state.auth);
 
 	useEffect(() => {
 		if (isError) {
@@ -23,77 +24,115 @@ const LeagueInvite = () => {
 		}
 
 		dispatch(getLeagueByCode(code));
-	});
+	}, [code]);
 
 	const handleJoinLeague = async () => {
 		try {
-			setIsLoading(true);
-			userInfo = await validateUser();
-			if (userInfo) {
-				let response = dispatch(setCredentials(userInfo));
-				localStorage.setItem("userInfo", JSON.stringify(userInfo));
-				if (response.payload) {
-					token = response.payload;
-					console.log(token);
+			const token = userInfo.token;
 
-					const league = await dispatch(
-						joinLeagueByCode({ code, token }),
-					);
+			setIsJoinLoading(true);
 
-					if (league.payload.name) {
-						toast.success(
-							`Joined ${league.payload.name} Successfully`,
-						);
+			const league = await dispatch(joinLeagueByCode({ code, token }));
 
-						const currentHost = window.location.host;
+			if (league.payload.name) {
+				toast.success(`Joined ${league.payload.name} Successfully`);
 
-						// Redirect to the login page on the main domain
-						const protocol = window.location.protocol;
-						const dashboardUrl = `${protocol}//app.${currentHost}/`;
-						window.location.href = dashboardUrl;
-					}
-				}
-			} else {
-				dispatch(logout());
+				const currentHost = window.location.host;
+
+				// Redirect to the login page on the main domain
+				const protocol = window.location.protocol;
+				const dashboardUrl = `${protocol}//app.${currentHost}/`;
+				window.location.href = dashboardUrl;
 			}
 		} catch (error) {
-			dispatch(logout());
+			console.log(error);
 		}
 	};
 
+	const handleLogin = async () => {};
+
 	return (
 		<>
-			{league ? (
-				<div className='centeredContainer'>
-					<div className='container'>
-						<div className='row'>
-							<div className='col-12'>
-								<h1>League Invite</h1>
-								<h4>{league.name}</h4>
+			{league && league.members ? (
+				<div className='leagueInvite'>
+					<div className='leagueInvite__container'>
+						<div className='leagueInvite__details'>
+							<div className='leagueInvite__header'>
+								<p>You have been invited to</p>
+								<h2>{league.name}</h2>
+								<p>
+									{league.sport} Pickems - {league.tier} Tier
+								</p>
+							</div>
+							<div className='leagueInvite__activeMembers'>
+								<p>
+									{league.members.length}/{league.maxPlayers}{" "}
+									Players
+								</p>
+							</div>
+							<div className='leagueInvite__user'>
+								{userInfo && userInfo.profilePicture ? (
+									<>
+										<img
+											src={`/pfp/${userInfo.profilePicture}`}
+											alt=''
+										/>
+										<h4>@{userInfo.username}</h4>
+									</>
+								) : (
+									<>
+										<h4>Please Log In To Join</h4>
+									</>
+								)}
+							</div>
+							<div className='leagueInvite__actions'>
+								{userInfo ? (
+									<button
+										className='btn btn--cta'
+										onClick={handleJoinLeague}>
+										{isJoinLoading ? (
+											<div className='spinner'></div>
+										) : (
+											<span>Join {league.name}</span>
+										)}
+									</button>
+								) : (
+									<button
+										className='btn btn--secondary'
+										onClick={handleLogin}>
+										Login
+									</button>
+								)}
 							</div>
 						</div>
-						<div className='row'>
-							<div className='col-12'>
-								<p>{code}</p>
+
+						<div className='leagueInvite__members'>
+							<div className='leagueInvite__members--title'>
+								<h2>Current Members:</h2>
 							</div>
-							<div className='col-12'>
-								<button
-									className='btn btn--cta'
-									onClick={handleJoinLeague}>
-									{isLoading ? (
-										<div className='spinner'></div>
-									) : (
-										<>Join</>
-									)}
-								</button>
+							<div className='leagueInvite__currentMembers'>
+								{league.members.map((member) => (
+									<h4 key={member._id}>@{member.username}</h4>
+								))}
 							</div>
 						</div>
 					</div>
 				</div>
 			) : (
-				<div className='centeredContainer'>
-					<div className='spinner'></div>
-				</div>
+				<>
+					{isLoading ? (
+						<div className='leagueInvite'>
+							<div className='centeredContainer'>
+								<div className='spinner'></div>
+							</div>
+						</div>
+					) : (
+						<h4>
+							Oops. Looks like this invite is either invalid or
+							expired.
+						</h4>
+					)}
+				</>
 			)}
 		</>
 	);

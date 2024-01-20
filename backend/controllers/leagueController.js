@@ -99,6 +99,33 @@ export const updateLeague = [
 	}),
 ];
 
+export const deleteLeague = asyncHandler(async (req, res) => {
+	const league_id = req.params.id;
+	const user = req.user;
+
+	if (!user) {
+		res.status(400);
+		throw new Error("No user provided");
+	}
+
+	// find the league to check the owner
+	const league = await League.findById(league_id);
+
+	if (!league) {
+		res.status(404);
+		throw new Error("League not found");
+	}
+
+	if (league.createdBy !== user._id) {
+		res.status(403);
+		throw new Error("Unauthorized to delete league");
+	}
+
+	// delete league or set inactive?
+
+	// if we are keeping history, probably inactive?
+});
+
 /**
  * @desc   Get ALL active and joinable leagues
  * @route  GET /api/leagues
@@ -276,11 +303,13 @@ export const getLeagueByCode = asyncHandler(async (req, res) => {
 		throw new Error("Invalid invite link");
 	}
 
-	const league = await League.findById(inviteLink.leagueId);
+	const league = await League.findById(inviteLink.leagueId).populate(
+		"members",
+	);
 
 	if (!league) {
 		res.status(400);
-		throw new Error("Invalid invite link");
+		throw new Error("No league found");
 	}
 
 	res.status(200).json(league);

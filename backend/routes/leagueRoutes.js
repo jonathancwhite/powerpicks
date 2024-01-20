@@ -5,6 +5,7 @@ const router = express.Router();
 import {
 	createLeague,
 	updateLeague,
+	deleteLeague,
 	getAllJoinableLeagues,
 	getAllJoinedLeagues,
 	joinLeagueByCode,
@@ -18,6 +19,7 @@ import { getInviteLinkUrlByLeagueId } from "../controllers/inviteLinkController.
 
 router.post("/", protect, createLeague);
 router.put("/:id", protect, updateLeague);
+router.delete("/:id", protect, deleteLeague);
 router.get("/", protect, getAllJoinableLeagues);
 router.get("/user/:id", protect, getAllJoinedLeagues);
 router.put("/join/:code", protect, joinLeagueByCode);

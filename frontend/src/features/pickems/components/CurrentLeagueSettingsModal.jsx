@@ -61,7 +61,7 @@ const CurrentLeagueSettingsModal = ({ isAdmin, closeHandler, league }) => {
 					<div className='current-league-modal'>
 						<div className='modal-content'>
 							<div
-								className='current-league-modal-settings-item leagueInvite'
+								className='current-league-modal-settings-item leagueInviteURL'
 								onClick={copyLeagueInviteURL}>
 								{isCopied ? (
 									<>

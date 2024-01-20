@@ -74,8 +74,28 @@ export const getInviteLinkUrlByLeagueId = async (leagueId, token) => {
 	return response.data;
 };
 
+/**
+ * @desc  Gets league by InviteLink code
+ * @param {string} code - InviteLink code
+ * @returns {object} response - League Object
+ */
 export const getLeagueByCode = async (code) => {
 	const response = await axios.get(`${LEAGUES_URL}/code/${code}`);
+	return response.data;
+};
+
+/**
+ * @desc   Delete league
+ */
+export const deleteLeague = async (id, token) => {
+	let user = localStorage.getItem("userInfo");
+	const config = {
+		headers: {
+			authorization: `Bearer ${token}`,
+			user: user,
+		},
+	};
+	const response = await axios.delete(`${LEAGUES_URL}/${id}`, config);
 	return response.data;
 };
 
@@ -85,6 +105,7 @@ const leagueService = {
 	getLeagueByCode,
 	getLeagueByIdWithDetails,
 	getInviteLinkUrlByLeagueId,
+	deleteLeague,
 };
 
 export default leagueService;

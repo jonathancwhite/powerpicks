@@ -135,6 +135,24 @@ export const getLeagueByCode = createAsyncThunk(
 	},
 );
 
+export const deleteLeague = createAsyncThunk(
+	"league/deleteLeague",
+	async ({ id, token }, thunkAPI) => {
+		try {
+			const result = await leagueService.deleteLeague(id, token);
+			return result;
+		} catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+			return thunkAPI.rejectWithValue(message);
+		}
+	},
+);
+
 const leagueSlice = createSlice({
 	name: "league",
 	initialState: initialState,
@@ -210,6 +228,19 @@ const leagueSlice = createSlice({
 				state.league = action.payload;
 			})
 			.addCase(getLeagueByCode.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			.addCase(deleteLeague.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteLeague.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.league = action.payload;
+			})
+			.addCase(deleteLeague.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
