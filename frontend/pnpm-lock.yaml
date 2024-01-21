@@ -22,6 +22,9 @@ dependencies:
   react-icons:
     specifier: ^4.11.0
     version: 4.11.0(react@18.2.0)
+  react-progressive-image:
+    specifier: ^0.6.0
+    version: 0.6.0(react-dom@18.2.0)(react@18.2.0)
   react-redux:
     specifier: ^9.0.4
     version: 9.0.4(@types/react@18.2.15)(react@18.2.0)
@@ -1932,6 +1935,16 @@ packages:
 
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+
+  /react-progressive-image@0.6.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-/yc8N3lHskPQkubm+QH5RIQHA89Sigv7p9UkvbHzKVE2OBb6njhmquk7GW/f2Y//mzk5DesFHN/hV5RWhd6IXA==}
+    peerDependencies:
+      react: ^15.0.0-0 || ^16.0.0-0
+      react-dom: ^15.0.0-0 || ^16.0.0-0
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
 
   /react-redux@9.0.4(@types/react@18.2.15)(react@18.2.0):
     resolution: {integrity: sha512-9J1xh8sWO0vYq2sCxK2My/QO7MzUMRi3rpiILP/+tDr8krBHixC6JMM17fMK88+Oh3e4Ae6/sHIhNBgkUivwFA==}

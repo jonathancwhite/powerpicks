@@ -83,6 +83,15 @@ body {
 			translate: scale(1.1);
 		}
 	}
+
+	&--disabled {
+		background: #747474;
+		color: #fff;
+		cursor: not-allowed;
+		&:hover {
+			background: #585858;
+		}
+	}
 }
 
 .container {

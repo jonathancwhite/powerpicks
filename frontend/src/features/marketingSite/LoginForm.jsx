@@ -20,12 +20,7 @@ const LoginForm = () => {
 		};
 	}
 
-	const { userInfo } = useSelector((state) => state.auth);
-
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
-	const location = useLocation();
-	const from = location.state?.from || "/";
 
 	const [login, { isLoading }] = useLoginMutation();
 
@@ -38,24 +33,15 @@ const LoginForm = () => {
 	const handleFormSubmit = async () => {
 		try {
 			const user = await login(formData).unwrap();
-			let payload = dispatch(setCredentials(user));
+			let credentials = dispatch(setCredentials(user));
 
-			if (payload.payload.message === "User logged in successfully") {
-				toast.success(payload.payload.message);
-				navigate(from);
+			if (credentials.payload.message === "User logged in successfully") {
+				toast.success(credentials.payload.message);
 			}
 		} catch (err) {
 			toast.error(err?.data?.message || err.error);
 		}
 	};
-
-	// redundant?
-	useEffect(() => {
-		if (userInfo && location.pathname === "/login") {
-			toast.success("User logged in successfully");
-			navigate(from);
-		}
-	}, [navigate, userInfo, from, location.pathname]);
 
 	return (
 		<div className='login'>

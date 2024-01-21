@@ -3,30 +3,73 @@ import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { joinLeagueByCode } from "../pickems/slices/leaguesJoinedSlice";
-import { validateUser } from "../../services/authService";
-import { setCredentials, logout } from "../../slices/authSlice";
 import { getLeagueByCode } from "../pickems/slices/leagueSlice";
+import LoginModal from "./LoginModal";
 
 const LeagueInvite = () => {
 	const { code } = useParams();
 	const dispatch = useDispatch();
 	const [isJoinLoading, setIsJoinLoading] = useState(false);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [displayedMessages, setDisplayedMessages] = useState([]);
 
 	const { league, isLoading, isError, message } = useSelector(
 		(state) => state.league,
 	);
 	const { userInfo } = useSelector((state) => state.auth);
+	const [isUserInLeague, setIsUserInLeague] = useState(false);
+
+	const checkIfUserIsInLeague = () => {
+		if (league && league.members) {
+			if (league.members.some((member) => member._id === userInfo._id)) {
+				setIsUserInLeague(true);
+				showToastError("You are already in this league");
+			}
+		}
+	};
+
+	const showToast = (message) => {
+		if (!displayedMessages.includes(message)) {
+			toast.success(message);
+			// Add the message to the tracking list
+			setDisplayedMessages([...displayedMessages, message]);
+		}
+	};
+
+	const showToastError = (message) => {
+		if (!displayedMessages.includes(message)) {
+			toast.error(message);
+			// Add the message to the tracking list
+			setDisplayedMessages([...displayedMessages, message]);
+		}
+	};
 
 	useEffect(() => {
+		// console.log(userInfo);
 		if (isError) {
 			console.log(message);
-			toast.error(message);
+			showToastError(message);
 		}
 
-		dispatch(getLeagueByCode(code));
-	}, [code]);
+		if (userInfo) {
+			setIsModalOpen(false);
+			if (league && league.members) {
+				console.log("League and members are loaded");
+				checkIfUserIsInLeague();
+			}
+		}
+
+		if (league.length < 1) {
+			dispatch(getLeagueByCode(code));
+		}
+	}, [code, dispatch, userInfo, isError, message, league]);
 
 	const handleJoinLeague = async () => {
+		if (isUserInLeague) {
+			toast.info("You are already in this league");
+			return;
+		}
+
 		try {
 			const token = userInfo.token;
 
@@ -35,7 +78,7 @@ const LeagueInvite = () => {
 			const league = await dispatch(joinLeagueByCode({ code, token }));
 
 			if (league.payload.name) {
-				toast.success(`Joined ${league.payload.name} Successfully`);
+				showToast(`Joined ${league.payload.name} Successfully`);
 
 				const currentHost = window.location.host;
 
@@ -49,7 +92,9 @@ const LeagueInvite = () => {
 		}
 	};
 
-	const handleLogin = async () => {};
+	const handleLogin = async () => {
+		setIsModalOpen(!isModalOpen);
+	};
 
 	return (
 		<>
@@ -88,8 +133,13 @@ const LeagueInvite = () => {
 							<div className='leagueInvite__actions'>
 								{userInfo ? (
 									<button
-										className='btn btn--cta'
-										onClick={handleJoinLeague}>
+										className={
+											isUserInLeague
+												? "btn btn--cta btn--disabled"
+												: `btn btn--cta`
+										}
+										onClick={handleJoinLeague}
+										disabled={isUserInLeague}>
 										{isJoinLoading ? (
 											<div className='spinner'></div>
 										) : (
@@ -98,7 +148,7 @@ const LeagueInvite = () => {
 									</button>
 								) : (
 									<button
-										className='btn btn--secondary'
+										className='btn btn--cta'
 										onClick={handleLogin}>
 										Login
 									</button>
@@ -134,6 +184,7 @@ const LeagueInvite = () => {
 					)}
 				</>
 			)}
+			{isModalOpen ? <LoginModal closeModal={handleLogin} /> : null}
 		</>
 	);
 };
