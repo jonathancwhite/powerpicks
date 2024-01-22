@@ -5,7 +5,7 @@ import { redirect } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { GoChevronDown } from "react-icons/go";
 import { toast } from "react-toastify";
-import { useLogoutMutation } from "../../slices/userSlice";
+import { useLogoutMutation } from "../../slices/authMutations";
 import { logout } from "../../slices/authSlice";
 
 const DashboardHeader = () => {

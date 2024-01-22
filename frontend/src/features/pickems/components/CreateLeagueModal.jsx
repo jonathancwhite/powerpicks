@@ -169,7 +169,7 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 				formData.isPublic = formData.isPublic === "true" ? true : false;
 
 				let userObject = JSON.parse(localStorage.getItem("userInfo"));
-				let token = userObject.jwt;
+				let token = userObject.token;
 
 				console.group(`Create League - CreateLeagueModal.jsx`);
 				console.log(`token:`, token);
@@ -223,14 +223,15 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 				if (isCopied) {
 					toast.info("Copied to clipboard!");
 				} else {
-					toast.error(
-						`Oops, unable to copy! Your invite link: ${leagueInviteURL}`,
-						{
-							autoClose: false,
-							hideProgressBar: true,
-							closeOnClick: false,
-						},
-					);
+					// toast.error(
+					// 	`Oops, unable to copy! Your invite link: ${leagueInviteURL}`,
+					// 	{
+					// 		autoClose: false,
+					// 		hideProgressBar: true,
+					// 		closeOnClick: false,
+					// 	},
+					// );
+					console.log(leagueInviteURL);
 				}
 			} catch (err) {
 				console.error("Fallback: Oops, unable to copy", err);

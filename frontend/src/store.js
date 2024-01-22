@@ -4,14 +4,21 @@ import authReducer from "./slices/authSlice.js";
 import leagueReducer from "./features/pickems/slices/leagueSlice.js";
 import leaguesJoinedReducer from "./features/pickems/slices/leaguesJoinedSlice.js";
 import leaguesAvailableReducer from "./features/pickems/slices/leaguesAvailableSlice.js";
+// import inviteLinkReducer from "./features/pickems/slices/inviteLinkSlice.js";
+import profileReducer from "./features/pickems/slices/profileSlice.js";
 
+/**
+ * Removed inviteLinks for now since they are populated inside of currentLeague
+ */
 export const store = configureStore({
 	reducer: {
 		[apiSlice.reducerPath]: apiSlice.reducer,
-		auth: authReducer,
+		auth: authReducer, // currentUser
 		league: leagueReducer, // handles currentLeague
 		leaguesJoined: leaguesJoinedReducer,
 		leaguesAvailable: leaguesAvailableReducer,
+		// inviteLinks: inviteLinkReducer,
+		profile: profileReducer, // handles profiles of other users
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware().concat(apiSlice.middleware),

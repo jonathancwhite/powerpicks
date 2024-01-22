@@ -20,7 +20,7 @@ import LeagueInvite from "./features/marketingSite/LeagueInvite";
 import UserLeagues from "./features/pickems/pages/UserLeagues";
 
 function App() {
-	const isLoading = useAuth();
+	let isLoading = useAuth();
 	const hostname = window.location.hostname;
 	const isSubdomain = hostname.startsWith("app.");
 	let toastOptions = {

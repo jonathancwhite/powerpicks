@@ -11,12 +11,20 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		margin-bottom: 1rem;
+		// margin-bottom: 1rem;
+		padding: 1rem;
+		&:hover {
+			cursor: pointer;
+			background: #1f2431;
+			border-radius: 16px;
+		}
 	}
 
 	&__details {
 		display: flex;
 		align-items: center;
+		width: 100%;
+		position: relative;
 
 		img {
 			border-radius: 16px;
@@ -24,5 +32,12 @@
 			width: 40px;
 			margin-right: 1rem;
 		}
+	}
+
+	&__controls {
+		position: absolute;
+		top: 0;
+		right: 0;
+		transform: translate(0, 35%);
 	}
 }

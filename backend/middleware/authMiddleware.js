@@ -3,7 +3,11 @@ import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 
 /**
- * @description Middleware to protect routes
+ * @desc  Middleware to protect routes
+ * @param {object} req - Request object
+ * @param {object} res - Response object
+ * @param {function} next - Next function
+ * @returns {void}
  */
 const protect = asyncHandler(async (req, res, next) => {
 	let token;
@@ -28,7 +32,6 @@ const protect = asyncHandler(async (req, res, next) => {
 			jwt: token,
 			cookiesProvided: JSON.stringify(req.cookies),
 		});
-		// throw new Error("Not authorized, no token");
 	}
 });
 

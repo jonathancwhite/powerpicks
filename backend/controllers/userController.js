@@ -93,22 +93,31 @@ const authUser = asyncHandler(async (req, res) => {
 	}
 });
 
-// @desc    Get user profile
-// @route   GET /api/users/profile
-// @access  Private
+/**
+ * @desc   Get user profile
+ * @route  GET /api/users/:id/profile
+ * @param  {string} id - User ID
+ * @access Private
+ */
 const getUserProfile = asyncHandler(async (req, res) => {
-	const user = await User.findById(req.user._id);
+	const user_id = req.params.id;
+	// console.log(user_id);
 
-	if (user) {
-		res.json({
-			_id: user._id,
-			username: user.username,
-			name: user.name,
-			email: user.email,
-		});
-	} else {
-		res.status(404);
-		throw new Error("User not found");
+	try {
+		const user = await User.findById(user_id);
+		if (!user) {
+			res.status(404);
+			throw new Error("User not found");
+		}
+
+		const userWithoutPassword = { ...user.toObject() };
+		delete userWithoutPassword.password;
+
+		res.status(200).json(userWithoutPassword);
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ message: err.message });
+		// throw new Error("Server error");
 	}
 });
 
@@ -159,7 +168,8 @@ const validateUser = async (req, res) => {
 			username: user.username,
 			name: user.firstName + " " + user.lastName,
 			email: user.email,
-			jwt: req.cookies.jwt,
+			profilePicture: user.profilePicture,
+			token: req.cookies.jwt,
 		});
 	} catch (error) {
 		console.error(error);
@@ -185,4 +195,53 @@ const generateRandomProfilePicture = () => {
 	return profilePicture;
 };
 
-export { registerUser, authUser, getUserProfile, logoutUser, validateUser };
+/**
+ * @desc    Updates user information
+ * @route   PUT /api/users/:id
+ * @param   {string} id - User ID
+ * @returns {object} response - User Object
+ */
+const updateUser = async (req, res) => {
+	const user_id = req.params.id;
+	const user = await User.findOne(user_id);
+
+	if (req.body.firstName) {
+		user.firstName = req.body.firstName;
+	}
+
+	if (req.body.lastName) {
+		user.lastName = req.body.lastName;
+	}
+
+	if (req.body.email) {
+		user.email = req.body.email;
+	}
+
+	if (req.body.password) {
+		user.password = req.body.password;
+	}
+
+	if (req.body.dateOfBirth) {
+		user.dateOfBirth = req.body.dateOfBirth;
+	}
+
+	if (req.body.profilePicture) {
+		user.profilePicture = req.body.profilePicture;
+	}
+
+	const updatedUser = await user.save();
+	if (!updatedUser) {
+		res.status(400).json({ message: "User not updated" });
+	}
+
+	res.status(200).json(updatedUser);
+};
+
+export {
+	registerUser,
+	authUser,
+	getUserProfile,
+	logoutUser,
+	validateUser,
+	updateUser,
+};

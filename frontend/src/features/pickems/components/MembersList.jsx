@@ -2,6 +2,7 @@ import { IoMdRemoveCircle } from "react-icons/io";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { removeMemberById } from "../slices/leagueSlice.js";
+import { LinkContainer } from "react-router-bootstrap";
 
 const MembersList = ({ membersList, isAdmin, leagueId, userId }) => {
 	const dispatch = useDispatch();
@@ -32,27 +33,29 @@ const MembersList = ({ membersList, isAdmin, leagueId, userId }) => {
 				<h3>Members</h3>
 			</div>
 			{membersList.map((member) => (
-				<div
-					className='membersList__member'
-					data-member-id={member._id}
-					key={member._id}>
-					<div className='membersList__details'>
-						<img
-							src={`/pfp/${member.profilePicture}`}
-							alt={"profile picture - generic"}
-						/>
-						<p key={member._id}>@{member.username}</p>
-					</div>
-					{isAdmin && userId !== member._id ? (
-						<div className='membersList__controls'>
-							<button
-								onClick={(e) => handleRemoveMember(e)}
-								className='btn btn--remove'>
-								<IoMdRemoveCircle />
-							</button>
+				<LinkContainer to={`/users/${member._id}`} key={member._id}>
+					<div
+						className='membersList__member'
+						data-member-id={member._id}>
+						<div className='membersList__details'>
+							<img
+								src={`/pfp/${member.profilePicture}`}
+								alt={"profile picture - generic"}
+							/>
+							<p key={member._id}>@{member.username}</p>
+
+							{isAdmin && userId !== member._id ? (
+								<div className='membersList__controls'>
+									<button
+										onClick={(e) => handleRemoveMember(e)}
+										className='btn btn--remove'>
+										<IoMdRemoveCircle />
+									</button>
+								</div>
+							) : null}
 						</div>
-					) : null}
-				</div>
+					</div>
+				</LinkContainer>
 			))}
 		</div>
 	);

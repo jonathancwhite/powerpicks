@@ -28,7 +28,7 @@
 		}
 	}
 
-	.form-container .form-item-wrap {
+	.form-item-wrap {
 		margin-top: 35px;
 	}
 
@@ -112,6 +112,40 @@
 
 	.bottom-wrap {
 		padding: 35px 0;
+	}
+
+	&__profilePicture {
+		margin-top: 0.5rem;
+		max-width: 420px;
+		height: auto;
+		position: relative;
+		img {
+			width: 100px;
+			height: 100px;
+			border-radius: 16px;
+		}
+		.editProfilePicture {
+			width: 100px;
+			height: 100px;
+			border-radius: 16px;
+			position: absolute;
+			top: 0;
+			left: 0;
+			z-index: 100;
+			color: #fff;
+			font-size: 24px;
+			background: #61707ed4;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			opacity: 0;
+			transition: ease-in-out 0.2s;
+		}
+
+		.editProfilePicture:hover {
+			opacity: 1;
+			cursor: pointer;
+		}
 	}
 
 	&__subNav {

@@ -10,7 +10,8 @@ body {
 	min-height: 100vh;
 }
 
-.app {
+.app,
+.appLoading {
 	background-color: $bg-dark-130;
 	min-height: 100vh;
 }
@@ -79,8 +80,8 @@ body {
 		color: #b92525;
 		font-size: 24px;
 		&:hover {
-			color: #e41414;
-			translate: scale(1.1);
+			filter: brightness(0.8);
+			transform: scale(1.4);
 		}
 	}
 

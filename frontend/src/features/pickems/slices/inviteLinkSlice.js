@@ -5,7 +5,7 @@ import inviteLinkService from "./inviteLinkService";
 export const fetchInviteLinksAsync = createAsyncThunk(
 	"inviteLinks/fetchInviteLinks",
 	async () => {
-		const response = await fetchInviteLinks();
+		const response = await inviteLinkService.fetchInviteLinks();
 		return response.data;
 	},
 );
@@ -14,7 +14,7 @@ export const fetchInviteLinksAsync = createAsyncThunk(
 export const generateInviteLinkAsync = createAsyncThunk(
 	"inviteLinks/generateInviteLink",
 	async (payload) => {
-		const response = await generateInviteLink(payload);
+		const response = await inviteLinkService.generateInviteLink(payload);
 		return response.data;
 	},
 );
