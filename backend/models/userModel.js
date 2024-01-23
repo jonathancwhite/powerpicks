@@ -33,6 +33,9 @@ const userSchema = mongoose.Schema(
 			type: String,
 			default: "generic-cat-ai.webp",
 		},
+		phoneNumber: {
+			type: String,
+		},
 	},
 	{
 		timestamps: true,

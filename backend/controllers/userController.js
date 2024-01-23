@@ -4,6 +4,19 @@ import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
 
 /**
+ * @desc  Default exports for user object
+ */
+const defaultUserExports = {
+	_id: "",
+	username: "",
+	name: "",
+	email: "",
+	profilePicture: "",
+	phoneNumber: "",
+	token: "",
+};
+
+/**
  * @desc   Register new user
  * @route  POST /api/users
  * @access Public
@@ -17,10 +30,15 @@ const registerUser = asyncHandler(async (req, res) => {
 		password,
 		dateOfBirth,
 		referral,
+		phoneNumber,
 	} = req.body;
 
 	const userExists = await User.findOne({ email });
 	let referralRegistered = null;
+
+	if (phoneNumber === null || phoneNumber === undefined) {
+		phoneNumber = "";
+	}
 
 	if (userExists) {
 		res.status(400);
@@ -37,6 +55,7 @@ const registerUser = asyncHandler(async (req, res) => {
 		password,
 		dateOfBirth,
 		profilePicture,
+		phoneNumber,
 	});
 
 	if (referral) {
@@ -44,7 +63,7 @@ const registerUser = asyncHandler(async (req, res) => {
 	}
 
 	if (user) {
-		generateToken(res, user._id);
+		let token = await generateToken(res, user._id);
 
 		if (referralRegistered !== null) {
 			res.status(201).json({
@@ -52,7 +71,10 @@ const registerUser = asyncHandler(async (req, res) => {
 				username: user.username,
 				name: user.firstName + " " + user.lastName,
 				email: user.email,
+				profilePicture: user.profilePicture,
+				phoneNumber: user.phoneNumber,
 				referralUsed: referralRegistered,
+				token: token,
 			});
 		}
 
@@ -61,6 +83,9 @@ const registerUser = asyncHandler(async (req, res) => {
 			username: user.username,
 			name: user.firstName + " " + user.lastName,
 			email: user.email,
+			profilePicture: user.profilePicture,
+			phoneNumber: user.phoneNumber,
+			token: token,
 		});
 	} else {
 		res.status(400);
@@ -169,6 +194,7 @@ const validateUser = async (req, res) => {
 			name: user.firstName + " " + user.lastName,
 			email: user.email,
 			profilePicture: user.profilePicture,
+			phoneNumber: user.phoneNumber,
 			token: req.cookies.jwt,
 		});
 	} catch (error) {
@@ -210,38 +236,20 @@ const updateUser = asyncHandler(async (req, res) => {
 	console.log(`Request body: `, req.body);
 	console.groupEnd();
 
-	if (req.body.firstName) {
-		user.firstName = req.body.firstName;
-	}
+	// Update user fields if they exist in req.body
+	Object.keys(req.body).forEach((key) => {
+		console.log(req.body[key]);
+		user[key] = req.body[key];
+	});
 
-	if (req.body.lastName) {
-		user.lastName = req.body.lastName;
-	}
-
-	if (req.body.email) {
-		user.email = req.body.email;
-	}
-
-	if (req.body.password) {
-		user.password = req.body.password;
-	}
-
-	if (req.body.dateOfBirth) {
-		user.dateOfBirth = req.body.dateOfBirth;
-	}
-
-	if (req.body.profilePicture) {
-		user.profilePicture = req.body.profilePicture;
-	}
-
-	// need a check to see if username is already taken
+	// Example of additional logic, like checking for existing username
 	if (req.body.username) {
-		user.username = req.body.username;
+		// Add your logic here to check if the username is already taken
 	}
 
 	const updatedUser = await user.save();
 	if (!updatedUser) {
-		res.status(400).json({ message: "User not updated" });
+		return res.status(400).json({ message: "User not updated" });
 	}
 
 	res.status(200).json({
@@ -250,6 +258,7 @@ const updateUser = asyncHandler(async (req, res) => {
 		name: updatedUser.firstName + " " + updatedUser.lastName,
 		email: updatedUser.email,
 		profilePicture: updatedUser.profilePicture,
+		phoneNumber: updatedUser.phoneNumber,
 		token: req.cookies.jwt,
 	});
 });
