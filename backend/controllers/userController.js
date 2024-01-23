@@ -126,7 +126,6 @@ const authUser = asyncHandler(async (req, res) => {
  */
 const getUserProfile = asyncHandler(async (req, res) => {
 	const user_id = req.params.id;
-	// console.log(user_id);
 
 	try {
 		const user = await User.findById(user_id);
@@ -231,14 +230,8 @@ const updateUser = asyncHandler(async (req, res) => {
 	const user_id = req.params.id;
 	const user = await User.findOne({ _id: user_id });
 
-	console.group(`userController.js`);
-	console.log(`Request params: `, req.params);
-	console.log(`Request body: `, req.body);
-	console.groupEnd();
-
 	// Update user fields if they exist in req.body
 	Object.keys(req.body).forEach((key) => {
-		console.log(req.body[key]);
 		user[key] = req.body[key];
 	});
 
