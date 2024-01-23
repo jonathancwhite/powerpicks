@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 
 const initialState = {
 	filter: "ALL",
-	leaguesAvailable: [],
+	leaguesAvailable: null,
 	isSuccess: false,
 	isError: false,
 	isLoading: false,

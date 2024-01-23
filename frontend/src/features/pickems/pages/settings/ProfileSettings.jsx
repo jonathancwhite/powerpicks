@@ -1,13 +1,20 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { IoPencil } from "react-icons/io5";
 import { toast } from "react-toastify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProfilePictureModal from "../../components/ProfilePictureModal";
+import { setCredentials, updateUser } from "../../../../slices/authSlice";
 
 const ProfileSettings = () => {
-	const auth = useSelector((state) => state.auth);
+	const { userInfo, isLoading } = useSelector((state) => state.auth);
+	const dispatch = useDispatch();
+
 	const [isProfilePictureModalOpen, setIsProfilePictureModalOpen] =
 		useState(false);
+
+	const [profileData, setProfileData] = useState({
+		username: userInfo.username,
+	});
 
 	const handleChangePicture = () => {
 		if (!isProfilePictureModalOpen) {
@@ -18,6 +25,46 @@ const ProfileSettings = () => {
 	const closeModal = () => {
 		setIsProfilePictureModalOpen(false);
 	};
+
+	// should this wait for a stop?
+	const handleInputChange = (e) => {
+		setProfileData({ username: e.target.value });
+	};
+
+	const handleSaveProfile = async () => {
+		const id = userInfo._id;
+		const token = userInfo.token;
+
+		let updatedUserInfo = {
+			username: profileData.username,
+		};
+
+		try {
+			let updatedUser = await dispatch(
+				updateUser({ id, token, updatedUserInfo }),
+			);
+
+			if (updatedUser.meta.requestStatus === "fulfilled") {
+				let updatedCredentials = await dispatch(
+					setCredentials(updatedUser.payload),
+				);
+				if (updatedCredentials.payload) {
+					toast.success("Profile Updated");
+				}
+			}
+		} catch (err) {
+			toast.error(err.message);
+		}
+	};
+
+	useEffect(() => {
+		if (!userInfo) {
+			toast.error("Please login to view this page");
+		}
+
+		// this may be bad later, idk?
+		toast.dismiss();
+	});
 
 	return (
 		<div className='settings__main'>
@@ -34,7 +81,7 @@ const ProfileSettings = () => {
 							<label>Profile Picture</label>
 							<div className='settings__profilePicture'>
 								<img
-									src={`/pfp/${auth.userInfo.profilePicture}`}
+									src={`/pfp/${userInfo.profilePicture}`}
 									alt='current profile picture'
 								/>
 								<div
@@ -53,7 +100,9 @@ const ProfileSettings = () => {
 							label='username'
 							placeholder='Username'
 							aria-label='username'
-							value={auth.userInfo.name}
+							value={profileData.username}
+							onChange={(e) => handleInputChange(e)}
+							disabled={isLoading}
 						/>
 						<span className='spinner grey'></span>
 						<div className='validation-msg'></div>
@@ -63,15 +112,22 @@ const ProfileSettings = () => {
 
 				<div className='bottom-wrap'>
 					<div className='form-elements button'>
-						<button className='btn btn--tertiary'>Save</button>
+						{isLoading ? (
+							<button className='btn btn--tertiary'>
+								<div className='spinner'></div>
+							</button>
+						) : (
+							<button
+								className='btn btn--tertiary'
+								onClick={handleSaveProfile}>
+								Save
+							</button>
+						)}
 					</div>
 				</div>
 			</div>
 			{isProfilePictureModalOpen ? (
-				<ProfilePictureModal
-					closeModal={closeModal}
-					user={auth.userInfo}
-				/>
+				<ProfilePictureModal closeModal={closeModal} user={userInfo} />
 			) : null}
 		</div>
 	);

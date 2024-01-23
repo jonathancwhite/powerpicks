@@ -1,7 +1,5 @@
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getLeagueByIdWithDetails, reset } from "../slices/leagueSlice";
 import { IoMdCog } from "react-icons/io";
@@ -17,58 +15,42 @@ const UserLeagues = () => {
 		(state) => state.league,
 	);
 
-	const [hasDispatchedBeenCalled, setHasDispatchedBeenCalled] =
-		useState(false);
-
 	const [showLeagueSettingsModal, setShowLeagueSettingsModal] =
 		useState(false);
 
 	const fetchLeagueData = async (id, token) => {
 		if (id.length === 0 || token.length === 0) {
-			toast.error("Invalid league data");
-			return;
-		}
-
-		if (hasDispatchedBeenCalled) {
+			toast.error("Oops! We made a mistake, please refresh the page.");
 			return;
 		}
 
 		try {
-			console.log(`Fetching league data for ${id}`);
 			let leagueData = await dispatch(
 				getLeagueByIdWithDetails({ id, token }),
 			);
-			setHasDispatchedBeenCalled(true);
 			if (leagueData.error) {
-				toast.error(leagueData.error);
+				console.error(leagueData.error);
 			}
 		} catch (error) {
-			console.log(error);
-			toast.error(error);
+			console.error(error);
 		}
 	};
 
 	useEffect(() => {
-		// if league has been loaded but it is not the correct league, reset the state
-		console.log("GET THE ID BRO");
-		console.log(`ID: ${id}`);
-		console.log(league);
-
-		if (league.length > 0 && league._id !== id) {
+		if (league === null) {
 			fetchLeagueData(id, userInfo.token);
-		} else if (league.length > 0 && league._id === id) {
-			console.log("League data already loaded and correct");
+			// early exit so no other code is executed
+			return;
 		}
-
-		// if no league has been loaded and the ID is valid, fetch the league data
-		if (league.length === 0 && id.length > 1) {
-			if (hasDispatchedBeenCalled) {
-				toast.info("League data already requested");
-				return;
+		// league data exists
+		if (league._id) {
+			if (league._id !== id) {
+				fetchLeagueData(id, userInfo.token);
 			}
-			fetchLeagueData(id, userInfo.token);
 		}
-	}, [id]);
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [league, id, userInfo.token]);
 
 	const handleSettingsClick = () => {
 		setShowLeagueSettingsModal(!showLeagueSettingsModal);
@@ -79,10 +61,31 @@ const UserLeagues = () => {
 	return (
 		<>
 			{isLoading ? (
-				<div className='centeredContainer'>
-					<div className='spinner'></div>
+				<div className='currentLeague'>
+					<div className='currentLeague__controlBar'>
+						<div className='currentLeague__header'></div>
+						<div className='currentLeague__settings'>
+							<button className='btn btn--inline'>
+								<IoMdCog />
+							</button>
+						</div>
+					</div>
+					<div className='currentLeague__main'>
+						<div className='currentLeague__paper xl'>
+							<div className='centeredContainer'>
+								<div className='spinner'></div>
+							</div>
+						</div>
+						<div className='currentLeague__paper sm'>
+							<div className='currentLeague__members'>
+								<div className='centeredContainer'>
+									<div className='spinner'></div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
-			) : league && league.members ? (
+			) : league !== null && league.members ? (
 				<>
 					<div className='currentLeague'>
 						<div className='currentLeague__controlBar'>

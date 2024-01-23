@@ -23,7 +23,7 @@ export const generateInviteLinkAsync = createAsyncThunk(
 const inviteLinkSlice = createSlice({
 	name: "inviteLinks",
 	initialState: {
-		inviteLinks: [],
+		inviteLinks: null,
 		loading: false,
 		error: null,
 	},

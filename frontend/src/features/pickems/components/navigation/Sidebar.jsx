@@ -23,15 +23,6 @@ const Sidebar = () => {
 		setIsModalOpen(!isModalOpen);
 	};
 
-	const getInitials = (name) => {
-		return name
-			.split(" ")
-			.map((word) => word[0].toUpperCase())
-			.join("");
-	};
-
-	const profileIdentifier = getInitials(auth.userInfo.name);
-
 	useEffect(() => {
 		if (isError) {
 			console.log(message);
@@ -123,9 +114,10 @@ const Sidebar = () => {
 					<div className='sideBar__profile'>
 						<div className='profile__item'>
 							<div className='profile__item--identifier'>
-								<span className='userInitials'>
-									{profileIdentifier}
-								</span>
+								<img
+									src={`/pfp/${auth.userInfo.profilePicture}`}
+									alt='profile picture'
+								/>
 							</div>
 							<div className='profile__item--name'>
 								@{auth.userInfo.username}

@@ -201,9 +201,14 @@ const generateRandomProfilePicture = () => {
  * @param   {string} id - User ID
  * @returns {object} response - User Object
  */
-const updateUser = async (req, res) => {
+const updateUser = asyncHandler(async (req, res) => {
 	const user_id = req.params.id;
-	const user = await User.findOne(user_id);
+	const user = await User.findOne({ _id: user_id });
+
+	console.group(`userController.js`);
+	console.log(`Request params: `, req.params);
+	console.log(`Request body: `, req.body);
+	console.groupEnd();
 
 	if (req.body.firstName) {
 		user.firstName = req.body.firstName;
@@ -229,13 +234,25 @@ const updateUser = async (req, res) => {
 		user.profilePicture = req.body.profilePicture;
 	}
 
+	// need a check to see if username is already taken
+	if (req.body.username) {
+		user.username = req.body.username;
+	}
+
 	const updatedUser = await user.save();
 	if (!updatedUser) {
 		res.status(400).json({ message: "User not updated" });
 	}
 
-	res.status(200).json(updatedUser);
-};
+	res.status(200).json({
+		_id: updatedUser._id,
+		username: updatedUser.username,
+		name: updatedUser.firstName + " " + updatedUser.lastName,
+		email: updatedUser.email,
+		profilePicture: updatedUser.profilePicture,
+		token: req.cookies.jwt,
+	});
+});
 
 export {
 	registerUser,

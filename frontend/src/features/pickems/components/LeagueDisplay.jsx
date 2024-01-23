@@ -1,6 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { getAllJoinableLeagues } from "../slices/leaguesAvailableSlice";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
 import LeagueDisplayItem from "./LeagueDisplayItem";
@@ -11,7 +10,6 @@ const LeagueDisplay = () => {
 		(state) => state.leaguesAvailable,
 	);
 
-	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -19,17 +17,27 @@ const LeagueDisplay = () => {
 			console.log(message);
 		}
 
-		dispatch(getAllJoinableLeagues());
-	}, [isError, message, dispatch, navigate]);
+		if (leaguesAvailable === null) {
+			dispatch(getAllJoinableLeagues());
+		}
+	}, [isError, message, dispatch, leaguesAvailable]);
 
-	const filteredLeagues = leaguesAvailable.filter(
-		(league) =>
-			filterSport === "ALL" ||
-			(league.isActive &&
-				league.isPublic &&
-				league.members.length < league.maxPlayers &&
-				league.sport === filterSport),
-	);
+	const getFilteredLeagues = () => {
+		if (!leaguesAvailable) {
+			return [];
+		}
+
+		return leaguesAvailable.filter(
+			(league) =>
+				filterSport === "ALL" ||
+				(league.isActive &&
+					league.isPublic &&
+					league.members.length < league.maxPlayers &&
+					league.sport === filterSport),
+		);
+	};
+
+	const filteredLeagues = getFilteredLeagues();
 
 	const handleJoinLeague = (league_id) => {
 		console.log(league_id);

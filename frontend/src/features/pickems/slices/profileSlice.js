@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import profileService from "./profileService";
 
 const initialState = {
-	user: [],
+	user: null,
 	isSuccess: false,
 	isError: false,
 	isLoading: false,

@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { updateUser } from "../../../slices/authSlice";
+import { setCredentials, updateUser } from "../../../slices/authSlice";
+import PropTypes from "prop-types";
 
 const ProfilePictureModal = ({ closeModal, user }) => {
 	const [selectedAnimal, setSelectedAnimal] = useState("");
 	const [profilePictureString, setProfilePictureString] = useState(
 		user.profilePicture,
 	);
+	const [isLoading, setIsLoading] = useState(false);
+
 	const dispatch = useDispatch();
 	const token = user.token;
 
@@ -33,25 +36,34 @@ const ProfilePictureModal = ({ closeModal, user }) => {
 		setProfilePictureString(`generic-${animalName}-ai.webp`);
 	};
 
-	const handleUpdateProfilePicture = () => {
-		//
+	const handleUpdateProfilePicture = async () => {
+		const updatedUserInfo = {
+			profilePicture: profilePictureString,
+		};
+
+		const id = user._id;
+
 		try {
-			let updatedUser = dispatch(
-				updateUser(user._id, token, {
-					profilePicture: profilePictureString,
-				}),
+			setIsLoading(true);
+			let updatedUser = await dispatch(
+				updateUser({ id, token, updatedUserInfo }),
 			);
 
-			if (updateUser.payload) {
-				toast.info(updatedUser.payload.message);
-				// closeModal();
-			} else {
-				toast.error("Profile Picture Update Failed");
-				console.log(updatedUser);
+			if (updatedUser.meta.requestStatus === "fulfilled") {
+				console.log("setting credentials");
+				let updatedCredentials = await dispatch(
+					setCredentials(updatedUser.payload),
+				);
+				if (updatedCredentials.payload) {
+					setIsLoading(false);
+					toast.success("Profile Picture Updated");
+					closeModal();
+				}
 			}
 		} catch (error) {
 			toast.error(error.message);
 			console.error(error);
+			setIsLoading(false);
 		}
 	};
 
@@ -79,43 +91,66 @@ const ProfilePictureModal = ({ closeModal, user }) => {
 							</div>
 						</div>
 						<div className='modal-content'>
-							<div className='modal-content--title'>
-								<h2>Change Profile Picture</h2>
-							</div>
-							<div className='modal-content--text'>
-								Select a new profile picture.
-							</div>
+							{isLoading ? (
+								<>
+									<div className='modal-content--title'>
+										<h2>Changing Profile Picture</h2>
+									</div>
+									<div className='modal-content--text'>
+										Please wait while we update your profile
+										picture.
+									</div>
+								</>
+							) : (
+								<>
+									<div className='modal-content--title'>
+										<h2>Change Profile Picture</h2>
+									</div>
+									<div className='modal-content--text'>
+										Select a new profile picture.
+									</div>
+								</>
+							)}
 
 							<div className='profilePictureSelector'>
-								{availableProfilePictures.map(
-									(animal, index) => {
-										return (
-											<div
-												className={`profilePictureSelector__item ${
-													animal === selectedAnimal
-														? "active"
-														: ""
-												}`}
-												onClick={
-													handleProfilePictureClick
-												}
-												key={index}>
-												<img
-													src={`/pfp/generic-${animal}-ai.webp`}
-													alt={animal}
-												/>
-											</div>
-										);
-									},
+								{isLoading ? (
+									<div className='spinner'></div>
+								) : (
+									<>
+										{availableProfilePictures.map(
+											(animal, index) => {
+												return (
+													<div
+														className={`profilePictureSelector__item ${
+															animal ===
+															selectedAnimal
+																? "active"
+																: ""
+														}`}
+														onClick={
+															handleProfilePictureClick
+														}
+														key={index}>
+														<img
+															src={`/pfp/generic-${animal}-ai.webp`}
+															alt={animal}
+														/>
+													</div>
+												);
+											},
+										)}
+									</>
 								)}
 							</div>
-							<div className='profilePictureSelector__actions'>
-								<button
-									className='btn btn--tertiary'
-									onClick={handleUpdateProfilePicture}>
-									Save
-								</button>
-							</div>
+							{isLoading ? null : (
+								<div className='profilePictureSelector__actions'>
+									<button
+										className='btn btn--tertiary'
+										onClick={handleUpdateProfilePicture}>
+										Save
+									</button>
+								</div>
+							)}
 
 							<div className='modal-content--footer'></div>
 						</div>
@@ -124,6 +159,11 @@ const ProfilePictureModal = ({ closeModal, user }) => {
 			</div>
 		</div>
 	);
+};
+
+ProfilePictureModal.propTypes = {
+	closeModal: PropTypes.func.isRequired,
+	user: PropTypes.object,
 };
 
 export default ProfilePictureModal;

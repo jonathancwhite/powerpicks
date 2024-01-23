@@ -3,6 +3,11 @@ import { useSelector } from "react-redux";
 const AccountSettings = () => {
 	const auth = useSelector((state) => state.auth);
 
+	const handleInputChange = (e) => {
+		console.log("handleInputChange");
+		// use e.target.value to update formData?
+	};
+
 	return (
 		<div className='settings__main'>
 			<div className='settings__header'>
@@ -23,6 +28,7 @@ const AccountSettings = () => {
 								placeholder='Enter your email'
 								aria-label='Email'
 								value={auth.userInfo.email}
+								onChange={(e) => handleInputChange(e)}
 							/>
 							<span className='spinner grey'></span>
 							<div className='validation-msg'></div>

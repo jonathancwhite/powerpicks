@@ -46,9 +46,9 @@ const authSlice = createSlice({
 			state.message = "User logged in successfully";
 		},
 		logout: (state, action) => {
-			state.userInfo = null;
 			localStorage.removeItem("userInfo");
 			state.message = "User logged out successfully";
+			state.userInfo = null;
 		},
 	},
 	extraReducers: (builder) => {

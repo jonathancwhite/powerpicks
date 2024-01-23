@@ -14,6 +14,13 @@ export const updateUser = async (id, token, updatedUserInfo) => {
 			authorization: `Bearer ${token}`,
 		},
 	};
+
+	console.group(`authService.js`);
+	console.log(`id: ${id}`);
+	console.log(`token: ${token}`);
+	console.log(`updatedUserInfo: ${updatedUserInfo}`);
+	console.groupEnd();
+
 	const response = await axios.put(
 		`${USERS_URL}/${id}`,
 		updatedUserInfo,

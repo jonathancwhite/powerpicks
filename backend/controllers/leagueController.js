@@ -380,7 +380,7 @@ export const getLeagueByIdWithDetails = async (req, res) => {
 		const inviteLinks = await InviteLink.find({ leagueId: leagueId });
 
 		// Check if inviteLink array is empty
-		if (inviteLinks.length === 0) {
+		if (inviteLinks === null || inviteLinks.length === 0) {
 			inviteLinks = [
 				await createInviteLink(leagueId, false, 604800000, user),
 			];

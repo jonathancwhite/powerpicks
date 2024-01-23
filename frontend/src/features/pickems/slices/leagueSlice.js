@@ -3,7 +3,7 @@ import leagueService from "./leagueService";
 import Cookies from "js-cookie";
 
 const initialState = {
-	league: [],
+	league: null,
 	isSuccess: false,
 	isError: false,
 	isLoading: false,
