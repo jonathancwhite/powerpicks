@@ -8,6 +8,7 @@ dotenv.config();
 import colors from "colors";
 import userRoutes from "./routes/userRoutes.js";
 import leagueRoutes from "./routes/leagueRoutes.js";
+import cfbRoutes from "./routes/cfbRoutes.js";
 import connectDB from "./config/db.js";
 
 const port = process.env.PORT || 5000;
@@ -31,6 +32,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/users", userRoutes);
 app.use("/api/leagues", leagueRoutes);
+
+app.use("/api/cfb", cfbRoutes);
 
 const __dirname = path.resolve();
 const frontendPath = path.join(__dirname, "/frontend/dist");

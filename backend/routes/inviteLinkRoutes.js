@@ -13,4 +13,4 @@ import {
 // router.get("/:id", getInviteLinkByLeagueId);
 // router.get("/:code");
 
-module.exports = router;
+export default router;
