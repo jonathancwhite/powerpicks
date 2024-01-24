@@ -6,6 +6,7 @@ const matchupSchema = mongoose.Schema(
 		teams: [{ type: String, required: true }],
 		matchupDate: { type: Date, required: true },
 		matchupTime: { type: String, required: true },
+		gameId: { type: String, required: true }, // from API
 		leagueId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "League",
