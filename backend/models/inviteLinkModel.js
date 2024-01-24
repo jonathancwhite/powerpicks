@@ -24,11 +24,6 @@ const inviteLinkSchema = mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
-		createdBy: {
-			type: mongoose.Schema.Types.ObjectId,
-			required: true,
-			ref: "User",
-		},
 		numOfUses: {
 			type: Number,
 			default: 0,

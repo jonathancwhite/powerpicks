@@ -62,7 +62,8 @@ const Pickems = () => {
 								{isLoading ? (
 									<div className='spinner'></div>
 								) : (
-									<CollegeFootballTest />
+									// <CollegeFootballTest />
+									<div className='h4'>Picks</div>
 								)}
 							</div>
 						</div>
