@@ -1,4 +1,5 @@
 import express from "express";
+import { getCfbGamesNew } from "../controllers/seasonController.js";
 
 const router = express.Router();
 
@@ -23,5 +24,7 @@ router.get("/", async (req, res) => {
 		res.status(500).json({ error: error.message });
 	}
 });
+
+router.get("/games", getCfbGamesNew);
 
 export default router;

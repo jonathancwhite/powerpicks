@@ -6,6 +6,7 @@ import leaguesJoinedReducer from "./features/pickems/slices/leaguesJoinedSlice.j
 import leaguesAvailableReducer from "./features/pickems/slices/leaguesAvailableSlice.js";
 // import inviteLinkReducer from "./features/pickems/slices/inviteLinkSlice.js";
 import profileReducer from "./features/pickems/slices/profileSlice.js";
+import cfbReducer from "./features/pickems/slices/cfbSlice.js";
 
 /**
  * Removed inviteLinks for now since they are populated inside of currentLeague
@@ -19,6 +20,7 @@ export const store = configureStore({
 		leaguesAvailable: leaguesAvailableReducer,
 		// inviteLinks: inviteLinkReducer,
 		profile: profileReducer, // handles profiles of other users
+		cfb: cfbReducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware().concat(apiSlice.middleware),

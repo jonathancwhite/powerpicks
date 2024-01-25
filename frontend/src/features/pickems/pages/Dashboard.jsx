@@ -57,21 +57,14 @@ const Pickems = () => {
 					</div>
 
 					<div className='currentLeague__main'>
-						<div className='currentLeague__paper xl'>
+						<div className='currentLeague__paper'>
 							<div className='centeredContainer'>
 								{isLoading ? (
 									<div className='spinner'></div>
 								) : (
-									// <CollegeFootballTest />
-									<div className='h4'>Picks</div>
+									<CollegeFootballTest />
+									// <div className='h4'>Picks</div>
 								)}
-							</div>
-						</div>
-						<div className='currentLeague__paper sm'>
-							<div className='currentLeague__members'>
-								<div className='centeredContainer'>
-									<h4>Shhhh...</h4>
-								</div>
 							</div>
 						</div>
 					</div>
