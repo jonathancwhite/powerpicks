@@ -3,6 +3,23 @@ import Season from "../models/seasonModel.js";
 import { createMatchupFromData } from "./matchupController.js";
 
 /**
+ * 	@desc   Create Season for league
+ * 	@access Private
+ */
+export const createSeason = async (sport) => {
+	const season = new Season({
+		year,
+		sport,
+		startDate,
+		endDate,
+	});
+
+	const createdSeason = await season.save();
+
+	return createdSeason;
+};
+
+/**
  * 	@desc    Fetch cfb teams
  * 	@route   GET /api/cfb/teams
  *  @param   {string} year - The year of the season
@@ -86,7 +103,7 @@ export const getCfbGamesNew = asyncHandler(async (req, res) => {
 
 	try {
 		const response = await fetch(
-			"http://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?groups=80&dates=2024",
+			"http://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?groups=80&dates=2024&limit=500",
 			options,
 		);
 

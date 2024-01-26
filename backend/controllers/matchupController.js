@@ -38,7 +38,6 @@ export const getMatchupResult = asyncHandler(async (req, res) => {
 
 export const createMatchupFromData = async (scoreboard) => {
 	for (const item of scoreboard.events) {
-		console.log(`Creating matchup for: ${item.id}`);
 		const matchupDateObj = new Date(item.date);
 		const june2024 = new Date("2024-06-01");
 
@@ -49,6 +48,9 @@ export const createMatchupFromData = async (scoreboard) => {
 			const existingMatchup = await Matchup.findOne({ gameId: gameId });
 
 			if (!existingMatchup) {
+				console.log(
+					`Creating matchup for: ${item.id} for week: ${item.week.number}`,
+				);
 				const matchupDate = matchupDateObj.toLocaleDateString();
 				const matchupTime = matchupDateObj.toLocaleTimeString();
 				const week = item.week.number;
@@ -84,6 +86,8 @@ export const createMatchupFromData = async (scoreboard) => {
 			}
 		}
 	}
+
+	console.log(`Done creating matchups from data`);
 
 	return;
 };
