@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Season from "../models/seasonModel.js";
+import { createMatchupFromData } from "./matchupController.js";
 
 /**
  * 	@desc    Fetch cfb teams
@@ -79,32 +80,23 @@ export const getCfbCalendar = asyncHandler(async (req, res) => {
  *  @param  {string} year - The year of the season
  */
 export const getCfbGamesNew = asyncHandler(async (req, res) => {
-	const year = req.query.year || new Date().getFullYear();
-	const week = req.query.week;
-	console.log(year);
-
-	let myHeaders = new Headers();
-	myHeaders.append("x-rapidapi-host", "v1.american-football.api-sports.io");
-	myHeaders.append("x-rapidapi-key", process.env.API_SPORTS_API_KEY);
-
 	const options = {
 		method: "GET",
-		headers: myHeaders,
 	};
 
 	try {
 		const response = await fetch(
-			`https://v1.american-football.api-sports.io/games?league=2&season=${year}`,
+			"http://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?groups=80&dates=2024",
 			options,
 		);
 
 		const cfbGames = await response.json();
 
-		const filteredResults = cfbGames.response.filter(
-			(event) => event.game && event.game.stage === "FBS (Division I-A)",
-		);
+		const matchups = await createMatchupFromData(cfbGames);
 
-		res.status(200).json(filteredResults);
+		if (matchups) {
+			res.status(200).json(matchups);
+		}
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}

@@ -35,3 +35,56 @@ export const getMatchupResult = asyncHandler(async (req, res) => {
 
 	return results;
 });
+
+export const createMatchupFromData = async (scoreboard) => {
+	for (const item of scoreboard.events) {
+		console.log(`Creating matchup for: ${item.id}`);
+		const matchupDateObj = new Date(item.date);
+		const june2024 = new Date("2024-06-01");
+
+		if (matchupDateObj > june2024) {
+			const gameId = item.id;
+
+			// Check if the matchup with this gameId already exists
+			const existingMatchup = await Matchup.findOne({ gameId: gameId });
+
+			if (!existingMatchup) {
+				const matchupDate = matchupDateObj.toLocaleDateString();
+				const matchupTime = matchupDateObj.toLocaleTimeString();
+				const week = item.week.number;
+
+				let homeTeam = {};
+				let awayTeam = {};
+
+				item.competitions[0].competitors.forEach((competitor) => {
+					const team = {
+						id: competitor.team.id,
+						name: competitor.team.displayName,
+						score: competitor.score,
+					};
+
+					if (competitor.homeAway === "home") {
+						homeTeam = team;
+					} else if (competitor.homeAway === "away") {
+						awayTeam = team;
+					}
+				});
+
+				const matchup = {
+					sport: "NCAAF",
+					teams: [homeTeam, awayTeam],
+					matchupDate: matchupDate,
+					matchupTime: matchupTime,
+					gameId: gameId,
+					week: week,
+					// leagueID will be assigned once matchup is assigned to league
+				};
+
+				// Create the matchup
+				await Matchup.create(matchup);
+			}
+		}
+	}
+
+	return;
+};

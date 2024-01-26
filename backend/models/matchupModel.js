@@ -7,12 +7,11 @@ const matchupSchema = mongoose.Schema(
 		matchupDate: { type: Date, required: true },
 		matchupTime: { type: String, required: true },
 		gameId: { type: String, required: true }, // from API
+		week: { type: Number, required: true },
 		leagueId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "League",
-			required: true,
 		},
-		week: { type: Number, required: true },
 	},
 	{
 		timestamps: true,

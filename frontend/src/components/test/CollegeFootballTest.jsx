@@ -11,7 +11,6 @@ const CollegeFootballTest = () => {
 	const [noGamesAvailable, setNoGamesAvailable] = useState(false);
 	const [queryYear, setQueryYear] = useState("2024");
 	const [week, setWeek] = useState("1");
-	const [filteredGames, setFilteredGames] = useState([]);
 	const [startPaginationNum, setStartPaginationNum] = useState(1);
 	const [numOfResults, setNumOfResults] = useState(10);
 	const [startNumOfResults, setStartNumOfResults] = useState(0);
@@ -69,20 +68,6 @@ const CollegeFootballTest = () => {
 			setStartPaginationNum(e.target.value);
 		}
 	};
-
-	const filterCFBGames = (games) => {
-		setFilteredGames(
-			games.filter((game) => game.game && game.game.week === week),
-		);
-
-		// need to get total number of games to set options for pagination
-	};
-
-	useEffect(() => {
-		if (games) {
-			filterCFBGames(games);
-		}
-	}, [filteredGames, startPaginationNum, numOfResults, games.length]);
 
 	return (
 		<div className='apiTesting'>
@@ -160,24 +145,30 @@ const CollegeFootballTest = () => {
 				</>
 			) : null}
 
-			{games && filteredGames.length !== 0 ? (
+			{games && games.events && games.length !== 0 ? (
 				<div className='games'>
-					{filteredGames.map((game, index) =>
+					{games.events.map((game, index) =>
 						index <= numOfResults * startPaginationNum &&
 						index >= startNumOfResults ? (
-							<div className='games__item' key={game.game.id}>
-								<h3>Week: {game.game.week}</h3>
+							<div className='games__item' key={game.id}>
+								<h3>Week: {game.week.number}</h3>
 								<div className='games__details'>
 									<ImageWithFallback
-										src={game.teams.home.logo}
+										src={
+											game.competitions[0].competitors[0]
+												.team.logo
+										}
 										fallbackSrc={cfbGenericLogo}
-										alt={`${game.teams.home.name} logo`}
+										alt={`${game.competitions[0].competitors[0].team.displayName} logo`}
 									/>
 									<span>vs</span>
 									<ImageWithFallback
-										src={game.teams.away.logo}
+										src={
+											game.competitions[0].competitors[1]
+												.team.logo
+										}
 										fallbackSrc={cfbGenericLogo}
-										alt={`${game.teams.away.name} logo`}
+										alt={`${game.competitions[0].competitors[0].team.displayName} logo`}
 									/>
 								</div>
 							</div>
@@ -206,7 +197,7 @@ const CollegeFootballTest = () => {
 						<option value='30'>30</option>
 						<option value='40'>40</option>
 						<option value='50'>50</option>
-						<option value={`${filteredGames.length}`}>All</option>
+						<option value='100'>All</option>
 					</select>
 				</div>
 
