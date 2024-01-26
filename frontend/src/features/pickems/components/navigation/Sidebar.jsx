@@ -11,9 +11,8 @@ import { getAllJoinedLeagues } from "../../slices/leaguesJoinedSlice";
 
 const Sidebar = () => {
 	const auth = useSelector((state) => state.auth);
-	const { leaguesJoined, isLoading, isError, message } = useSelector(
-		(state) => state.leaguesJoined,
-	);
+	const { leaguesJoined, isLoading, isError, message, isSuccess } =
+		useSelector((state) => state.leaguesJoined);
 
 	const dispatch = useDispatch();
 
@@ -80,7 +79,7 @@ const Sidebar = () => {
 						<div className='centeredContainer'>
 							<div className='spinner'></div>
 						</div>
-					) : (
+					) : leaguesJoined.length !== 0 && isSuccess ? (
 						leaguesJoined.map((league) => (
 							<LinkContainer
 								to={`/leagues/${league._id}`}
@@ -108,7 +107,7 @@ const Sidebar = () => {
 								</div>
 							</LinkContainer>
 						))
-					)}
+					) : null}
 				</div>
 				<div className='sideBar__footer'>
 					<div className='sideBar__profile'>

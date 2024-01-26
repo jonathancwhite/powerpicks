@@ -7,6 +7,15 @@ import { createMatchupFromData } from "./matchupController.js";
  * 	@access Private
  */
 export const createSeason = async (sport) => {
+	console.group("createSeason");
+	console.log(`Create season for ${sport}`);
+
+	const year = new Date().getFullYear();
+	const startDate = new Date();
+	const oneYearFromToday = new Date(startDate);
+	oneYearFromToday.setFullYear(startDate.getFullYear() + 1);
+	const endDate = new Date(oneYearFromToday);
+
 	const season = new Season({
 		year,
 		sport,
@@ -15,6 +24,9 @@ export const createSeason = async (sport) => {
 	});
 
 	const createdSeason = await season.save();
+
+	console.log(createdSeason);
+	console.groupEnd();
 
 	return createdSeason;
 };

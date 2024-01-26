@@ -30,12 +30,16 @@ export const createLeague = asyncHandler(async (req, res) => {
 		tier,
 	} = req.body;
 
+	console.group("createLeague");
+	console.log(req.body);
+
 	const user = req.user;
 
 	const hashedPassword = password
 		? await bcrypt.hash(password, 10)
 		: undefined;
 
+	console.log(`Calling createSeason() with ${sport}`);
 	const season = await createSeason(sport);
 
 	// creates league Object to then save with league.save()
@@ -52,6 +56,8 @@ export const createLeague = asyncHandler(async (req, res) => {
 	});
 
 	const savedLeague = await league.save();
+	console.log(`Saved League`);
+	console.log(savedLeague);
 
 	if (!savedLeague) {
 		res.status(400);
@@ -63,10 +69,16 @@ export const createLeague = asyncHandler(async (req, res) => {
 	let inviteLink;
 
 	try {
+		console.log(`Calling getInviteLinkByLeagueId()`);
 		inviteLink = await getInviteLinkByLeagueId(savedLeague._id, user);
+
+		if (inviteLink) {
+			console.log(`Invite Link saved: ${inviteLink._id}`);
+		}
 	} catch (error) {
 		console.error(error);
 	}
+	console.groupEnd();
 
 	res.status(201).json({ league: savedLeague, inviteLink });
 });
@@ -184,8 +196,8 @@ export const getAllJoinedLeagues = asyncHandler(async (req, res) => {
 	});
 
 	if (!leagues || leagues.length === 0) {
-		res.status(404);
-		throw new Error("Leagues not found");
+		res.status(200).json({ message: "No leagues found" });
+		return;
 	}
 
 	res.status(200).json(leagues);

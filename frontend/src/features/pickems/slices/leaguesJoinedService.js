@@ -27,9 +27,22 @@ export const joinLeagueByCode = async (code, token) => {
 	return response.data;
 };
 
+export const createLeague = async (leagueData, token) => {
+	let user = localStorage.getItem("userInfo");
+	const config = {
+		headers: {
+			authorization: `Bearer ${token}`,
+			user: user,
+		},
+	};
+	const response = await axios.post(`${LEAGUES_URL}`, leagueData, config);
+	return response.data;
+};
+
 const leaguesJoinedService = {
 	joinLeagueByCode,
 	getAllJoinedLeagues,
+	createLeague,
 };
 
 export default leaguesJoinedService;

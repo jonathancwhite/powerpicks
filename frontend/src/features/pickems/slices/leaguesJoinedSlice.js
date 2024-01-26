@@ -40,6 +40,11 @@ export const getAllJoinedLeagues = createAsyncThunk(
 				userId,
 				token,
 			);
+
+			if (result.message === "No leagues found") {
+				return [];
+			}
+
 			return result;
 		} catch (error) {
 			const message =
@@ -107,7 +112,7 @@ const leaguesJoinedSlice = createSlice({
 			.addCase(createAndJoinLeague.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.leaguesJoined = action.payload;
+				state.leaguesJoined.push(action.payload);
 			})
 			.addCase(createAndJoinLeague.rejected, (state, action) => {
 				state.isLoading = false;

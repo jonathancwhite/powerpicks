@@ -24,6 +24,7 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 	const [isCopied, setIsCopied] = useState(false);
 	const [formData, setFormData] = useState(initialFormData);
 	const [formErrors, setFormErrors] = useState({});
+	const [isLoading, setIsLoading] = useState(false);
 
 	const dispatch = useDispatch();
 
@@ -176,11 +177,14 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 				console.log(`formData:`, formData);
 				console.groupEnd();
 
+				setIsLoading(true);
+
 				const league = await dispatch(
 					createAndJoinLeague({ token, leagueData: formData }),
 				);
 
 				if (league.payload) {
+					setIsLoading(false);
 					const leaguePayload = league.payload;
 					const inviteLinkCode = leaguePayload.inviteLink[0].code;
 					// set invite url to variable
@@ -401,6 +405,8 @@ const CreateLeagueModal = ({ closeModal, user }) => {
 													? "Continue"
 													: currentStep === 3
 													? "Create League"
+													: isLoading
+													? "Loading..."
 													: "Copy Invite Code"}
 											</button>
 										)}

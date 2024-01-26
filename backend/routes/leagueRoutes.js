@@ -18,7 +18,7 @@ import {
 import { getInviteLinkUrlByLeagueId } from "../controllers/inviteLinkController.js";
 
 router.post("/", protect, createLeague);
-router.put("/:id", protect, updateLeague);
+router.post("/:id", protect, updateLeague);
 router.delete("/:id", protect, deleteLeague);
 router.get("/", protect, getAllJoinableLeagues);
 router.get("/user/:id", protect, getAllJoinedLeagues);
