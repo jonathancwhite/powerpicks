@@ -1,32 +1,30 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCFBGames } from "../../features/pickems/slices/cfbSlice";
+import { getMatchupsByWeek } from "../../features/pickems/slices/ncaafSlice";
 import { toast } from "react-toastify";
 import ImageWithFallback from "../common/ImageWithFallback";
 import cfbGenericLogo from "../../assets/images/cfbGenericLogo.png";
 
 const CollegeFootballTest = () => {
 	const dispatch = useDispatch();
-	const { games, isCFBLoading, year } = useSelector((state) => state.cfb);
+	const { games, isCFBLoading, year } = useSelector((state) => state.ncaaf);
 	const [noGamesAvailable, setNoGamesAvailable] = useState(false);
-	const [queryYear, setQueryYear] = useState("2024");
 	const [week, setWeek] = useState("1");
 	const [startPaginationNum, setStartPaginationNum] = useState(1);
 	const [numOfResults, setNumOfResults] = useState(10);
 	const [startNumOfResults, setStartNumOfResults] = useState(0);
 	const [endNumOfResults, setEndNumOfResults] = useState(10);
+	const [checkedMatchupIds, setCheckedMatchupIds] = useState([]);
 
 	const fetchCollegeFootballGames = async () => {
-		let year = "2023";
 		try {
-			const response = await dispatch(fetchCFBGames({ year, week }));
+			const response = await dispatch(getMatchupsByWeek({ week }));
 
 			if (response.meta.requestStatus === "fulfilled") {
 				if (games.length) {
-					setNoGamesAvailable(true);
-					toast.error("No games available");
+					console.log("Request not fulfilled");
 				} else {
-					toast.success("Data loaded");
+					// toast.success("Data loaded");
 				}
 			}
 
@@ -36,19 +34,29 @@ const CollegeFootballTest = () => {
 		}
 	};
 
-	const handleButtonClick = async () => {
-		// dispatch fetchCFBGames
-		let response = await fetchCollegeFootballGames();
+	const formatDate = (dateString) => {
+		const options = { year: "numeric", month: "long", day: "numeric" };
+		return new Date(dateString).toLocaleDateString("en-US", options);
+	};
 
-		if (response) {
-			console.log(response);
+	const handleCheckboxChange = (matchup_id) => {
+		if (checkedMatchupIds.includes(matchup_id)) {
+			setCheckedMatchupIds(
+				checkedMatchupIds.filter((id) => id !== matchup_id),
+			);
+		} else {
+			setCheckedMatchupIds([...checkedMatchupIds, matchup_id]);
 		}
 	};
 
+	const assignMatchupsToLeague = (e) => {
+		toast.info("Assigning checked matchups");
+		console.log(checkedMatchupIds);
+		e.preventDefault();
+	};
+
 	const handleChangeSelect = (e) => {
-		if (e.target.name === "year") {
-			setQueryYear(e.target.value);
-		} else if (e.target.name === "week") {
+		if (e.target.name === "week") {
 			setWeek(e.target.value);
 		} else if (e.target.name === "numberOfResults") {
 			let numberOfResults = parseInt(e.target.value);
@@ -69,44 +77,21 @@ const CollegeFootballTest = () => {
 		}
 	};
 
+	useEffect(() => {
+		fetchCollegeFootballGames();
+		toast.dismiss();
+	}, [week]);
+
 	return (
 		<div className='apiTesting'>
 			<div className='apiTesting__controlbar'>
-				{/* <div className='formGroup'>
-					<label htmlFor='year'>Year: </label>
-					<select
-						name='year'
-						id='year'
-						onChange={(e) => handleChangeSelect(e)}
-						defaultValue={queryYear}>
-						<option value='2000'>2000</option>
-						<option value='2001'>2001</option>
-						<option value='2002'>2002</option>
-						<option value='2003'>2003</option>
-						<option value='2004'>2004</option>
-						<option value='2005'>2005</option>
-						<option value='2006'>2006</option>
-						<option value='2007'>2007</option>
-						<option value='2008'>2008</option>
-						<option value='2009'>2009</option>
-						<option value='2010'>2010</option>
-						<option value='2011'>2011</option>
-						<option value='2012'>2012</option>
-						<option value='2013'>2013</option>
-						<option value='2014'>2014</option>
-						<option value='2015'>2015</option>
-						<option value='2016'>2016</option>
-						<option value='2017'>2017</option>
-						<option value='2018'>2018</option>
-						<option value='2019'>2019</option>
-						<option value='2020'>2020</option>
-						<option value='2021'>2021</option>
-						<option value='2022'>2022</option>
-						<option value='2023'>2023</option>
-						<option value='2024'>2024</option>
-					</select>
-				</div> */}
-
+				<div className='formGroup'>
+					<button
+						className='btn btn--cta'
+						onClick={(e) => assignMatchupsToLeague(e)}>
+						Select Matchups
+					</button>
+				</div>
 				<div className='formGroup'>
 					<label htmlFor='week'>Week: </label>
 					<select
@@ -130,45 +115,37 @@ const CollegeFootballTest = () => {
 				</div>
 			</div>
 
-			{games.length === 0 ? (
-				<>
-					<h1>College Football Test</h1>
-					<button
-						className='btn btn--cta'
-						onClick={handleButtonClick}>
-						{isCFBLoading ? (
-							<div className='spinner'></div>
-						) : (
-							<span>Create Matchups from CFB Data</span>
-						)}
-					</button>
-				</>
-			) : null}
-
-			{games && games.events && games.length !== 0 ? (
+			{games && games.length !== 0 ? (
 				<div className='games'>
-					{games.events.map((game, index) =>
+					{games.map((game, index) =>
 						index <= numOfResults * startPaginationNum &&
 						index >= startNumOfResults ? (
-							<div className='games__item' key={game.id}>
-								<h3>Week: {game.week.number}</h3>
+							<div className='games__item' key={game._id}>
+								<div className='h3'>
+									{formatDate(game.matchupDate)}
+								</div>
 								<div className='games__details'>
 									<ImageWithFallback
-										src={
-											game.competitions[0].competitors[0]
-												.team.logo
-										}
+										src={`https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/${game.teams[0].id}.png`}
 										fallbackSrc={cfbGenericLogo}
-										alt={`${game.competitions[0].competitors[0].team.displayName} logo`}
+										alt={`${game.teams[0].name} logo`}
 									/>
 									<span>vs</span>
 									<ImageWithFallback
-										src={
-											game.competitions[0].competitors[1]
-												.team.logo
-										}
+										src={`https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/${game.teams[1].id}.png`}
 										fallbackSrc={cfbGenericLogo}
-										alt={`${game.competitions[0].competitors[0].team.displayName} logo`}
+										alt={`${game.teams[1].name} logo`}
+									/>
+								</div>
+								<div className='games__selection'>
+									<input
+										type='checkbox'
+										name='selectGame'
+										id='selectGame'
+										data-matchup-id={game._id}
+										onChange={() =>
+											handleCheckboxChange(game._id)
+										}
 									/>
 								</div>
 							</div>

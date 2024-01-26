@@ -1,17 +1,17 @@
 import axios from "axios";
 
-const CFB_URL = "/api/cfb";
+const CFB_URL = "/api/ncaaf";
 
-export const fetchCFBGames = async (year, week) => {
+export const getMatchupsByWeek = async (week) => {
 	const response = await axios.get(
-		`${CFB_URL}/games?year=${year}&week=${week}`,
+		`${CFB_URL}/games?week=${week}&sport=NCAAF`,
 	);
 
 	return response.data;
 };
 
 const cfbService = {
-	fetchCFBGames,
+	getMatchupsByWeek,
 };
 
 export default cfbService;

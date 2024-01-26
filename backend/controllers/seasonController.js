@@ -32,8 +32,8 @@ export const createSeason = async (sport) => {
 };
 
 /**
- * 	@desc    Fetch cfb teams
- * 	@route   GET /api/cfb/teams
+ * 	@desc    Fetch ncaaf teams
+ * 	@route   GET /api/ncaaf/teams
  *  @param   {string} year - The year of the season
  * 	@access  Public
  */
@@ -59,7 +59,7 @@ export const getCfbTeams = asyncHandler(async (req, res) => {
 /**
  *  @desc   Fetch season games
  * 	@param {string} year - The year of the season
- * 	@route  GET /api/cfb/schedule
+ * 	@route  GET /api/ncaaf/schedule
  * 	@access Public
  */
 export const getCfbSchedule = asyncHandler(async (req, res) => {
@@ -83,7 +83,7 @@ export const getCfbSchedule = asyncHandler(async (req, res) => {
 /**
  *  @desc  Fetch season calendar
  * 	@param {string} year - The year of the season
- * 	@route  GET /api/cfb/calendar
+ * 	@route  GET /api/ncaaf/calendar
  */
 export const getCfbCalendar = asyncHandler(async (req, res) => {
 	const year = req.query.year || new Date().getFullYear();
@@ -104,8 +104,8 @@ export const getCfbCalendar = asyncHandler(async (req, res) => {
 });
 
 /**
- * 	@desc	Fetch cfb games
- * 	@route	GET /api/cfb/games
+ * 	@desc	Fetch ncaaf games
+ * 	@route	GET /api/ncaaf/games
  *  @param  {string} year - The year of the season
  */
 export const getCfbGamesNew = asyncHandler(async (req, res) => {

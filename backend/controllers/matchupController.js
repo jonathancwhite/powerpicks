@@ -4,7 +4,7 @@ import Matchup from "../models/matchupModel.js";
 /**
  *  @desc  Fetch results of matchup
  * 	@param {string} year - The year of the season
- * 	@route  GET /api/cfb/matchup/:id/results
+ * 	@route  GET /api/ncaaf/matchup/:id/results
  * 	@access Public
  */
 export const getMatchupResult = asyncHandler(async (req, res) => {
@@ -91,3 +91,17 @@ export const createMatchupFromData = async (scoreboard) => {
 
 	return;
 };
+
+export const getMatchupsByWeek = asyncHandler(async (req, res) => {
+	const week = req.query.week;
+	const sport = req.query.sport;
+
+	const matchups = await Matchup.find({ sport: sport, week: week });
+
+	if (!matchups) {
+		res.status(404);
+		throw new Error("No matchups found");
+	}
+
+	res.status(200).json(matchups);
+});

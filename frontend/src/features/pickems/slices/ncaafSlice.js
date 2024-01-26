@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import cfbService from "./cfbService";
+import ncaafService from "./ncaafService";
 
 const initialState = {
 	games: [],
@@ -12,11 +12,11 @@ const initialState = {
 	CFBMessage: "",
 };
 
-export const fetchCFBGames = createAsyncThunk(
-	"cfb/fetchCFBGames",
-	async ({ year, week }, thunkAPI) => {
+export const getMatchupsByWeek = createAsyncThunk(
+	"ncaaf/getMatchupsByWeek",
+	async ({ week }, thunkAPI) => {
 		try {
-			const response = cfbService.fetchCFBGames(year, week);
+			const response = ncaafService.getMatchupsByWeek(week);
 			return response;
 		} catch (error) {
 			const message =
@@ -30,22 +30,22 @@ export const fetchCFBGames = createAsyncThunk(
 	},
 );
 
-const cfbSlice = createSlice({
-	name: "cfb",
+const ncaafSlice = createSlice({
+	name: "ncaaf",
 	initialState: initialState,
 	reducers: {
 		reset: (state) => initialState,
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(fetchCFBGames.pending, (state) => {
+			.addCase(getMatchupsByWeek.pending, (state) => {
 				state.isCFBLoading = true;
 			})
-			.addCase(fetchCFBGames.fulfilled, (state, action) => {
+			.addCase(getMatchupsByWeek.fulfilled, (state, action) => {
 				state.isCFBLoading = false;
 				state.games = action.payload;
 			})
-			.addCase(fetchCFBGames.rejected, (state, action) => {
+			.addCase(getMatchupsByWeek.rejected, (state, action) => {
 				state.isCFBLoading = false;
 				state.isCFBError = true;
 				state.CFBMessage = action.payload;
@@ -53,6 +53,6 @@ const cfbSlice = createSlice({
 	},
 });
 
-export const { reset } = cfbSlice.actions;
+export const { reset } = ncaafSlice.actions;
 
-export default cfbSlice.reducer;
+export default ncaafSlice.reducer;
