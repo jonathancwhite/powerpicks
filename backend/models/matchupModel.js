@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const matchupSchema = mongoose.Schema(
 	{
 		sport: { type: String, required: true },
-		teams: [{ type: String, required: true }],
+		teams: [{ type: mongoose.Schema.Types.Mixed, required: true }],
 		matchupDate: { type: Date, required: true },
 		matchupTime: { type: String, required: true },
 		gameId: { type: String, required: true }, // from API

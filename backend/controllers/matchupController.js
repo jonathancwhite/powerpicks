@@ -60,7 +60,6 @@ export const createMatchupFromData = async (scoreboard) => {
 					const team = {
 						id: competitor.team.id,
 						name: competitor.team.displayName,
-						score: competitor.score,
 					};
 
 					if (competitor.homeAway === "home") {

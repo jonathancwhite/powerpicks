@@ -139,7 +139,7 @@ const CollegeFootballTest = () => {
 						{isCFBLoading ? (
 							<div className='spinner'></div>
 						) : (
-							<span>Fetch CFB Data</span>
+							<span>Create Matchups from CFB Data</span>
 						)}
 					</button>
 				</>
