@@ -8,6 +8,7 @@ import {
 	getInviteLinkByCode,
 	getInviteLinkByLeagueId,
 } from "./inviteLinkController.js";
+import { createSeason } from "./seasonController.js";
 
 /**
  * @desc   Creates a new league from user data
@@ -35,6 +36,8 @@ export const createLeague = asyncHandler(async (req, res) => {
 		? await bcrypt.hash(password, 10)
 		: undefined;
 
+	const season = await createSeason(sport);
+
 	// creates league Object to then save with league.save()
 	const league = new League({
 		name,
@@ -45,6 +48,7 @@ export const createLeague = asyncHandler(async (req, res) => {
 		password: hashedPassword,
 		maxPlayers,
 		tier,
+		seasonId: season._id,
 	});
 
 	const savedLeague = await league.save();
@@ -174,12 +178,12 @@ export const getAllJoinedLeagues = asyncHandler(async (req, res) => {
 		throw new Error("No user id provided");
 	}
 
-	// find all leagues that the user is a member of
 	const leagues = await League.find({
-		members: { $in: userId },
+		members: { $in: [userId] },
+		isActive: true,
 	});
 
-	if (!leagues) {
+	if (!leagues || leagues.length === 0) {
 		res.status(404);
 		throw new Error("Leagues not found");
 	}
@@ -436,3 +440,18 @@ export const removeMemberById = asyncHandler(async (req, res) => {
 
 	res.status(200).json(updatedLeague);
 });
+
+/**
+ * 	@desc   Set league to inactive
+ */
+export const setLeagueInactive = async (leagueId) => {
+	const league = await League.findById(leagueId);
+
+	if (!league) {
+		throw new Error("League not found");
+	}
+
+	league.isActive = false;
+	const updatedLeague = await league.save();
+	return updatedLeague;
+};
