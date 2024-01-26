@@ -25,6 +25,7 @@ router.get("/", async (req, res) => {
 	}
 });
 
-router.get("/games", getCfbGamesNew);
+// need to protect these routes to an API key that is only set for JW
+// router.get("/games", getCfbGamesNew);
 
 export default router;
