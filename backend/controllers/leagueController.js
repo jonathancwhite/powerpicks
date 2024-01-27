@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import League from "../models/leagueModel.js";
 import InviteLink from "../models/inviteLinkModel.js";
+import Season from "../models/seasonModel.js";
 import bcrypt from "bcryptjs";
 import { body, validationResult } from "express-validator";
 import {
@@ -369,7 +370,7 @@ export const getLeagueByIdWithMembers = asyncHandler(async (req, res) => {
  * @desc    Get league by ID with members and invite links
  * @route   GET /api/leagues/:id
  * @access  Private
- * @returns {object} - the league object
+ * @returns {object} - the league object with details of inviteLinks & season
  */
 export const getLeagueByIdWithDetails = async (req, res) => {
 	try {
@@ -404,13 +405,19 @@ export const getLeagueByIdWithDetails = async (req, res) => {
 			}
 		}
 
+		const season = await Season.findById({ _id: league.seasonId }).populate(
+			"matchups",
+			"_id teams matchupDate matchupTime gameId week",
+		);
+
 		// Combine league and invite links into one object
-		const leagueWithInviteLinks = {
+		const leagueWithDetails = {
 			...league.toObject(),
 			inviteLinks,
+			season,
 		};
 
-		res.json(leagueWithInviteLinks);
+		res.json(leagueWithDetails);
 	} catch (error) {
 		console.error(`Error in getLeagueByIdWithDetails: ${error}`);
 		res.status(500).json({ message: "Server error" });

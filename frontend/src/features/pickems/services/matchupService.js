@@ -80,10 +80,11 @@ export const setMatchupsForSeason = async (leagueId, matchups, token) => {
 		},
 	};
 
-	const response = await axios.post(`/api/leagues/${leagueId}/matchups`, {
+	const response = await axios.post(
+		`/api/leagues/${leagueId}/matchups`,
 		matchups,
 		config,
-	});
+	);
 
 	return response.data;
 };

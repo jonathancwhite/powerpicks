@@ -1,23 +1,17 @@
-import { useDispatch } from "react-redux";
-import { getMatchupsFromLeague } from "../slices/matchupSlice";
 import PropTypes from "prop-types";
 
-const AdminLeagueView = ({ league }) => {
-	const dispatch = useDispatch();
-
-	const getMatchups = () => {
-		dispatch(getMatchupsFromLeague(league._id));
-	};
-
+const AdminLeagueView = ({ league, user }) => {
 	return (
-		<div className='admin'>
-			<h2>User is Admin</h2>
-		</div>
+		<>
+			<h1>Admin View</h1>
+			<p>Work In Progress</p>
+		</>
 	);
 };
 
-AdminLeagueView.propTypes = {
-	league: PropTypes.object,
+PropTypes.AdminLeagueView = {
+	league: PropTypes.object.isRequired,
+	user: PropTypes.object.isRequired,
 };
 
 export default AdminLeagueView;

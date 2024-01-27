@@ -75,6 +75,10 @@ export const getSeasonById = async (id) => {
 };
 
 export const setMatchupsForSeason = asyncHandler(async (req, res) => {
+	console.group(`setMatchupsForSeason`);
+	console.log(`req.body: `, req.body);
+	console.log(`req.params: `, req.params);
+	console.groupEnd();
 	const matchups = req.body.matchups;
 
 	const league_id = req.params.id;
@@ -84,6 +88,11 @@ export const setMatchupsForSeason = asyncHandler(async (req, res) => {
 	const season_id = league.seasonId;
 
 	const season = await getSeasonById(season_id);
+
+	if (!matchups) {
+		res.status(400);
+		throw new Error("No matchups");
+	}
 
 	// check if any ids in matchups are already in season.matchups
 	matchups.forEach((matchup) => {
@@ -100,5 +109,5 @@ export const setMatchupsForSeason = asyncHandler(async (req, res) => {
 
 	const updatedSeason = await season.save();
 
-	return updatedSeason;
+	return updatedSeason.matchups;
 });

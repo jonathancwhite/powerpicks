@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Matchup from "../models/matchupModel.js";
-import { getLeagueFromId } from "./leagueController.js";
+import { getLeagueById } from "./leagueController.js";
 
 /**
  * @desc  	Create matchups from ESPN API data
@@ -89,7 +89,7 @@ export const getMatchupsByWeek = asyncHandler(async (req, res) => {
 export const getMatchupsFromLeague = asyncHandler(async (req, res) => {
 	const leagueId = req.params.id;
 
-	const league = await getLeagueFromId(leagueId);
+	const league = await getLeagueById(leagueId);
 
 	const season_id = league.seasonId;
 

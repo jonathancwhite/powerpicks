@@ -6,8 +6,7 @@ import { IoMdCog } from "react-icons/io";
 import { toast } from "react-toastify";
 import MembersList from "../components/MembersList";
 import CurrentLeagueSettingsModal from "../components/CurrentLeagueSettingsModal";
-import AdminLeagueView from "../components/AdminLeagueView";
-import UserLeagueView from "../components/UserLeagueView";
+import PickSelection from "../components/PickSelection";
 
 const UserLeagues = () => {
 	const { id } = useParams();
@@ -43,10 +42,9 @@ const UserLeagues = () => {
 	useEffect(() => {
 		if (league === null) {
 			fetchLeagueData(id, userInfo.token);
-			// early exit so no other code is executed
 			return;
 		}
-		// league data exists
+
 		if (league._id) {
 			if (league._id !== id) {
 				fetchLeagueData(id, userInfo.token);
@@ -113,11 +111,11 @@ const UserLeagues = () => {
 						<div className='currentLeague__main'>
 							<div className='currentLeague__paper xl'>
 								<div className='centeredContainer'>
-									{isOwner ? (
-										<AdminLeagueView league={league} />
-									) : (
-										<UserLeagueView />
-									)}
+									<PickSelection
+										isOwner={isOwner}
+										league={league}
+										user={userInfo}
+									/>
 								</div>
 							</div>
 							<div className='currentLeague__paper sm'>

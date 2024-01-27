@@ -4,6 +4,8 @@ import matchupService from "../services/matchupService";
 const initialState = {
 	matchups: [],
 	year: null,
+	week: null,
+	league_id: null,
 	isMatchupsLoading: false,
 	isMatchupsError: false,
 	matchupsMessage: "",
@@ -47,11 +49,12 @@ export const getMatchupsFromLeague = createAsyncThunk(
 
 export const setMatchupsForSeason = createAsyncThunk(
 	"matchups/setMatchupsForSeason",
-	async ({ leagueId, matchups, token }, thunkAPI) => {
+	async ({ leagueId, matchupData, token }, thunkAPI) => {
+		console.log(matchupData);
 		try {
 			const response = matchupService.setMatchupsForSeason(
 				leagueId,
-				matchups,
+				matchupData,
 				token,
 			);
 			return response;

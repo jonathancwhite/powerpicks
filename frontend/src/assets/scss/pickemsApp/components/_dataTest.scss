@@ -20,6 +20,11 @@
 
 	&__controlbar {
 		// justify-content: flex-end;
+		.formGroup {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+		}
 	}
 }
 
