@@ -84,6 +84,7 @@ const CollegeFootballTest = ({ league, user }) => {
 
 	const fetchCollegeFootballGames = async () => {
 		let sport = league.sport;
+
 		try {
 			const response = await dispatch(getMatchupsByWeek({ week, sport }));
 

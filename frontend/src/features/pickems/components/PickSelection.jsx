@@ -12,10 +12,11 @@ const PickSelection = ({ league, isOwner, user }) => {
 		(state) => state.matchups,
 	);
 
-	const [showAdminView, setShowAdminView] = useState(false);
+	const [showAdminView, setShowAdminView] = useState(isOwner);
 	const [week, setWeek] = useState("1");
+	const [requestLoading, setRequestLoading] = useState(false);
 	const [startPaginationNum, setStartPaginationNum] = useState(1);
-	const [numOfResults, setNumOfResults] = useState(10);
+	const [numOfResults, setNumOfResults] = useState(100);
 	const [startNumOfResults, setStartNumOfResults] = useState(0);
 	const [endNumOfResults, setEndNumOfResults] = useState(10);
 	const [checkedMatchupIds, setCheckedMatchupIds] = useState([]);
@@ -39,18 +40,15 @@ const PickSelection = ({ league, isOwner, user }) => {
 		return new Date(dateString).toLocaleDateString("en-US", options);
 	};
 
-	const fetchAllPossibleMatchups = async () => {
-		toast.info("Fetching matchups");
+	const fetchPossibleMatchupsByWeek = async () => {
+		toast.info(`Fetching matchups for week: ${week}`);
+		setRequestLoading(true);
 		let sport = league.sport;
 		try {
 			const response = await dispatch(getMatchupsByWeek({ week, sport }));
 
 			if (response.meta.requestStatus === "fulfilled") {
-				if (matchups.length) {
-					console.log("Request not fulfilled");
-				} else {
-					// toast.success("Data loaded");
-				}
+				setRequestLoading(false);
 			}
 
 			return response;
@@ -59,14 +57,34 @@ const PickSelection = ({ league, isOwner, user }) => {
 		}
 	};
 
+	const handleChangeSelect = async (e) => {
+		if (e.target.name === "week") {
+			setWeek(e.target.value);
+		} else if (e.target.name === "numberOfResults") {
+			let numberOfResults = parseInt(e.target.value);
+			let pagination = startPaginationNum;
+			let startingNumber = numberOfResults * (pagination - 1);
+			let endingNumber = startingNumber + numberOfResults;
+			setStartNumOfResults(startingNumber);
+			setEndNumOfResults(endingNumber);
+			setNumOfResults(numberOfResults);
+		} else if (e.target.name === "pagination") {
+			let numberOfResults = parseInt(numOfResults);
+			let pagination = parseInt(e.target.value);
+			let startingNumber = numberOfResults * (pagination - 1);
+			let endingNumber = startingNumber + numberOfResults;
+			setEndNumOfResults(endingNumber);
+			setStartNumOfResults(startingNumber);
+			setStartPaginationNum(e.target.value);
+		}
+	};
+
 	useEffect(() => {
-		if (isOwner) {
-			setShowAdminView(true);
+		if (showAdminView) {
+			fetchPossibleMatchupsByWeek();
 		}
 
-		if (showAdminView && matchups.length === 0) {
-			fetchAllPossibleMatchups();
-		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [week]);
 
 	return (
@@ -127,10 +145,75 @@ const PickSelection = ({ league, isOwner, user }) => {
 						<>
 							{matchups && matchups.length !== 0 ? (
 								<div className='games'>
-									{matchups.map((game, index) =>
+									{requestLoading ? (
+										<div className='centeredContainer'>
+											<div className='spinner'></div>
+										</div>
+									) : (
+										<>
+											{matchups.map((game, index) =>
+												index <=
+													numOfResults *
+														startPaginationNum &&
+												index >= startNumOfResults ? (
+													<div
+														className='games__item'
+														key={game._id}>
+														<div className='h3'>
+															{formatDate(
+																game.matchupDate,
+															)}
+														</div>
+														<div className='games__details'>
+															<ImageWithFallback
+																src={`https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/${game.teams[0].id}.png`}
+																fallbackSrc={
+																	cfbGenericLogo
+																}
+																alt={`${game.teams[0].name} logo`}
+															/>
+															<span>vs</span>
+															<ImageWithFallback
+																src={`https://a.espncdn.com/combiner/i?img=/i/teamlogos/ncaa/500/${game.teams[1].id}.png`}
+																fallbackSrc={
+																	cfbGenericLogo
+																}
+																alt={`${game.teams[1].name} logo`}
+															/>
+														</div>
+														<div className='games__selection'>
+															<input
+																type='checkbox'
+																name='selectGame'
+																id='selectGame'
+																data-matchup-id={
+																	game._id
+																}
+																onChange={() =>
+																	handleCheckboxChange(
+																		game._id,
+																	)
+																}
+															/>
+														</div>
+													</div>
+												) : null,
+											)}
+										</>
+									)}
+								</div>
+							) : null}
+						</>
+					) : (
+						<>
+							{league.season.matchups &&
+							league.season.matchups.length !== 0 ? (
+								<div className='games'>
+									{league.season.matchups.map((game, index) =>
 										index <=
 											numOfResults * startPaginationNum &&
-										index >= startNumOfResults ? (
+										index >= startNumOfResults &&
+										game.week.toString() === week ? (
 											<div
 												className='games__item'
 												key={game._id}>
@@ -156,29 +239,13 @@ const PickSelection = ({ league, isOwner, user }) => {
 														alt={`${game.teams[1].name} logo`}
 													/>
 												</div>
-												<div className='games__selection'>
-													<input
-														type='checkbox'
-														name='selectGame'
-														id='selectGame'
-														data-matchup-id={
-															game._id
-														}
-														onChange={() =>
-															handleCheckboxChange(
-																game._id,
-															)
-														}
-													/>
-												</div>
+												<div className='games__selection'></div>
 											</div>
 										) : null,
 									)}
 								</div>
 							) : null}
 						</>
-					) : (
-						<></>
 					)}
 				</>
 			)}
