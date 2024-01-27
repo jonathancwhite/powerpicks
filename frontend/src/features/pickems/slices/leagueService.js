@@ -20,18 +20,6 @@ export const updateLeague = async (id, leagueData, token) => {
 	return response.data;
 };
 
-export const getLeagueById = async (id, token) => {
-	let user = localStorage.getItem("userInfo");
-	const config = {
-		headers: {
-			authorization: `Bearer ${token}`,
-			user: user,
-		},
-	};
-	const response = await axios.get(`${LEAGUES_URL}/${id}`, config);
-	return response.data;
-};
-
 export const getLeagueByIdWithDetails = async (id, token) => {
 	let user = localStorage.getItem("userInfo");
 	const config = {
@@ -101,7 +89,6 @@ export const deleteLeague = async (id, token) => {
 
 const leagueService = {
 	updateLeague,
-	getLeagueById,
 	getLeagueByCode,
 	getLeagueByIdWithDetails,
 	getInviteLinkUrlByLeagueId,

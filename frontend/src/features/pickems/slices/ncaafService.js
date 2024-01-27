@@ -10,8 +10,8 @@ export const getMatchupsByWeek = async (week) => {
 	return response.data;
 };
 
-const cfbService = {
+const ncaafService = {
 	getMatchupsByWeek,
 };
 
-export default cfbService;
+export default ncaafService;

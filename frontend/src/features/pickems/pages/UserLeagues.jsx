@@ -6,6 +6,8 @@ import { IoMdCog } from "react-icons/io";
 import { toast } from "react-toastify";
 import MembersList from "../components/MembersList";
 import CurrentLeagueSettingsModal from "../components/CurrentLeagueSettingsModal";
+import AdminLeagueView from "../components/AdminLeagueView";
+import UserLeagueView from "../components/UserLeagueView";
 
 const UserLeagues = () => {
 	const { id } = useParams();
@@ -14,6 +16,8 @@ const UserLeagues = () => {
 	const { league, isLoading, isError, message } = useSelector(
 		(state) => state.league,
 	);
+
+	const isOwner = league && league.createdBy === userInfo._id;
 
 	const [showLeagueSettingsModal, setShowLeagueSettingsModal] =
 		useState(false);
@@ -55,8 +59,6 @@ const UserLeagues = () => {
 	const handleSettingsClick = () => {
 		setShowLeagueSettingsModal(!showLeagueSettingsModal);
 	};
-
-	const isOwner = league && league.createdBy === userInfo._id;
 
 	return (
 		<>
@@ -111,7 +113,11 @@ const UserLeagues = () => {
 						<div className='currentLeague__main'>
 							<div className='currentLeague__paper xl'>
 								<div className='centeredContainer'>
-									<h3>Main Panel</h3>
+									{isOwner ? (
+										<AdminLeagueView league={league} />
+									) : (
+										<UserLeagueView />
+									)}
 								</div>
 							</div>
 							<div className='currentLeague__paper sm'>

@@ -1,41 +1,11 @@
 import asyncHandler from "express-async-handler";
 import Matchup from "../models/matchupModel.js";
+import { getLeagueFromId } from "./leagueController.js";
 
 /**
- *  @desc  Fetch results of matchup
- * 	@param {string} year - The year of the season
- * 	@route  GET /api/ncaaf/matchup/:id/results
- * 	@access Public
+ * @desc  	Create matchups from ESPN API data
+ * @param 	{Object} scoreboard - ESPN API scoreboard data
  */
-export const getMatchupResult = asyncHandler(async (req, res) => {
-	const matchup_id = req.params.id;
-
-	// get matchup to have relevant info and save results
-	const matchup = Matchup.findOne({ _id: matchup_id });
-
-	if (!matchup) {
-		res.status(404);
-		throw new Error("Matchup not found");
-	}
-
-	const game_id = matchup.gameId;
-
-	const options = {
-		method: "GET",
-		headers: {
-			"Content-Type": "application/json",
-			Authorization: `Bearer ${process.env.CFB_API_KEY}`,
-		},
-	};
-
-	const results = await fetch(
-		`https://api.collegefootballdata.com/games?year=${year}&id=${game_id}`,
-		options,
-	);
-
-	return results;
-});
-
 export const createMatchupFromData = async (scoreboard) => {
 	for (const item of scoreboard.events) {
 		const matchupDateObj = new Date(item.date);
@@ -92,6 +62,11 @@ export const createMatchupFromData = async (scoreboard) => {
 	return;
 };
 
+/**
+ * @desc  	Get matchups by week and sport
+ * @route 	GET /api/matchups
+ * @access 	Public
+ */
 export const getMatchupsByWeek = asyncHandler(async (req, res) => {
 	const week = req.query.week;
 	const sport = req.query.sport;
@@ -104,4 +79,26 @@ export const getMatchupsByWeek = asyncHandler(async (req, res) => {
 	}
 
 	res.status(200).json(matchups);
+});
+
+/**
+ *  @desc  	Get matchups from league
+ *  @route  GET /api/leagues/:id/matchups
+ *  @access Private
+ */
+export const getMatchupsFromLeague = asyncHandler(async (req, res) => {
+	const leagueId = req.params.id;
+
+	const league = await getLeagueFromId(leagueId);
+
+	const season_id = league.seasonId;
+
+	const season = await getSeasonById(season_id);
+
+	if (season.matchups && season.matchups.length === 0) {
+		res.status(200).json([]);
+		return;
+	}
+
+	res.status(200).json(season.matchups);
 });

@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Season from "../models/seasonModel.js";
 import { createMatchupFromData } from "./matchupController.js";
+import { getLeagueById } from "./leagueController.js";
 
 /**
  * 	@desc   Create Season for league
@@ -32,78 +33,6 @@ export const createSeason = async (sport) => {
 };
 
 /**
- * 	@desc    Fetch ncaaf teams
- * 	@route   GET /api/ncaaf/teams
- *  @param   {string} year - The year of the season
- * 	@access  Public
- */
-export const getCfbTeams = asyncHandler(async (req, res) => {
-	const year = req.query.year || new Date().getFullYear();
-
-	const options = {
-		method: "GET",
-		headers: {
-			"Content-Type": "application/json",
-			Authorization: `Bearer ${process.env.CFB_API_KEY}`,
-		},
-	};
-
-	const teams = await fetch(
-		`https://api.collegefootballdata.com/teams/fbs?year=${year}`,
-		options,
-	);
-
-	res.status(200).json(teams);
-});
-
-/**
- *  @desc   Fetch season games
- * 	@param {string} year - The year of the season
- * 	@route  GET /api/ncaaf/schedule
- * 	@access Public
- */
-export const getCfbSchedule = asyncHandler(async (req, res) => {
-	const year = req.query.year || new Date().getFullYear();
-	const division = req.query.division || "fbs";
-	const options = {
-		method: "GET",
-		headers: {
-			"Content-Type": "application/json",
-			Authorization: `Bearer ${process.env.CFB_API_KEY}`,
-		},
-	};
-	const schedule = await fetch(
-		`https://api.collegefootballdata.com/games?year=${year}&division=${division}`,
-		options,
-	);
-
-	res.status(200).json(schedule);
-});
-
-/**
- *  @desc  Fetch season calendar
- * 	@param {string} year - The year of the season
- * 	@route  GET /api/ncaaf/calendar
- */
-export const getCfbCalendar = asyncHandler(async (req, res) => {
-	const year = req.query.year || new Date().getFullYear();
-	const options = {
-		method: "GET",
-		headers: {
-			"Content-Type": "application/json",
-			Authorization: `Bearer ${process.env.CFB_API_KEY}`,
-		},
-	};
-
-	const calendar = await fetch(
-		`https://api.collegefootballdata.com/calendar?year=${year}`,
-		options,
-	);
-
-	res.status(200).json(calendar);
-});
-
-/**
  * 	@desc	Fetch ncaaf games
  * 	@route	GET /api/ncaaf/games
  *  @param  {string} year - The year of the season
@@ -129,4 +58,47 @@ export const getCfbGamesNew = asyncHandler(async (req, res) => {
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
+});
+
+/**
+ *  @desc 	Get season by id
+ *  @access Private
+ */
+export const getSeasonById = async (id) => {
+	const season = await Season.findById(id);
+
+	if (!season) {
+		throw new Error("Season not found");
+	}
+
+	return season;
+};
+
+export const setMatchupsForSeason = asyncHandler(async (req, res) => {
+	const matchups = req.body.matchups;
+
+	const league_id = req.params.id;
+
+	const league = await getLeagueById(league_id);
+
+	const season_id = league.seasonId;
+
+	const season = await getSeasonById(season_id);
+
+	// check if any ids in matchups are already in season.matchups
+	matchups.forEach((matchup) => {
+		const matchup_id = matchup._id;
+
+		const matchupExists = season.matchups.find(
+			(matchup) => matchup._id === matchup_id,
+		);
+
+		if (!matchupExists) {
+			season.matchups.push(matchup);
+		}
+	});
+
+	const updatedSeason = await season.save();
+
+	return updatedSeason;
 });

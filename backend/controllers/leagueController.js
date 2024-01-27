@@ -333,23 +333,17 @@ export const getLeagueByCode = asyncHandler(async (req, res) => {
 
 /**
  * @desc  Get league by id
- * @route GET /api/leagues/:id
- * @access PRIVATE
- * @param {string} id - the league id
  * @throws {Error} - if league not found
  */
-export const getLeagueById = asyncHandler(async (req, res) => {
-	const leagueId = req.params.id;
-
+export const getLeagueById = async (leagueId) => {
 	const league = await League.findById(leagueId);
 
 	if (!league) {
-		res.status(404);
 		throw new Error("League not found");
 	}
 
-	res.status(200).json(league);
-});
+	return league;
+};
 
 /**
  * @desc   Get league by id with members populated

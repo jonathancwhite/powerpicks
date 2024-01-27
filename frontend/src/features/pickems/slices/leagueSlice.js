@@ -33,24 +33,6 @@ export const updateLeague = createAsyncThunk(
 	},
 );
 
-export const getLeagueById = createAsyncThunk(
-	"league/getLeagueById",
-	async ({ id, token }, thunkAPI) => {
-		try {
-			const result = await leagueService.getLeagueById(id, token);
-			return result;
-		} catch (error) {
-			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
-				error.message ||
-				error.toString();
-			return thunkAPI.rejectWithValue(message);
-		}
-	},
-);
-
 export const getLeagueByIdWithDetails = createAsyncThunk(
 	"league/getLeagueByIdWithDetails",
 	async ({ id, token }, thunkAPI) => {
@@ -169,19 +151,6 @@ const leagueSlice = createSlice({
 				state.isSuccess = true;
 			})
 			.addCase(updateLeague.rejected, (state, action) => {
-				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
-			})
-			.addCase(getLeagueById.pending, (state) => {
-				state.isLoading = true;
-			})
-			.addCase(getLeagueById.fulfilled, (state, action) => {
-				state.isLoading = false;
-				state.isSuccess = true;
-				state.league = action.payload; // only want the one league
-			})
-			.addCase(getLeagueById.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
