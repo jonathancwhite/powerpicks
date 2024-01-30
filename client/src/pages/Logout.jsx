@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useLogoutMutation } from "../slices/authMutations";
-import { logout } from "../slices/authSlice";
+import { useLogoutMutation } from "../redux/slices/authMutations";
+import { logout } from "../redux/slices/authSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import LoadingSpinner from "../components/common/LoadingSpinner";
+import LoadingSpinner from "../components/loaders/LoadingSpinner";
 
 const Logout = () => {
 	const dispatch = useDispatch();

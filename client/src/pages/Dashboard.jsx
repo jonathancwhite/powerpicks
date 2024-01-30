@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import CollegeFootballTest from "../../../components/test/CollegeFootballTest";
 
 const Pickems = () => {
 	const { leaguesJoined, isLoading, isError } = useSelector(

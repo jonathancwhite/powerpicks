@@ -1,8 +1,8 @@
 import { LinkContainer } from "react-router-bootstrap";
 import brandLogo from "../../assets/images/powerpicks_logo.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { useLogoutMutation } from "../../slices/authMutations";
-import { logout } from "../../slices/authSlice";
+import { useLogoutMutation } from "../../redux/slices/authMutations";
+import { logout } from "../../redux/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 

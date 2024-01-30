@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { joinLeagueByCode } from "../pickems/slices/leaguesJoinedSlice";
-import { getLeagueByCode } from "../pickems/slices/leagueSlice";
-import LoginModal from "./LoginModal";
+import { joinLeagueByCode } from "../redux/slices/leaguesJoinedSlice";
+import { getLeagueByCode } from "../redux/slices/leagueSlice";
+import LoginModal from "../components/modals/Login";
 
 const LeagueInvite = () => {
 	const { code } = useParams();

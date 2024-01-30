@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { setCredentials, updateUser } from "../../../slices/authSlice";
+import { setCredentials, updateUser } from "../../redux/slices/authSlice";
 import PropTypes from "prop-types";
 
 const ProfilePictureModal = ({ closeModal, user }) => {

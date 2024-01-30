@@ -1,13 +1,13 @@
-import { LinkContainer } from "react-router-bootstrap";
-import brandLogo from "../../../../assets/images/powerpicks_logo.svg";
-import { IoIosTrophy, IoIosAddCircleOutline } from "react-icons/io";
-import { MdHome } from "react-icons/md";
-import { useSelector, useDispatch } from "react-redux";
-import { toast } from "react-toastify";
-import { IoCogSharp } from "react-icons/io5";
 import { useState, useEffect } from "react";
-import CreateLeagueModal from "../CreateLeagueModal";
-import { getAllJoinedLeagues } from "../../slices/leaguesJoinedSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { LinkContainer } from "react-router-bootstrap";
+import { IoIosTrophy, IoIosAddCircleOutline } from "react-icons/io";
+import { IoCogSharp } from "react-icons/io5";
+import { MdHome } from "react-icons/md";
+import { getAllJoinedLeagues } from "../../redux/slices/leaguesJoinedSlice";
+import { toast } from "react-toastify";
+import brandLogo from "../../assets/images/powerpicks_logo.svg";
+import CreateLeagueModal from "../modals/CreateLeague";
 
 const Sidebar = () => {
 	const auth = useSelector((state) => state.auth);

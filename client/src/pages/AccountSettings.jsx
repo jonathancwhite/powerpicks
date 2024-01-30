@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { updateUser, setCredentials } from "../../../../slices/authSlice";
+import { updateUser, setCredentials } from "../redux/slices/authSlice";
 
 const AccountSettings = () => {
 	const { userInfo, isLoading } = useSelector((state) => state.auth);

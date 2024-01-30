@@ -15,9 +15,9 @@ import AccountSettings from "./pages/AccountSettings";
 import ProfileSettings from "./pages/ProfileSettings";
 import Settings from "./pages/Settings";
 import { ToastContainer } from "react-toastify";
-import { useAuth } from "./hooks/useAuth";
-import ProtectedRoute from "./components/navigation/ProtectedRoute";
-import LoadingSpinner from "./components/common/LoadingSpinner";
+import useAuth from "./hooks/useAuth";
+import LoadingSpinner from "./components/loaders/LoadingSpinner";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 
 function App() {
 	let isLoading = useAuth();

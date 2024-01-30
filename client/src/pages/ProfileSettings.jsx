@@ -2,8 +2,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { IoPencil } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
-import ProfilePictureModal from "../../components/ProfilePictureModal";
-import { setCredentials, updateUser } from "../../../../slices/authSlice";
+import ProfilePictureModal from "../components/modals/ProfilePicture";
+import { setCredentials, updateUser } from "../redux/slices/authSlice";
 
 const ProfileSettings = () => {
 	const { userInfo, isLoading } = useSelector((state) => state.auth);

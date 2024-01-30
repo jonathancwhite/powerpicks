@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getAllJoinableLeagues } from "../../redux/slices/leaguesAvailableSlice";
-import LoadingSpinner from "../../../components/common/LoadingSpinner";
+import LoadingSpinner from "../loaders/LoadingSpinner";
 import LeagueDisplayItem from "./LeagueDisplayItem";
 
 const LeagueDisplay = () => {

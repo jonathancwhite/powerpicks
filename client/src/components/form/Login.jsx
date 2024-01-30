@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { useLoginMutation } from "../../slices/authMutations.js";
-import { setCredentials } from "../../slices/authSlice.js";
+import { useLoginMutation } from "../../redux/slices/authMutations.js";
+import { setCredentials } from "../../redux/slices/authSlice.js";
 
 const LoginForm = () => {
 	const inDevelopment = true;

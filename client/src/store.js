@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { apiSlice } from "./slices/apiSlice.js";
-import authReducer from "./slices/authSlice.js";
-import leagueReducer from "./features/pickems/slices/leagueSlice.js";
-import leaguesJoinedReducer from "./features/pickems/slices/leaguesJoinedSlice.js";
-import leaguesAvailableReducer from "./features/pickems/slices/leaguesAvailableSlice.js";
-import profileReducer from "./features/pickems/slices/profileSlice.js";
-import matchupReducer from "./features/pickems/slices/matchupSlice.js";
+import { apiSlice } from "./redux/slices/apiSlice.js";
+import authReducer from "./redux/slices/authSlice.js";
+import leagueReducer from "./redux/slices/leagueSlice.js";
+import leaguesJoinedReducer from "./redux/slices/leaguesJoinedSlice.js";
+import leaguesAvailableReducer from "./redux/slices/leaguesAvailableSlice.js";
+import profileReducer from "./redux/slices/profileSlice.js";
+import matchupReducer from "./redux/slices/matchupSlice.js";
 
 /**
  * Removed inviteLinks for now since they are populated inside of currentLeague

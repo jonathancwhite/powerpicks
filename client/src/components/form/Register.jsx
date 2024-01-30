@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useRegisterMutation } from "../../slices/authMutations";
+import { useRegisterMutation } from "../../redux/slices/authMutations";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { setCredentials } from "../../slices/authSlice";
+import { setCredentials } from "../../redux/slices/authSlice";
 
 const Register = () => {
 	const inDevelopment = true;

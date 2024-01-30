@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getLeagueByIdWithDetails, reset } from "../redux/slices/leagueSlice";
 import { IoMdCog } from "react-icons/io";
 import { toast } from "react-toastify";
-import MembersList from "../components/common/MembersList";
+import MembersList from "../components/league/MembersList";
 import CurrentLeagueSettingsModal from "../components/modals/LeagueSettings";
 import PickSelection from "../components/admin/PickSelection";
 
