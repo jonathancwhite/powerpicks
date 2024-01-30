@@ -1,6 +1,7 @@
 import { IoAmericanFootballOutline } from "react-icons/io5";
-import { IoIosFootball, IoIosTrophy } from "react-icons/io";
+import { IoIosFootball } from "react-icons/io";
 import { LiaHockeyPuckSolid } from "react-icons/lia";
+import PropTypes from "prop-types";
 
 const SportSelector = ({ handler }) => {
 	return (
@@ -73,6 +74,10 @@ const SportSelector = ({ handler }) => {
 			</div>
 		</div>
 	);
+};
+
+SportSelector.propTypes = {
+	handler: PropTypes.func.isRequired,
 };
 
 export default SportSelector;
