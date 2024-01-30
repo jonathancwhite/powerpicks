@@ -36,7 +36,7 @@ app.use("/api/leagues", leagueRoutes);
 app.use("/api/ncaaf", ncaafRoutes);
 
 const __dirname = path.resolve();
-const frontendPath = path.join(__dirname, "/frontend/dist");
+const frontendPath = path.join(__dirname, "/client/dist");
 
 // Middleware to handle subdomain requests
 app.use((req, res, next) => {

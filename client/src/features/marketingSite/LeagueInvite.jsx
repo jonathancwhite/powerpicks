@@ -44,6 +44,20 @@ const LeagueInvite = () => {
 		}
 	};
 
+	const fetchLeagueDetails = async () => {
+		try {
+			let leagueDetails = await dispatch(getLeagueByCode(code));
+
+			console.log(leagueDetails);
+
+			if (leagueDetails.payload) {
+				// toast.info("DONE");
+			}
+		} catch (error) {
+			toast.info("Error");
+		}
+	}
+
 	useEffect(() => {
 		// console.log(userInfo);
 		if (isError) {
@@ -59,8 +73,8 @@ const LeagueInvite = () => {
 			}
 		}
 
-		if (league.length < 1) {
-			dispatch(getLeagueByCode(code));
+		if (league === null) {
+			fetchLeagueDetails();
 		}
 	}, [code, dispatch, userInfo, isError, message, league]);
 

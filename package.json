@@ -4,11 +4,11 @@
 	"description": "",
 	"scripts": {
 		"start": "concurrently \"pnpm run server\" \"pnpm run client\"",
-		"server": "cd backend && pnpm start",
-		"client": "cd frontend && pnpm start",
+		"server": "cd server && pnpm start",
+		"client": "cd client && pnpm start",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"install-back": "cd backend && pnpm i",
-		"install-front": "cd frontend && pnpm i"
+		"install-back": "cd server && pnpm i",
+		"install-front": "cd client && pnpm i"
 	},
 	"keywords": [],
 	"author": "",

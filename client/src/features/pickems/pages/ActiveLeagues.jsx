@@ -1,4 +1,3 @@
-import React from "react";
 import LeagueFilter from "../components/navigation/LeagueFilter";
 import LeagueDisplay from "../components/LeagueDisplay";
 import { useSelector } from "react-redux";

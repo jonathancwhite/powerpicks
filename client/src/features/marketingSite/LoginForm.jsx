@@ -38,7 +38,7 @@ const LoginForm = () => {
 				toast.success(credentials.payload.message);
 			}
 		} catch (err) {
-			toast.error(err?.data?.message || err.error);
+			toast.error(err.data.message);
 		}
 	};
 
