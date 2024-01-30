@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { getAllJoinableLeagues } from "../slices/leaguesAvailableSlice";
+import { getAllJoinableLeagues } from "../../redux/slices/leaguesAvailableSlice";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
 import LeagueDisplayItem from "./LeagueDisplayItem";
 

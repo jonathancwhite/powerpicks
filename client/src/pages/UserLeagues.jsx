@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { getLeagueByIdWithDetails, reset } from "../slices/leagueSlice";
+import { getLeagueByIdWithDetails, reset } from "../redux/slices/leagueSlice";
 import { IoMdCog } from "react-icons/io";
 import { toast } from "react-toastify";
-import MembersList from "../components/MembersList";
-import CurrentLeagueSettingsModal from "../components/CurrentLeagueSettingsModal";
-import PickSelection from "../components/PickSelection";
+import MembersList from "../components/common/MembersList";
+import CurrentLeagueSettingsModal from "../components/modals/LeagueSettings";
+import PickSelection from "../components/admin/PickSelection";
 
 const UserLeagues = () => {
 	const { id } = useParams();

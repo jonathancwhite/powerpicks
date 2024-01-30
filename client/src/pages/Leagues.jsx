@@ -1,8 +1,8 @@
-import LeagueFilter from "../components/navigation/LeagueFilter";
-import LeagueDisplay from "../components/LeagueDisplay";
+import LeagueFilter from "";
+import LeagueDisplay from "../components/league/LeagueDisplay";
 import { useSelector } from "react-redux";
 
-const ActiveLeagues = () => {
+const Leagues = () => {
 	const filter = useSelector((state) => state.sport);
 
 	return (
@@ -16,4 +16,4 @@ const ActiveLeagues = () => {
 	);
 };
 
-export default ActiveLeagues;
+export default Leagues;

@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { setCredentials } from "../../slices/authSlice";
 
-const SignUpForm = () => {
+const Register = () => {
 	const inDevelopment = true;
 
 	//swap to const when inDevelopment is false
@@ -360,4 +360,4 @@ const SignUpForm = () => {
 	);
 };
 
-export default SignUpForm;
+export default Register;

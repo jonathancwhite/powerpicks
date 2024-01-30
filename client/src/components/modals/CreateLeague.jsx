@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { IoMdClose, IoMdArrowBack } from "react-icons/io";
 import { toast } from "react-toastify";
-import SportSelector from "./SportSelector";
+import SportSelector from "../league/SportSelector";
 import { useDispatch } from "react-redux";
-import { createAndJoinLeague } from "../slices/leaguesJoinedSlice";
+import { createAndJoinLeague } from "../../redux/slices/leaguesJoinedSlice";
 import PropTypes from "prop-types";
 
 const CreateLeagueModal = ({ closeModal, user }) => {

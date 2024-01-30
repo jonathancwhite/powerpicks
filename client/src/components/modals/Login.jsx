@@ -1,4 +1,4 @@
-import LoginForm from "./LoginForm";
+import Login from "../form/Login";
 
 const LoginModal = ({ closeModal }) => {
 	const handleModalContentClick = (e) => {
@@ -10,7 +10,7 @@ const LoginModal = ({ closeModal }) => {
 			<div className='modal-backdrop' onClick={closeModal}>
 				<div className='modal-item' onClick={handleModalContentClick}>
 					<div className='login-modal'>
-						<LoginForm />
+						<Login />
 					</div>
 				</div>
 			</div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { validateUser } from "../services/authService";
-import { setCredentials, logout } from "../slices/authSlice";
+import {validateUser} from "../redux/services/authService";
+import { setCredentials, logout } from "../redux/slices/authSlice";
 
 const useAuth = () => {
 	const dispatch = useDispatch();

@@ -1,10 +1,10 @@
-import Header from "../components/navigation/Header";
-import Footer from "../components/navigation/Footer";
+import Header from "../common/Header";
+import Footer from "../common/Footer";
 
 const DefaultLayout = ({ children }) => {
 	return (
 		<div className='app'>
-			<Header />
+			<Header compressed={false} newAccount={false}/>
 			<main className='body'>{children}</main>
 			<Footer />
 		</div>

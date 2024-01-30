@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import ImageWithFallback from "../../../components/common/ImageWithFallback";
 import cfbGenericLogo from "../../../assets/images/cfbGenericLogo.png";
-import { getMatchupsByWeek } from "../slices/matchupSlice";
+import { getMatchupsByWeek } from "../../redux/slices/matchupSlice";
 import { toast } from "react-toastify";
 
 const PickSelection = ({ league, isOwner, user }) => {

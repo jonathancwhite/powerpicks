@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import LoginForm from "../features/marketingSite/LoginForm";
-import { useDispatch, useSelector } from "react-redux";
+import Login from "../components/form/Login";
+import { useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const Login = () => {
+const LoginPage = () => {
 	const { userInfo } = useSelector((state) => state.auth);
 
 	const navigate = useNavigate();
@@ -21,9 +21,9 @@ const Login = () => {
 
 	return (
 		<div className='container'>
-			<LoginForm />
+			<Login />
 		</div>
 	);
 };
 
-export default Login;
+export default LoginPage;

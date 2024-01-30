@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import Sidebar from "../features/pickems/components/navigation/Sidebar";
+import Sidebar from "../common/Sidebar";
 
 const DashboardLayout = ({ children }) => {
 	return (

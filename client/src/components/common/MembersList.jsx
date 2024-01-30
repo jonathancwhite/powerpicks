@@ -1,7 +1,7 @@
 import { IoMdRemoveCircle } from "react-icons/io";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { removeMemberById } from "../slices/leagueSlice.js";
+import { removeMemberById } from "../../redux/slices/leagueSlice.js";
 import { LinkContainer } from "react-router-bootstrap";
 
 const MembersList = ({ membersList, isAdmin, leagueId, userId }) => {

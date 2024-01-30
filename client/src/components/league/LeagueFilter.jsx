@@ -3,7 +3,7 @@ import { IoAmericanFootballOutline } from "react-icons/io5";
 import { IoIosFootball, IoIosTrophy } from "react-icons/io";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { setFilter } from "../../slices/leaguesAvailableSlice";
+import { setFilter } from "../../redux/slices/leaguesAvailableSlice";
 import { LiaHockeyPuckSolid } from "react-icons/lia";
 
 const LeagueFilter = () => {

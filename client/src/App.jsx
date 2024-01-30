@@ -1,23 +1,23 @@
 import { Routes, Route } from "react-router-dom";
-import DefaultLayout from "./layouts/DefaultLayout";
+import "react-toastify/dist/ReactToastify.css";
+import DefaultLayout from "./components/layouts/DefaultLayout";
+import CompressedLayout from "./components/layouts/CompressedLayout";
+import DashboardLayout from "./components/layouts/DashboardLayout";
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
-import CompressedLayout from "./layouts/CompressedLayout";
 import Login from "./pages/Login";
-import Dashboard from "./features/pickems/pages/Dashboard";
-import "react-toastify/dist/ReactToastify.css";
-import { ProtectedRoute } from "./components/navigation/ProtectedRoute";
-import DashboardLayout from "./layouts/DashboardLayout";
-import useAuth from "./hooks/useAuth";
-import ActiveLeagues from "./features/pickems/pages/ActiveLeagues";
-import LoadingSpinner from "./components/common/LoadingSpinner";
 import Logout from "./pages/Logout";
-import AccountSettings from "./features/pickems/pages/settings/accountSettings";
-import Settings from "./features/pickems/pages/settings/Settings";
-import ProfileSettings from "./features/pickems/pages/settings/ProfileSettings";
+import LeagueInvite from "./pages/LeagueInvite";
+import Dashboard from "./pages/Dashboard";
+import ActiveLeagues from "./pages/Leagues";
+import UserLeagues from "./pages/UserLeagues";
+import AccountSettings from "./pages/AccountSettings";
+import ProfileSettings from "./pages/ProfileSettings";
+import Settings from "./pages/Settings";
 import { ToastContainer } from "react-toastify";
-import LeagueInvite from "./features/marketingSite/LeagueInvite";
-import UserLeagues from "./features/pickems/pages/UserLeagues";
+import { useAuth } from "./hooks/useAuth";
+import ProtectedRoute from "./components/navigation/ProtectedRoute";
+import LoadingSpinner from "./components/common/LoadingSpinner";
 
 function App() {
 	let isLoading = useAuth();

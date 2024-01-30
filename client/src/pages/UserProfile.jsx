@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchUserProfile, reset } from "../slices/profileSlice";
+import { fetchUserProfile, reset } from "../redux/slices/profileSlice";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 

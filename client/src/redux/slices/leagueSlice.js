@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import leagueService from "./leagueService";
+import leagueService from "../services/leagueService";
 import Cookies from "js-cookie";
 
 const initialState = {

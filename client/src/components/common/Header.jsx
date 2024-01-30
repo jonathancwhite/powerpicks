@@ -6,7 +6,7 @@ import { logout } from "../../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const Header = () => {
+const Header = ({ compressed, newAccount = false }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
@@ -31,6 +31,30 @@ const Header = () => {
 			);
 		}
 	};
+
+	if (compressed) {
+		return (
+			<div className='header'>
+			<div className='brand'>
+				<LinkContainer to={"/"}>
+					<img src={brandLogo} alt='PowerPicks logo' />
+				</LinkContainer>
+			</div>
+			<div
+				className={`${
+					newAccount ? "siteNavigation compressed" : "vHidden"
+				}`}>
+				<ul className='siteNavigation__list'>
+					<LinkContainer to={"/login"}>
+						<li className='siteNavigation__item'>
+							Have an account?
+						</li>
+					</LinkContainer>
+				</ul>
+			</div>
+		</div>
+		)
+	}
 
 	return (
 		<div className='header'>
