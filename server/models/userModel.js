@@ -36,6 +36,10 @@ const userSchema = mongoose.Schema(
 		phoneNumber: {
 			type: String,
 		},
+		isEmailVerified: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	{
 		timestamps: true,

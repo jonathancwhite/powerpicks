@@ -1,7 +1,83 @@
 import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
-import generateToken from "../utils/generateToken.js";
+// import generateToken from "../utils/generateToken.js";
+import Token from "../models/tokenModel.js";
+
+/**
+ * Adds a new user to the database with the given name, email, password, and avatar.
+ *
+ * @description If the email domain of the user's email is "mod.socialecho.com", the user will be
+ * assigned the role of "moderator" by default, but not necessarily as a moderator of any community.
+ * Otherwise, the user will be assigned the role of "general" user.
+ *
+ * @param {Object} req.files - The files attached to the request object (for avatar).
+ * @param {string} req.body.isConsentGiven - Indicates whether the user has given consent to enable context based auth.
+ * @param {Function} next - The next middleware function to call if consent is given by the user to enable context based auth.
+ */
+const addUser = async (req, res, next) => {
+	let newUser;
+	const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+	let referralRegistered = null;
+
+	let profilePicture = generateRandomProfilePicture();
+
+	if (phoneNumber === null || phoneNumber === undefined) {
+		phoneNumber = "";
+	}
+
+	newUser = new User({
+		username: req.body.username,
+		firstName: req.body.firstName,
+		lastName: req.body.lastName,
+		email: req.body.email,
+		password: hashedPassword,
+		role: req.body.role,
+		profilePicture: profilePicture,
+		phoneNumber: req.body.phoneNumber,
+	});
+
+	if (referral) {
+		referralRegistered = await registerReferralCodeUse(referral, user);
+	}
+
+	try {
+		await newUser.save();
+		if (newUser.isNew) {
+			throw new Error("Failed to add user");
+		}
+
+		let token = await generateToken(res, newUser._id);
+
+		if (referralRegistered !== null) {
+			res.status(201).json({
+				_id: newUser._id,
+				username: newUser.username,
+				name: newUser.firstName + " " + newUser.lastName,
+				email: newUser.email,
+				profilePicture: newUser.profilePicture,
+				phoneNumber: newUser.phoneNumber,
+				referralUsed: referralRegistered,
+				token: token,
+			});
+		}
+
+		res.status(201).json({
+			_id: newUser._id,
+			username: newUser.username,
+			name: newUser.firstName + " " + newUser.lastName,
+			email: newUser.email,
+			profilePicture: newUser.profilePicture,
+			phoneNumber: newUser.phoneNumber,
+			token: token,
+		});
+	} catch (err) {
+		res.status(400).json({
+			message: "Failed to add user",
+		});
+	}
+};
 
 /**
  * @desc  Default exports for user object
@@ -17,100 +93,57 @@ const defaultUserExports = {
 };
 
 /**
- * @desc   Register new user
- * @route  POST /api/users
- * @access Public
+ * Authorizes user when logging in
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function to call.
+ * @returns {Object} res - The response object.
  */
-const registerUser = asyncHandler(async (req, res) => {
-	const {
-		username,
-		firstName,
-		lastName,
-		email,
-		password,
-		dateOfBirth,
-		referral,
-		phoneNumber,
-	} = req.body;
-
-	const userExists = await User.findOne({ email });
-	let referralRegistered = null;
-
-	if (phoneNumber === null || phoneNumber === undefined) {
-		phoneNumber = "";
-	}
-
-	if (userExists) {
-		res.status(400);
-		throw new Error("User already exists");
-	}
-
-	let profilePicture = generateRandomProfilePicture();
-
-	const user = await User.create({
-		username,
-		firstName,
-		lastName,
-		email,
-		password,
-		dateOfBirth,
-		profilePicture,
-		phoneNumber,
-	});
-
-	if (referral) {
-		referralRegistered = await registerReferralCodeUse(referral, user);
-	}
-
-	if (user) {
-		let token = await generateToken(res, user._id);
-
-		if (referralRegistered !== null) {
-			res.status(201).json({
-				_id: user._id,
-				username: user.username,
-				name: user.firstName + " " + user.lastName,
-				email: user.email,
-				profilePicture: user.profilePicture,
-				phoneNumber: user.phoneNumber,
-				referralUsed: referralRegistered,
-				token: token,
-			});
-		}
-
-		res.status(201).json({
-			_id: user._id,
-			username: user.username,
-			name: user.firstName + " " + user.lastName,
-			email: user.email,
-			profilePicture: user.profilePicture,
-			phoneNumber: user.phoneNumber,
-			token: token,
-		});
-	} else {
-		res.status(400);
-		throw new Error("Invalid user data");
-	}
-});
-
-// @desc    Auth user & get token
-// @route   POST /api/users/auth
-// @access  Public
-const authUser = asyncHandler(async (req, res) => {
+const authUser = asyncHandler(async (req, res, next) => {
 	const { email, password } = req.body;
 
 	const user = await User.findOne({ email });
 
-	if (user && (await user.matchPassword(password))) {
-		let token = await generateToken(res, user._id);
+	if (!existingUser) {
+		return res.status(404).json({
+			message: "Invalid credentials",
+		});
+	}
 
-		res.json({
-			_id: user._id,
-			username: user.username,
-			name: user.firstName + " " + user.lastName,
-			email: user.email,
-			profilePicture: user.profilePicture,
-			token: token,
+	if (user && (await user.matchPassword(password))) {
+		const payload = {
+			id: existingUser._id,
+			email: existingUser.email,
+		};
+
+		const accessToken = jwt.sign(payload, process.env.SECRET, {
+			expiresIn: "6h",
+		});
+
+		const refreshToken = jwt.sign(payload, process.env.REFRESH_SECRET, {
+			expiresIn: "7d",
+		});
+
+		const newRefreshToken = new Token({
+			user: existingUser._id,
+			refreshToken,
+			accessToken,
+		});
+
+		await newRefreshToken.save();
+
+		res.status(200).json({
+			accessToken,
+			refreshToken,
+			accessTokenUpdatedAt: new Date().toLocaleString(),
+			user: {
+				_id: user._id,
+				name: user.name,
+				email: user.email,
+				role: user.role,
+				avatar: user.avatar,
+			},
 		});
 	} else {
 		res.status(401).json({
@@ -181,7 +214,7 @@ const validateUser = async (req, res) => {
 			});
 		}
 
-		const decoded = jwt.verify(token, process.env.JWT_SECRET);
+		const decoded = jwt.verify(token, process.env.SECRET);
 
 		const user = await User.findById(decoded.userId).select("-password"); // Exclude password from the result
 
@@ -259,7 +292,7 @@ const updateUser = asyncHandler(async (req, res) => {
 });
 
 export {
-	registerUser,
+	addUser,
 	authUser,
 	getUserProfile,
 	logoutUser,
