@@ -1,9 +1,9 @@
-.apiTesting {
+.pickSelection {
 	width: 100%;
 	height: 100%;
 	// padding: 1em;
-	&__controlbar,
-	&__footerbar {
+	&__controlBar,
+	&__footerBar {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -18,7 +18,7 @@
 		}
 	}
 
-	&__controlbar {
+	&__controlBar {
 		// justify-content: flex-end;
 		.formGroup {
 			display: flex;

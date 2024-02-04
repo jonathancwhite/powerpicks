@@ -1,9 +1,7 @@
-import React from "react";
-
 const LoadingSpinner = () => {
 	return (
 		<div className='centeredContainer'>
-			<div className='loader'></div>
+			<div className='spinner'></div>
 		</div>
 	);
 };
